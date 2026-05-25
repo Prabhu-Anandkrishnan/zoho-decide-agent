@@ -1,0 +1,45 @@
+<div class="theme-product-list-variants">
+  {% assign colorCount = 0 %}
+  {% for attribute in product.attributes %}
+    {% if attribute.type == 'Color' && colorCount < 1 %}
+      <div class="theme-product-list-variant-option">
+        <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+        <div class="theme-product-color-variant-container">
+          <fieldset class="theme-product-color-variations" role="radiogroup" aria-label="{{ attribute.name }}" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+            <legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+            {% for coloroption in attribute.options %}
+              {% if loop.index < 4 %}
+                <span class="theme-product-color">
+                  <label aria-label="{{ coloroption.value }}" for="list-option-id-{{ coloroption.id }}-{{ product.product_id }}" data-theme-color-label style="background:{{coloroption.color_code}}" onclick="selectColorImage(this,'{{ attribute.name }}')">
+                    <input id="list-option-id-{{ coloroption.id }}-{{ product.product_id }}" type="radio" name="{{ attribute.id }}" data-zs-attribute-option value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+                  </label>
+                </span>
+              {% endif %}
+            {% endfor %}
+            {% if (attribute.options | size) + 1 > 4 %}
+              {% assign variants = (attribute.options | size) + 1 - 4 %}
+              <span class="theme-product-additional-color"> {{variants}}+ </span>
+            {% endif %}
+          </fieldset>
+        </div>
+      </div>
+      {% assign colorCount = colorCount+1 %}
+
+    {% else %}
+      <div class="theme-product-list-variant-option-select-container" style='display:none;'>
+        <div data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+        <div class="theme-product-list-variant-option theme-product-list-variant-option-select">
+          <div class="theme-product-size-varient">
+            <select data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+              <option value="-1">{{i18n.get("product.message.attribute_select",attribute.name)}}</option>
+              {% for option in attribute.options %}
+                <option data-zs-attribute-option value="{{ option.id }}">{{ option.value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+  <div data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+</div>

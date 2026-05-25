@@ -1,0 +1,147 @@
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+  <div class="zpcontainer ">
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+        {% include '_store-product-image-three' %}
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-container">
+        <div class="theme-tag-social-contianer">
+          {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+            <div class="theme-tag-sku">
+              <nav aria-label="{{i18n.get("product.label.tags")}}">
+                <ul class="theme-tag-list-container">
+                  {% for tag in product.tags %}
+                  <li>
+                    <a class="theme-product-tag-url" data-zs-product-tag="{{ tag.name }}" href="{{ tag.url }}">
+                      <span class="theme-product-tag-name">{{ tag.name }}</span>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </nav>
+            </div>
+          {% endif %}
+          <div class="theme-other-actions">
+            {% if product.is_social_share_enabled %}
+              <div class='theme-social-share'>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M17.3327 8.33333C18.8054 8.33333 19.9993 7.13943 19.9993 5.66667C19.9993 4.19391 18.8054 3 17.3327 3C15.8599 3 14.666 4.19391 14.666 5.66667C14.666 7.13943 15.8599 8.33333 17.3327 8.33333Z" stroke="#150004" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.66667 14.5557C8.13943 14.5557 9.33333 13.3618 9.33333 11.8891C9.33333 10.4163 8.13943 9.22241 6.66667 9.22241C5.19391 9.22241 4 10.4163 4 11.8891C4 13.3618 5.19391 14.5557 6.66667 14.5557Z" stroke="#150004" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M17.3327 20.7777C18.8054 20.7777 19.9993 19.5838 19.9993 18.111C19.9993 16.6382 18.8054 15.4443 17.3327 15.4443C15.8599 15.4443 14.666 16.6382 14.666 18.111C14.666 19.5838 15.8599 20.7777 17.3327 20.7777Z" stroke="#150004" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.88867 13.2222L15.1109 16.7778M15.1109 7L8.88867 10.5556" stroke="#150004" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <div class="theme-product-social-share" data-zs-product-socialshare data-zs-app="social_share" data-style="{{product.social_share_options.style}}" data-align="{{product.social_share_options.align}}" data-count="{{product.social_share_options.show_count}}"></div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="theme-product-name">
+          <h1 data-zs-product-name>{{ product.name }}</h1>
+        </div>
+        {% if product.short_description %}
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+        {% endif %}
+        {% if product.is_product_review_enabled %}
+          <div class="theme-rating-review-container">
+            <div class="theme-rating-review" data-comments-summary = "rating-review-write-review"></div>
+          </div>
+        {% endif %}
+        {% include '_store-product-pricing-five' %}
+        {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <div class="theme-product-coupons" style="width: 100%;">
+            <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+        </div>
+        {% endif %}
+        {% if product.has_variants %}
+        <div class="theme-product-varients-area">
+          {% include "_store-product-variants-eight" %}
+        </div>
+        {% else %}
+          <div class="theme-spacer"></div>
+        {% endif %}
+        {% include "_store-product-custom-field-two" %}
+        {% include "_store-product-quantity-add-cart-four" %}
+        {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+              <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+              </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+        {% endif %}
+        {% if page.template_vars.product_content_style == '07' %}
+        <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <details name='product-details'>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.details")}}</span>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M12 4L12 20" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <details name='specification'>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.specifications")}}</span>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M12 4L12 20" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>
+                {% for specification_group in product.specification_group %}
+                <ul class='theme-spec-group'>
+                  {% for attributes in specification_group.attributes %}
+                    <li class='theme-spec'>
+                      <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                      <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endfor %}
+              </div>
+            </details>
+          {%endif%}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var shareLink = document.querySelector(".theme-social-share");
+      function sharePageLink() {
+        var currentPageUrl = window.location.href;
+        if (navigator.share) {
+          navigator.share({
+            url: currentPageUrl
+          }).then(() => {
+          }).catch((error) => {
+          });
+        }
+      }
+      if(shareLink){
+        shareLink.addEventListener("touchstart", sharePageLink);
+      }
+    });
+  </script>
+</div>

@@ -1,0 +1,143 @@
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+    <div class="zpcontainer ">
+      <div class="theme-product-detail-container" data-zs-product-primary-details>
+        <div class="theme-product-detail-column theme-product-detail-image-container">
+          {% include '_store-product-image-one' %}
+        </div>
+        <div class="theme-product-detail-column theme-product-detail-varients-container">
+         
+          <div class="theme-product-name-social-share">
+            <h1 data-zs-product-name>{{ product.name }}</h1>
+            <div class="theme-other-actions">
+              {% if product.is_social_share_enabled %}
+              <div class="theme-social-share">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
+                      <path d="M14.6297 7.03681C12.6897 7.03681 11.1113 5.45844 11.1113 3.5184C11.1113 1.57837 12.6897 0 14.6297 0C16.5698 0 18.1481 1.57837 18.1481 3.5184C18.1481 5.45844 16.5698 7.03681 14.6297 7.03681ZM14.6297 1.48128C13.5064 1.48128 12.5926 2.39505 12.5926 3.5184C12.5926 4.64176 13.5064 5.55553 14.6297 5.55553C15.7531 5.55553 16.6669 4.64176 16.6669 3.5184C16.6669 2.39505 15.7531 1.48128 14.6297 1.48128Z" fill="black"/>
+                      <path d="M3.5184 13.5183C1.57836 13.5183 0 11.9399 0 9.99985C0 8.05981 1.57836 6.48145 3.5184 6.48145C5.45844 6.48145 7.0368 8.05981 7.0368 9.99985C7.0368 11.9399 5.45844 13.5183 3.5184 13.5183ZM3.5184 7.96272C2.39505 7.96272 1.48128 8.87649 1.48128 9.99985C1.48128 11.1232 2.39505 12.037 3.5184 12.037C4.64176 12.037 5.55553 11.1232 5.55553 9.99985C5.55553 8.87649 4.64176 7.96272 3.5184 7.96272Z" fill="black"/>
+                      <path d="M14.6297 19.9999C12.6897 19.9999 11.1113 18.4216 11.1113 16.4815C11.1113 14.5415 12.6897 12.9631 14.6297 12.9631C16.5698 12.9631 18.1481 14.5415 18.1481 16.4815C18.1481 18.4216 16.5698 19.9999 14.6297 19.9999ZM14.6297 14.4444C13.5064 14.4444 12.5926 15.3582 12.5926 16.4815C12.5926 17.6049 13.5064 18.5187 14.6297 18.5187C15.7531 18.5187 16.6669 17.6049 16.6669 16.4815C16.6669 15.3582 15.7531 14.4444 14.6297 14.4444Z" fill="black"/>
+                      <path d="M12.2405 15.8239C12.1138 15.8239 11.9855 15.7914 11.8684 15.7231L5.54412 12.038C5.19078 11.8322 5.07119 11.3784 5.27703 11.0251C5.48287 10.6717 5.93663 10.5521 6.28997 10.758L12.6143 14.4431C12.9676 14.6489 13.0872 15.1027 12.8813 15.456C12.7438 15.6923 12.4955 15.8239 12.2405 15.8239Z" fill="black"/>
+                      <path d="M5.91737 9.34263C5.66237 9.34263 5.41444 9.21096 5.27694 8.97512C5.07069 8.62178 5.18986 8.16803 5.5432 7.96177L11.8583 4.2767C12.2117 4.07044 12.6654 4.18961 12.8713 4.54295C13.0775 4.89629 12.9583 5.35005 12.605 5.55631L6.28988 9.24138C6.17238 9.30971 6.04404 9.34263 5.91737 9.34263Z" fill="black"/>
+                    </svg>
+                    <div class="theme-product-social-share" data-zs-product-socialshare data-zs-app="social_share" data-style="{{product.social_share_options.style}}" data-align="{{product.social_share_options.align}}" data-count="{{product.social_share_options.show_count}}"></div>
+              </div>
+            {% endif %}
+            {{ wishlistView("detail", product, page ) }}
+            </div>
+          </div>
+          {% if product.short_description %}
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+          {% endif %}
+          {% if  product.tags | size != 0 %}
+          <div class="theme-short-desc-row">
+            {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+              <div class="theme-tag-contianer">
+                <div class="theme-tag-sku-label">{{i18n.get("product.label.tags")}}: </div>
+                <div class="theme-tag-sku">
+                  <nav aria-label="{{i18n.get("product.label.tags")}}">
+                    <ul class="theme-tag-list-container">
+                      {% for tag in product.tags %}
+                        <li>
+                          <a class="theme-product-tag-url" data-zs-product-tag href="{{ tag.url }}">
+                            <span class="theme-product-tag-name">{{ tag.name }}</span>
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            {% endif %}
+           
+          </div>
+          {% endif %}
+          {% if product.is_product_review_enabled %}
+          <div class="theme-rating-review-container">
+            <div class="theme-rating-review" data-comments-summary = "rating-review-write-review"></div>
+          </div>
+          {% endif %}
+          {% if !product.is_returnable %}
+              <div class="theme-prod-non-returnable" data-zs-product-non-returnable>
+                {{i18n.get("product.label.non_returnable")}}
+              </div>
+          {% endif %}
+          {% if product.is_out_of_stock == true || product.is_out_of_stock == false || product.variants.is_out_of_stock == true || product.variants.is_out_of_stock == false %}
+            <div class="theme-product-stock-availability-details" data-zs-product-outofstock>
+              {% if product.has_variants %}
+                {% for variant in product.variants %}
+                <span class="theme-prod-stock-details" data-variant-id-stock="{{ variant.variant_id }}" data-stock-avail="{{variant.is_out_of_stock}}" style="display:none;">
+                    {{i18n.get("product.message.out_of_stock")}}
+                </span>
+                {% endfor %}
+              {% else %}
+                {% if product.is_out_of_stock == true %}
+                  <span class="theme-prod-stock-details {% if product.is_out_of_stock == true %}theme-out-of-stock {% else %} theme-stock-background-color{% endif %}">
+                      {{i18n.get("product.message.out_of_stock")}}
+                  </span>
+                {% endif %}
+              {% endif %}
+            </div>
+          {% endif %}
+  
+         
+  
+  
+          {% if product.has_variants %}
+          <div class="theme-product-varients-area">
+              {% include "_store-product-variants-one" %}
+          </div>
+          {% endif %}
+            {% if page.template_vars.image_zoom == "02" %}
+                <div class="magnify-image"></div>
+            {% endif %}                         
+          {% include '_store-product-pricing-one' %}
+          {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+            <div class="theme-product-varients-row" style="width: 100%;">
+              <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+            </div>
+          {% endif %}
+          {% include "_store-product-custom-field-one" %}
+          {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+                <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+                </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+          {% endif %}
+          {% include "_store-product-quantity-add-cart-one.face" %}  
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var shareLink = document.querySelector(".theme-other-actions .theme-social-share");
+            function sharePageLink() {
+                var currentPageUrl = window.location.href;
+                if (navigator.share) {
+                    navigator.share({
+                        url: currentPageUrl
+                    }).then(() => {
+                        console.log('Link shared successfully');
+                    }).catch((error) => {
+                        console.error('Error sharing link:', error);
+                    });
+                } else {
+                    console.log('Sharing not supported on this device');
+                    console.log('Page link:', currentPageUrl);
+                }
+            }
+            shareLink.addEventListener("touchstart", sharePageLink);
+        });
+    </script>
+
+  

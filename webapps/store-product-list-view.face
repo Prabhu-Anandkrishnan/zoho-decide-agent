@@ -1,0 +1,99 @@
+{% assign cdn_prefix_url = "" %}
+{% if page.cdn_prefix_url %}
+  {% assign cdn_prefix_url = page.cdn_prefix_url %}
+  {% assign cdn_suffix_url = "?storefront_domain=" + page.domain_name %}
+{% endif %}
+
+<div class="theme-prod-box theme-product-list-style-{{page.template_vars.product_list_style}} theme-product-count-xsm-{{page.template_vars.store_product_list_count_xsm}} theme-product-count-sm-{{page.template_vars.store_product_list_count_sm}} theme-product-count-md-{{page.template_vars.store_product_list_count_md}}" data-zs-product-id = "{{ product.product_id }}" data-zs-wrapping-category-id="{{ product.category_id }}" {% if page.is_delivery_location_enabled && !product.is_deliverable %}data-zs-not-deliverable{% endif %}>
+
+  {% if page.template_vars.product_list_style == '01' %}
+
+    {% include '_store-product-list-one' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '02' %}
+
+    {% include '_store-product-list-two' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '03' %}
+
+	{% include '_store-product-list-three' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '04' || page.template_vars.product_list_style == '07' || page.template_vars.product_list_style == '14' %}
+
+    {% include '_store-product-list-four' %}
+
+  {% endif %}
+  {% if page.template_vars.product_list_style == '05' %}
+
+    {% include '_store-product-list-five' %}
+
+	{% endif %}
+
+  {% if page.template_vars.product_list_style == '06' %}
+
+    {% include '_store-product-list-six' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '08' %}
+
+    {% include '_store-product-list-eight' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '10' %}
+
+    {% include '_store-product-list-ten' %}
+
+  {% endif %}
+  {% if page.template_vars.product_list_style == '09' %}
+
+    {% include '_store-product-list-nine' %}
+
+	{% endif %}
+
+  {% if page.template_vars.product_list_style == '11' %}
+
+    {% include '_store-product-list-eleven' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '12' %}
+
+    {% include '_store-product-list-twelve' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '13' %}
+
+    {% include '_store-product-list-thirteen' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '15' %}
+
+    {% include '_store-product-list-fifteen' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '16' || page.template_vars.product_list_style == '17' || page.template_vars.product_list_style == '18' %}
+
+    {% include '_store-product-list-eighteen' %}
+
+  {% endif %}
+
+  {% if page.template_vars.product_list_style == '19' %}
+
+    {% include '_store-product-list-nineteen' %}
+
+  {% endif %}
+
+  {% include "_wishlist-view" %}
+
+</div>

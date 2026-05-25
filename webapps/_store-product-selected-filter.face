@@ -1,0 +1,92 @@
+{% comment %} PRODUCT SELECTED FILTER STARTS {% endcomment %}
+
+{% comment %} SELECTED FILTER SYNTAX STARTS {% endcomment %}
+{% if filters.is_enabled && filters.has_filters && (category.products | size > 1 || search.products | size > 1 ) %}
+  <!-- Product filter error validation message container begins -->
+  <div id="zs-filter-error-validation-messages" style="display:none;">
+    <label id="zs-filter-price-maxlessthanmin-error" data-zs-error-message="{{ i18n.get('product_filters.custom_price.max_lessthan_min.error.message') }}"></label>
+    <label id="zs-filter-price-empty-error" data-zs-error-message="{{ i18n.get('product_filters.custom_price.empty.error.message') }}"></label>
+    <label id="zs-filter-price-invalid-error" data-zs-error-message="{{ i18n.get('product_filters.custom_price.invalid.error.message') }}"></label>
+  </div>
+  <!-- Product filter error validation message container ends -->
+  <div data-zs-selected-filter-syntax style="display:none;">
+    {% comment %} SELECTED FILTER SYNTAX [TEXT] STARTS {% endcomment %}
+    <span data-zs-selected-filter data-zs-selected-filter-group-id="" data-zs-selected-filter-value="" data-zs-selected-filter-type="" data-zs-selected-filter-text-container class="theme-product-filter-selected-value">
+      <span data-zs-selected-filter-text></span>
+      <svg onclick="unSelectFilterOptionValue(this)" aria-label="{{i18n.get("product_filters.clear.label")}}" role="button" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+        <g clip-path="url(#clip0_2678_8909)">
+        <path d="M16.5 2.44199L14.8886 0.830566L8.5 7.21914L2.11143 0.830566L0.5 2.44199L6.88857 8.83057L0.5 15.2191L2.11143 16.8306L8.5 10.442L14.8886 16.8306L16.5 15.2191L10.1114 8.83057L16.5 2.44199Z" fill="black"></path>
+        </g>
+        <defs>
+        <clipPath id="clip0_2678_8909">
+        <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"></rect>
+        </clipPath>
+        </defs>
+      </svg>
+    </span>
+    {% comment %} SELECTED FILTER SYNTAX [TEXT] ENDS {% endcomment %}
+    {% comment %} SELECTED FILTER SYNTAX [USER_RATINGS] STARTS {% endcomment %}
+    <span data-zs-selected-filter data-zs-selected-filter-value="" data-zs-selected-filter-type="" data-zs-selected-filter-userratings-container class="theme-product-filter-selected-value">
+      <span data-zs-selected-filter-userratings></span>
+        <svg onclick="unSelectFilterOptionValue(this)" aria-label="{{i18n.get("product_filters.clear.label")}}" role="button" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+          <g clip-path="url(#clip0_2678_8909)">
+          <path d="M16.5 2.44199L14.8886 0.830566L8.5 7.21914L2.11143 0.830566L0.5 2.44199L6.88857 8.83057L0.5 15.2191L2.11143 16.8306L8.5 10.442L14.8886 16.8306L16.5 15.2191L10.1114 8.83057L16.5 2.44199Z" fill="black"></path>
+          </g>
+          <defs>
+          <clipPath id="clip0_2678_8909">
+          <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"></rect>
+          </clipPath>
+          </defs>
+        </svg>    
+      </span>
+    {% comment %} SELECTED FILTER SYNTAX [USER_RATINGS] ENDS {% endcomment %}
+    {% comment %} SELECTED FILTER SYNTAX [PRICE] STARTS {% endcomment %}
+    <span data-zs-selected-filter data-zs-selected-filter-value="" data-zs-selected-filter-type="" data-zs-selected-filter-price-container class="theme-product-filter-selected-value">
+      <span data-zs-selected-filter-price-min data-zs-selling-price="" data-zs-currency-code="{{currency.code}}"></span>
+      <span data-zs-selected-filter-price-separator style="white-space: pre-wrap;"> - </span>
+      <span data-zs-selected-filter-price-max data-zs-selling-price="" data-zs-currency-code="{{currency.code}}" style="white-space: pre-wrap;"></span>
+        <svg onclick="unSelectFilterOptionValue(this)" aria-label="{{i18n.get("product_filters.clear.label")}}" role="button" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+          <g clip-path="url(#clip0_2678_8909)">
+          <path d="M16.5 2.44199L14.8886 0.830566L8.5 7.21914L2.11143 0.830566L0.5 2.44199L6.88857 8.83057L0.5 15.2191L2.11143 16.8306L8.5 10.442L14.8886 16.8306L16.5 15.2191L10.1114 8.83057L16.5 2.44199Z" fill="black"></path>
+          </g>
+          <defs>
+          <clipPath id="clip0_2678_8909">
+          <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"></rect>
+          </clipPath>
+          </defs>
+        </svg>    
+      </span>
+    {% comment %} SELECTED FILTER SYNTAX [PRICE] ENDS {% endcomment %}
+    {% comment %} SELECTED FILTER SYNTAX [COLOR] STARTS {% endcomment %}
+    {% comment %} style="background:#54e0e6" {% endcomment %}
+    <span data-zs-selected-filter data-zs-selected-filter-value="" data-zs-selected-filter-type="" data-zs-selected-filter-color-container class="theme-product-filter-selected-value">
+      <span data-zs-selected-filter-color class="theme-product-filter-custom-check" style=""></span>
+      <span data-zs-selected-filter-color-name></span>
+        <svg onclick="unSelectFilterOptionValue(this)" aria-label="{{i18n.get("product_filters.clear.label")}}" role="button" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+          <g clip-path="url(#clip0_2678_8909)">
+          <path d="M16.5 2.44199L14.8886 0.830566L8.5 7.21914L2.11143 0.830566L0.5 2.44199L6.88857 8.83057L0.5 15.2191L2.11143 16.8306L8.5 10.442L14.8886 16.8306L16.5 15.2191L10.1114 8.83057L16.5 2.44199Z" fill="black"></path>
+          </g>
+          <defs>
+          <clipPath id="clip0_2678_8909">
+          <rect width="16" height="16" fill="white" transform="translate(0.5 0.5)"></rect>
+          </clipPath>
+          </defs>
+        </svg>    
+      </span>
+    {% comment %} SELECTED FILTER SYNTAX [COLOR] ENDS {% endcomment %}
+  </div>
+{% endif %}
+{% comment %} SELECTED FILTER SYNTAX ENDS {% endcomment %}
+
+{% if filters.is_enabled && filters.has_filters && (category.products | size > 1 || search.products | size > 1 ) %}
+  <div data-zs-selected-filters-conatainer class="theme-product-filter-selected-container" style="display:none;">
+    <span class="theme-product-filter-selected-label">
+      <span data-zs-filter-refineby-container style="display:none;">
+        {{i18n.get("product_filters.refine_by.label")}} :
+        <a data-zs-filter-refineby-clear-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.clear_all.label")}}</a>
+      </span>
+    </span>
+  </div>
+{% endif %}
+
+{% comment %} PRODUCT SELECTED FILTER ENDS {% endcomment %}

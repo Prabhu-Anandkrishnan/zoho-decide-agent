@@ -1,0 +1,51 @@
+<div class="theme-quick-view-container">
+	<div class="theme-overlay" role="button" tabindex="0" aria-label="Close Quick View" onclick="closeProductQuickLook(this)">
+		<button onclick="closeProductQuickLook(this)" aria-label="Close Quick View" class="theme-quickview-close">
+			<svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" viewBox="0 0 37 37" fill="none">
+				<path d="M10.1 29L8 26.9L16.4 18.5L8 10.1L10.1 8L18.5 16.4L26.9 8L29 10.1L20.6 18.5L29 26.9L26.9 29L18.5 20.6L10.1 29Z" fill="white"/>
+			</svg>
+		</button>
+	</div>
+	<div class="theme-product-quick-view-inner" data-zs-product-id="{{ product.product_id }}">
+		<div class="theme-product-quick-details" data-zs-product-primary-details>
+			<div class="theme-product-detail-column theme-product-detail-image-container">
+				{% include '_store-product-image-three' %}
+			</div>
+			<div class="theme-product-detail-column theme-product-detail-container">
+				<div class="theme-product-name">
+					<h1 data-zs-product-name>{{ product.name }}</h1>
+					{{ wishlistView("detail", product, page ) }}
+				</div>
+				{% if product.short_description %}
+					<div class="theme-product-short-description" data-zs-product-short-description>
+						{{ product.short_description }}
+					</div>
+				{% endif %}
+
+				{% include '_store-product-pricing-four' %}
+
+				{% if product.has_variants %}
+					<div class="theme-product-varients-area">
+						{% include "_store-product-variants-three" %}
+					</div>
+				{% endif %}
+				{% include "_store-product-custom-field-two" %}
+				{% include "_store-product-quantity-add-cart-two" %}
+				{% if page.is_delivery_location_enabled %}
+					<div class="theme-product-details-delivery-location-row">
+						<label class="theme-product-details-delivery-location-input-label" for='delivery_location_postalcode'>{{i18n.get("delivery_location_availability.label.delivery")}}</label>
+						<input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+						<p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+						<div class="theme-product-delivery-location-deliverable-details">
+							{% for variant in product.variants %}
+								<span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+								</span>
+							{% endfor %}
+							<a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,98 @@
+<div class="theme-product-box-inner">
+  <div class="theme-prod-box-content theme-prod-img theme-ribbon-prod-box">
+    {% include '_store-product-list-image-loader' %}
+    <div class="theme-prod-img-container" data-zs-image-container> 
+      {{ wishlistView("list", product, page ) }}
+      {% include '_store-product-list-image' %}
+
+    </div>
+    <div class="theme-ribbons">
+      {% if product.on_sale %}
+        <span class="theme-ribbon-content theme-ribbon-sale" data-zs-sale>
+          {{i18n.get("product.message.sale")}}
+        </span>
+      {% endif %}
+
+      {% if product.is_out_of_stock %}
+        <span class="theme-ribbon-content theme-ribbon-stock" data-zs-outofstock>
+          {{i18n.get("product.message.out_of_stock")}}
+        </span>
+      {% endif %}
+
+    </div>
+    {% if product.tags | size >= 1 %}
+      <div class='theme-product-tag'>
+        {{ product.tags[0].name }}
+      </div>
+    {% endif %}
+
+    <a aria-label="{{ product.name }}" href="{{ product.url }}" class="theme-product-resposnsive-link"></a>
+  </div>
+  <div class="theme-prod-box-content theme-prod-name" data-zs-product-name>
+    <a title="{{ product.name }}" href="{{ product.url }}">{{ product.name }}</a>
+    {% if product.is_product_review_enabled %}
+      <div class="theme-prod-box-content theme-rating {% if page.is_coupon_enabled && product.is_out_of_stock == false %}is-theme-prod-coupon{% endif %}" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "average-rating"></div>
+    {% endif %}
+
+  </div>
+  {% if page.is_delivery_location_enabled %}
+    <div class="theme-prod-box-content theme-delivery-location-non-deliverable" data-zs-not-deliverable-message>
+      {{i18n.get("delivery_location_availability.product.not_deliverable.message")}}
+    </div>
+  {% endif %}
+
+  <div class="theme-prod-price-and-addcart">
+    <div class="theme-prod-box-content theme-prod-price">
+      {% if !product.variants[0].hide_price %}
+      {% if product.has_variant_price %}
+        <span data-zs-selling-price="{{ product.starts_with }}" data-zs-currency-code="{{currency.code}}"> {{ product.starts_with | currency(currency) }} </span>
+      {% elif product.label_price && (product.label_price > product.selling_price) %}
+        <span data-zs-selling-price="{{ product.selling_price }}" data-zs-currency-code="{{currency.code}}">
+          {{ product.selling_price | currency(currency) }}
+        </span>
+        <span class="theme-prod-old-price" data-zs-label-price="{{ product.label_price }}" data-zs-currency-code="{{currency.code}}">
+          {{ product.label_price | currency(currency) }}
+        </span>
+      {% else %}
+        <span data-zs-selling-price="{{ product.selling_price }}" data-zs-currency-code="{{currency.code}}">
+          {{ product.selling_price | currency(currency) }}
+        </span>
+      {% endif %}
+    {% endif %}
+
+    </div>
+    <div class="theme-view-product">
+      {% if !product.is_out_of_stock %}
+        {% if product.has_variants %}
+            <a aria-label="{{i18n.get("product.label.view_details")}} {{ product.name }}" data-zs-view-details href="{{ product.url }}" class="theme-view-cart-icon">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                <path d="M4.55576 13.9478V13.9528C4.52766 14.0588 4.47894 14.1582 4.4124 14.2453C4.34586 14.3325 4.26279 14.4056 4.16795 14.4606C4.07311 14.5157 3.96835 14.5514 3.85967 14.5659C3.75099 14.5804 3.64052 14.5734 3.53457 14.5452C2.8154 14.3549 2.94221 13.5256 2.94221 13.5256L2.97225 13.4222C2.97225 13.4222 3.01563 13.282 3.05067 13.1802C3.47887 11.9796 4.10924 10.8611 4.91451 9.87305C6.41126 8.04759 8.92919 6.23047 12.9255 6.23047C16.9218 6.23047 19.4398 8.04759 20.9382 9.87305C21.7435 10.8611 22.3738 11.9796 22.802 13.1802C22.838 13.2834 22.8713 13.3875 22.9022 13.4923L22.9072 13.514V13.5206L22.9088 13.524C22.9618 13.7363 22.9291 13.961 22.818 14.1495C22.7068 14.338 22.526 14.4753 22.3146 14.5318C22.1031 14.5883 21.878 14.5594 21.6876 14.4514C21.4972 14.3434 21.3569 14.1649 21.2969 13.9545L21.2953 13.9478L21.2819 13.9061L21.2235 13.7242C20.8598 12.7106 20.3266 11.766 19.6467 10.9309C18.4086 9.42085 16.3378 7.89908 12.9255 7.89908C9.51321 7.89908 7.44413 9.42085 6.20435 10.9309C5.52439 11.766 4.9912 12.7106 4.62751 13.7242L4.56911 13.9061L4.55576 13.9478ZM12.9255 11.2363C11.8192 11.2363 10.7581 11.6758 9.9758 12.4581C9.19349 13.2404 8.75399 14.3015 8.75399 15.4078C8.75399 16.5142 9.19349 17.5752 9.9758 18.3576C10.7581 19.1399 11.8192 19.5794 12.9255 19.5794C14.0319 19.5794 15.0929 19.1399 15.8752 18.3576C16.6576 17.5752 17.0971 16.5142 17.0971 15.4078C17.0971 14.3015 16.6576 13.2404 15.8752 12.4581C15.0929 11.6758 14.0319 11.2363 12.9255 11.2363ZM10.4226 15.4078C10.4226 14.744 10.6863 14.1074 11.1557 13.638C11.6251 13.1686 12.2617 12.9049 12.9255 12.9049C13.5893 12.9049 14.226 13.1686 14.6954 13.638C15.1647 14.1074 15.4284 14.744 15.4284 15.4078C15.4284 16.0716 15.1647 16.7083 14.6954 17.1777C14.226 17.6471 13.5893 17.9108 12.9255 17.9108C12.2617 17.9108 11.6251 17.6471 11.1557 17.1777C10.6863 16.7083 10.4226 16.0716 10.4226 15.4078Z" fill="white"/>
+              </svg>
+            </a>
+        {% else %}        	
+          {% if product.is_product_custom_fields_enabled && product.is_input_custom_field_available %}
+            <a aria-label="{{i18n.get("product.label.view_details")}} {{ product.name }}" data-zs-view-details href="{{ product.url }}" class="theme-view-cart-icon">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                <path d="M4.55576 13.9478V13.9528C4.52766 14.0588 4.47894 14.1582 4.4124 14.2453C4.34586 14.3325 4.26279 14.4056 4.16795 14.4606C4.07311 14.5157 3.96835 14.5514 3.85967 14.5659C3.75099 14.5804 3.64052 14.5734 3.53457 14.5452C2.8154 14.3549 2.94221 13.5256 2.94221 13.5256L2.97225 13.4222C2.97225 13.4222 3.01563 13.282 3.05067 13.1802C3.47887 11.9796 4.10924 10.8611 4.91451 9.87305C6.41126 8.04759 8.92919 6.23047 12.9255 6.23047C16.9218 6.23047 19.4398 8.04759 20.9382 9.87305C21.7435 10.8611 22.3738 11.9796 22.802 13.1802C22.838 13.2834 22.8713 13.3875 22.9022 13.4923L22.9072 13.514V13.5206L22.9088 13.524C22.9618 13.7363 22.9291 13.961 22.818 14.1495C22.7068 14.338 22.526 14.4753 22.3146 14.5318C22.1031 14.5883 21.878 14.5594 21.6876 14.4514C21.4972 14.3434 21.3569 14.1649 21.2969 13.9545L21.2953 13.9478L21.2819 13.9061L21.2235 13.7242C20.8598 12.7106 20.3266 11.766 19.6467 10.9309C18.4086 9.42085 16.3378 7.89908 12.9255 7.89908C9.51321 7.89908 7.44413 9.42085 6.20435 10.9309C5.52439 11.766 4.9912 12.7106 4.62751 13.7242L4.56911 13.9061L4.55576 13.9478ZM12.9255 11.2363C11.8192 11.2363 10.7581 11.6758 9.9758 12.4581C9.19349 13.2404 8.75399 14.3015 8.75399 15.4078C8.75399 16.5142 9.19349 17.5752 9.9758 18.3576C10.7581 19.1399 11.8192 19.5794 12.9255 19.5794C14.0319 19.5794 15.0929 19.1399 15.8752 18.3576C16.6576 17.5752 17.0971 16.5142 17.0971 15.4078C17.0971 14.3015 16.6576 13.2404 15.8752 12.4581C15.0929 11.6758 14.0319 11.2363 12.9255 11.2363ZM10.4226 15.4078C10.4226 14.744 10.6863 14.1074 11.1557 13.638C11.6251 13.1686 12.2617 12.9049 12.9255 12.9049C13.5893 12.9049 14.226 13.1686 14.6954 13.638C15.1647 14.1074 15.4284 14.744 15.4284 15.4078C15.4284 16.0716 15.1647 16.7083 14.6954 17.1777C14.226 17.6471 13.5893 17.9108 12.9255 17.9108C12.2617 17.9108 11.6251 17.6471 11.1557 17.1777C10.6863 16.7083 10.4226 16.0716 10.4226 15.4078Z" fill="white"/>
+              </svg>
+            </a>
+          {% else %}
+            <a role="button" aria-label="{{i18n.get("product.action.add_to_cart")}} {{ product.name }}" href="javascript:;" data-zs-add-to-cart data-zs-product-variant-id="{{ product.variants[0].variant_id }}" {% if product.variants[0].hide_add_to_cart %} style="display: none;" {% endif %}>
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <g clip-path="url(#clip0_713_23690)">
+                  <path d="M5.6875 14.349C4.77083 14.349 4.02083 15.099 4.02083 16.0156C4.02083 16.9323 4.77083 17.6823 5.6875 17.6823C6.60417 17.6823 7.35417 16.9323 7.35417 16.0156C7.35417 15.099 6.60417 14.349 5.6875 14.349ZM14.0208 14.349C13.1042 14.349 12.3542 15.099 12.3542 16.0156C12.3542 16.9323 13.1042 17.6823 14.0208 17.6823C14.9375 17.6823 15.6875 16.9323 15.6875 16.0156C15.6875 15.099 14.9375 14.349 14.0208 14.349ZM5.85417 11.6823V11.599L6.60417 10.1823H12.7708C13.3542 10.1823 13.9375 9.84896 14.1875 9.34896L17.4375 3.51562L16.0208 2.68229L12.7708 8.51562H6.9375L3.4375 1.01562H0.6875V2.68229H2.35417L5.35417 9.01562L4.1875 11.0156C4.10417 11.2656 4.02083 11.5156 4.02083 11.849C4.02083 12.7656 4.77083 13.5156 5.6875 13.5156H15.6875V11.849H6.02083C5.9375 11.849 5.85417 11.7656 5.85417 11.6823Z" fill="white"/>
+                  <path class='theme-cta-plus-icon' d="M10.6862 6.85026H9.01953V4.35026H6.51953V2.68359H9.01953V0.183594H10.6862V2.68359H13.1862V4.35026H10.6862V6.85026Z" fill="white"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_713_23690">
+                    <rect width="17.5" height="16.75" fill="white" transform="matrix(0 1 1 0 0.6875 0.183594)"/>
+                  </clipPath>
+                </defs>
+              </svg>
+            </a>
+          {% endif %}  
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>

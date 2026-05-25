@@ -1,0 +1,109 @@
+
+<div class="theme-product-box-content">
+  <select aria-hidden="true" style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+    {% for variant in product.variants %}
+      {% assign variant_options = variant.options %}
+      {% assign variant_option_identifiers = variant_options | map(attr="id") %}
+      {% assign variant_images = variant.images %}
+      {% assign variant_image_identifiers = variant_images | map(attr="id") %}
+      <option value='{{ variant.variant_id }}' id='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-img-url='{{cdn_prefix_url}}{{variant_images[0].url}}{{cdn_suffix_url}}' data-zs-img-alt='{{variant_images[0].alternate_text}}'></option>
+    {% endfor %}
+  </select>
+  <div class="theme-product-image-area" data-zs-image-container>
+
+    <div class="theme-product-ribbon-area">
+      {% if product.on_sale %}
+        <div class="theme-product-sale-ribbon" data-zs-sale>
+          <span class='theme-sale-message'>
+            {{i18n.get("product.message.sale")}}
+          </span>
+        </div>
+      {% endif %}
+
+      {% if page.is_coupon_enabled && !product.is_out_of_stock %}
+        <div class = "theme-product-coupon-container">
+          <span class="theme-prod-coupons-code" data-list-coupon-code style="display:none"></span>
+          <div class="theme-prod-coupons-container" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="theme-product-wishlist">
+        {{ wishlistView("list", product, page ) }}
+    </div>
+
+    {% if (product.is_product_custom_fields_enabled && product.is_input_custom_field_available) || product.has_variants %}
+      <div class="theme-product-view-details">
+        <a data-zs-view-details href="{{product.url}}">
+          <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("product.label.view_details")}}</span>
+        </a>
+      </div>
+    {% elif !product.is_out_of_stock %}
+      <div class="theme-product-button-area">
+        {% include '_store-product-list-add-to-cart' %}
+      </div>
+    {% endif %}
+    {% if product.is_out_of_stock %}
+      <div class="theme-outofstock-overlay">
+        <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+      </div>
+    {% endif %}
+
+    {% include '_store-product-list-image-loader' %}
+    {% include '_store-product-list-image' %}
+
+  </div>
+  <div class="theme-product-details-area">
+    <div class="theme-name-variants">
+      <div class="theme-product-variants">
+        {% assign colorCount = 0 %}
+        {% for attribute in product.attributes %}
+          {% if attribute.type == 'Color' && colorCount < 1 %}
+            <fieldset class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+              <legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+              {% for colorOption in attribute.options %}
+                {% if loop.index < 6 %}
+                  <picture data-theme-color-label>
+                    <img height="60" width="60" src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}" data-fallback="{{ product.images[0].url }}/600x600" onerror="handleFallBackForImage(this)" data-zs-attribute-option-image id='{{ colorOption.id }}'>
+                    <label onclick="selectColorImage(this,'{{ attribute.name }}')" for='option-id-{{ colorOption.id }}' role="button" tabindex="0" style="background:transparent;">
+                    <input type="radio" id='option-id-{{ colorOption.id }}' value="{{ colorOption.id }}" data-text="{{ colorOption.value }}">
+                    </label>
+                  </picture>
+                {% endif %}
+              {% endfor %}
+              {% if (attribute.options | size) + 1 > 6 %}
+                {% assign variants = (attribute.options | size) + 1 - 6 %}
+                <span class="theme-product-additional-color"> {{variants}}+ </span>
+              {% endif %}
+            </fieldset>
+          {% endif %}
+          {% assign colorCount = colorCount+1 %}
+        {% endfor %}
+        <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+      </div>
+
+      <div class="theme-product-name-price">
+        <div class="theme-brand-product-name"> 
+          {% if page.template_vars.is_brand_name_enabled && product.brand | size != 0 %}
+            <div class="theme-brand-name"  data-zs-brand="{{ product.brand }}">{{product.brand}}</div>
+            <span class="theme-brand-separator"> - </span>
+          {% endif %}
+          <div class= "theme-product-name" data-zs-product-name>
+            <a title="{{ product.name }}" href="{{ product.url }}">{{ product.name }}</a>
+          </div>
+        </div>
+        <div class="theme-product-price">
+          {% include '_store-product-pricing-six' %}
+        </div>
+      </div>
+
+      {% if page.is_delivery_location_enabled %}
+        <div class="theme-delivery-location-non-deliverable" data-zs-not-deliverable-message>
+          {{i18n.get("delivery_location_availability.product.not_deliverable.message")}}
+        </div>
+      {% endif %}
+    </div>
+    <div class="theme-rating" data-zs-review-id="{{ product.review_id }}" data-zs-review-type = "star-rating"></div>
+  </div>
+  <div role="alert" data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+</div>

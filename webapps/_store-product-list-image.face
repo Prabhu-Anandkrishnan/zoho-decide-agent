@@ -1,0 +1,23 @@
+{% if product.images[0].is_placeholder_image %}
+  <a aria-hidden="true" href="{{ product.url }}">
+    <picture>
+      <img data-src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}"
+      alt="{{product.images[0].alternate_text}}"
+      style="display:none;" loading="lazy" decoding="async" onload="onListImageLoaded(this)"
+      data-fallback="{{ product.images[0].url }}"
+      onerror="handleFallBackForImage(this)"/>
+    </picture>
+    <span class='theme-org-img' data-src='{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}'></span>
+  </a>
+{% else %}
+  <a aria-hidden="true" href="{{ product.url }}">
+    <picture>
+      <img data-src="{{cdn_prefix_url}}{{ product.images[0].url }}/600x600{{cdn_suffix_url}}"
+      alt="{{product.images[0].alternate_text}}" width="600" height="600"
+      style="display:none;" loading="lazy" decoding="async" onload="onListImageLoaded(this)"
+      data-fallback="{{ product.images[0].url }}/600x600"
+      onerror="handleFallBackForImage(this)"/>
+    </picture>
+    <span class='theme-org-img' data-src='{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}'></span>
+  </a>
+{% endif %}

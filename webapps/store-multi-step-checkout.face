@@ -1,0 +1,17 @@
+{% extends "_theme" %}
+
+{% block header_area %}
+  <style>
+    .theme-footer-area {
+      display: none;
+    }
+  </style>
+  {% include '_checkout-header-one' %}
+{% endblock %}
+
+{% block content_area %}
+  <div class="theme-content-area" data-theme-content-container="theme-content-container">
+	{{checkout.form}}
+  </div>
+  <div style="clear:both"></div>
+{% endblock %}

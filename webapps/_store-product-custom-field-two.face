@@ -1,0 +1,196 @@
+{% if product.is_product_custom_fields_enabled %}
+  <details class ="theme-custom-field-accordion" {% if page.template_vars.product_details_style == '09' %} open {%endif%} data-custom-field-accordion >
+      <summary class="theme-custom-field-summary" >
+        <span class="theme-custom-field-heading">{{i18n.get("product.label.custom_fields_heading")}}</span>
+        {% if page.template_vars.product_details_style == '08' %}
+          <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12 4L12 20" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        {% else %}
+          <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none" style=""><path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"></path></svg>
+          <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none" ><path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"></path></svg>
+        {% endif %}
+      </summary>
+      <div class="theme-custom-field-main-container" data-custom-field-main-container {{product.has_variants}} {% if product.has_variants %}style="display:none"{% endif %}  >
+      {% for variant in product.variants %}
+        {% for custom_field in variant.custom_fields %}
+          {% if custom_field.edit_on_store != false || custom_field.value != "" %}
+            <div class="theme-product-varients-row" data-variant-id="{{ variant.variant_id }}" {% if product.has_variants %}style="display:none"{% endif %}>
+              <div class="theme-product-variant theme-custom-field-container {% if custom_field.field_type == 'check_box' %}theme-custom-field-checkbox-container{% endif %}" {% if custom_field.edit_on_store == false %}data-zs-custom-field-display-id="{{ custom_field.customfield_id }}"{% endif %} data-zs-customfield-container="{{custom_field.field_type}}{% if custom_field.edit_on_store == false %}-display{% endif %}">
+                {% if custom_field.field_type != "check_box"  && custom_field.field_type != "attachment" %}
+                  <div class="theme-product-variant-label theme-custom-field-label" data-zs-customfield-label>
+                    {{ custom_field.label }}
+                    {% if custom_field.edit_on_store && custom_field.is_mandatory %}
+                      <span class="theme-custom-mandatory-field"> * </span>
+                    {% endif %}
+                    {% if custom_field.help_text %}
+                      <div class="tooltip show">
+                        <svg class="tooltip-svg" xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" viewBox="0 0 430 430"><defs/><g id="Layer_1-2" data-name="Layer 1"><path d="M367 63a214 214 0 0 0-304 0 214 214 0 0 0 152 367 214 214 0 0 0 215-215c0-57-22-111-63-152Zm21 152a173 173 0 0 1-346 0 173 173 0 0 1 346 0Z"/><path d="M236 176v154a21 21 0 0 1-42 0V176a21 21 0 1 1 42 0ZM236 101a21 21 0 0 1-2 10 21 21 0 0 1-15 10 23 23 0 0 1-6 1 24 24 0 0 1-6-2 21 21 0 0 1-13-15 20 20 0 0 1 3-14 21 21 0 0 1 16-11 22 22 0 0 1 10 1 19 19 0 0 1 5 3 23 23 0 0 1 4 5 21 21 0 0 1 4 12Z" /></g></svg>
+                        <span class="tooltiptext">{{ custom_field.help_text }}</span>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% if custom_field.edit_on_store == false %}
+                  {% if custom_field.field_type == "check_box" %}
+                    <input id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" aria-label="{{ custom_field.label }}" type="checkbox" {% if custom_field.value == "true" %}checked{% endif %} disabled>
+                  {% elif custom_field.field_type == "attachment" %}
+                    <a id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" href="{{ custom_field.attachment_download_url }}?variant_id={{ variant.variant_id }}" data-zs-attachment-id="{{ custom_field.value }}" data-zs-attachment-id="{{ custom_field.value }}" class="theme-custom-field-value-display-file" data-zs-attachment-name="{{ custom_field.display_value }}" title="{{ custom_field.display_value }}">{{ custom_field.label }}</a>
+                  {% elif custom_field.field_type == "multiselect" %}
+                    {% for value in  custom_field.values %}
+                      <span id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" class="theme-custom-field-value theme-custom-field-value-multi-select" data-zs-customfield-display-value>{{ value }}</span>
+                    {% endfor %}
+                  {% else %}
+                    <span id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" class="theme-custom-field-value" data-zs-customfield-display-value>
+                      {% if custom_field.field_type == "amount" || custom_field.field_type == "decimal" || custom_field.field_type == "number" || custom_field.field_type == "date" %}
+                        {{ custom_field.display_value }}
+                      {% elif custom_field.field_type == "url" %}
+                        {% assign customFieldDisplayText = custom_field.value %}
+                        {% if custom_field.hyper_text %}
+                          {% assign customFieldDisplayText = custom_field.hyper_text %}
+                        {% endif %}
+                        <a href="{{ custom_field.value }}">{{ customFieldDisplayText }}</a>
+                      {% else %}
+                        {{ custom_field.value }}
+                      {% endif %}
+                    </span>
+                  {% endif %}
+                  {% if custom_field.field_type == "check_box" %}
+                    <label for="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" class="theme-product-variant-label theme-custom-field-label" data-zs-customfield-label>
+                      {{ custom_field.label }}
+                    </label>
+                  {% endif %}
+                {% else %}
+                  {% if custom_field.field_type == "check_box" %}
+                    <input id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" type="checkbox" data-default-value="{{ custom_field.value }}" data-field-type="{{ custom_field.field_type }}" data-label="{{ custom_field.label }}" data-custom-field-id="{{ custom_field.customfield_id }}" {% if custom_field.is_mandatory %}data-validate="required" {% endif %} value="{{ custom_field.value }}" {% if custom_field.value == "true" %}checked{% endif %} data-onchange-event>
+                    <label for="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" class="theme-product-variant-label theme-custom-field-label" data-zs-customfield-label>
+                      {{ custom_field.label }}
+                      {% if custom_field.edit_on_store && custom_field.is_mandatory %}
+                        <span class="theme-custom-mandatory-field"> * </span>
+                      {% endif %}
+                    </label>
+                  {% elif custom_field.field_type == "attachment" %}
+                    <label for="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" class="theme-prod-variant-label theme-custom-field-label" data-zs-customfield-label>
+                      {{ custom_field.label }}
+                      {% if custom_field.edit_on_store && custom_field.is_mandatory %}
+                        <span class="theme-custom-mandatory-field"> * </span>
+                      {% endif %}
+                    </label>
+                    <button class="theme-custom-field-getfile " data-zs-attachment-upload-custom-field-id="{{ custom_field.customfield_id }}">
+                      <svg class="theme-upload-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                        <path d="M14.9969 8.76021C14.9975 8.74146 15 8.72334 15 8.70459C15 5.94334 12.7613 3.70459 10 3.70459C7.61625 3.70459 5.62625 5.37396 5.125 7.60584C3.255 8.10334 1.875 9.80271 1.875 11.8296C1.875 14.2458 3.83375 16.2046 6.25 16.2046H14.375C16.4462 16.2046 18.125 14.5258 18.125 12.4546C18.125 10.5958 16.7713 9.05709 14.9969 8.76021Z" stroke="black" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10 7.45459V13.7046" stroke="black" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7.5 9.95459L10 7.45459L12.5 9.95459" stroke="black" stroke-width="1.25" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <div class="theme-file-upload-input"></div>
+                      <span data-zs-attachment-label>{{ i18n.get("product.custom_field.attachment.choose_file") }}</span>
+                      <svg style="display: none;width: 20px;height: 20px; margin-inline-start: 5px;fill: currentColor;" enable-background="new 0 0 40 40" version="1.1" viewBox="0 0 40 40" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="m20.201 5.169c-8.254 0-14.946 6.692-14.946 14.946 0 8.255 6.692 14.946 14.946 14.946s14.946-6.691 14.946-14.946c-1e-3 -8.254-6.692-14.946-14.946-14.946zm0 26.58c-6.425 0-11.634-5.208-11.634-11.634 0-6.425 5.209-11.634 11.634-11.634s11.633 5.209 11.633 11.634c0 6.426-5.208 11.634-11.633 11.634z" opacity=".2"></path><path fill="white" transform="rotate(264.344 20 20)" d="m26.013 10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012v3.312c2.119 0 4.1 0.576 5.812 1.566z"><animateTransform attributeName="transform" attributeType="xml" dur="0.5s" from="0 20 20" repeatCount="indefinite" to="360 20 20" type="rotate"></animateTransform></path></svg>
+                    </button>
+                    <input id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" type="file" data-field-type="{{ custom_field.field_type }}" aria-label="{{ custom_field.label }}" data-label="{{ custom_field.label }}" data-custom-field-id="{{ custom_field.customfield_id }}" {% if custom_field.is_mandatory %}data-validate="required" {% endif %} accept="{{ custom_field.file_extension }}" style="display: none;">
+                    <span class="theme-af-link" data-zs-attachment-name-container="{{ custom_field.customfield_id }}" style="display:none">
+                      <span class="theme-af-display-container">
+                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M8.342 2.61a2.765 2.765 0 0 1 4.04 3.772l-.13.138-5.206 5.2a1.632 1.632 0 0 1-2.414-2.192l.105-.116 4.805-4.8a.5.5 0 0 1 .765.64l-.058.068-4.805 4.799a.632.632 0 0 0 .817.96l.078-.066 5.206-5.2a1.765 1.765 0 0 0-2.37-2.61l-.126.114-5.2 5.2a2.897 2.897 0 0 0 3.958 4.228l.139-.13 5.2-5.2a.5.5 0 0 1 .765.637l-.057.07-5.201 5.2a3.897 3.897 0 0 1-5.664-5.35l.152-.162 5.201-5.2Z"  fill-rule="nonzero"/></svg>
+                        <span data-attachment-file-name="" class="theme-attachment-filename">{{ custom_fields.label }} </span>
+                      </span>
+                      <span data-zs-remove-attachment class="theme-remove-attachement">
+                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M9.1 8l3.7-3.7c.3-.3.4-.7.1-1.1s-.7-.4-1.1-.1l-.1.1L8 6.9 4.3 3.2c-.3-.3-.8-.3-1.1 0-.3.3-.3.8 0 1.1L6.9 8l-3.7 3.7c-.3.3-.3.8 0 1.1.3.3.8.3 1.1 0L8 9.1l3.7 3.7c.3.3.8.3 1.1 0 .3-.3.3-.8 0-1.1L9.1 8z" fill="#db3c38"></path></svg>
+                      </span>
+                    </span>
+                    <div class="theme-product-variant-label" style="display:none">{{ i18n.get("product.custom_field.attachment.upload") }} </div>
+                    <div class="theme-recommended-size">{{ i18n.get("product.custom_field.attachment.maximum.size") }} </div>
+                  {% elif custom_field.field_type == "dropdown" %}
+                    <div class="theme-custom-field-select-container">
+                      <select aria-label="{{ custom_field.label }}" id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" data-default-value="{{ custom_field.value }}" data-field-type="{{ custom_field.field_type }}" data-label="{{ custom_field.label }}" data-custom-field-id="{{ custom_field.customfield_id }}" {% if custom_field.is_mandatory %}data-validate="required" {% endif %} value="{{ custom_field.value }}" class="theme-custom-field-select">
+                        <option value="">{{ i18n.get("product.custom_field.dropdown.select_option") }}</option>
+                        {% for option in custom_field.options %}
+                          <option value="{{ option }}" {% if custom_field.value == option %}selected{% endif %}>{{ option }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  {% elif custom_field.field_type == "date" %}
+                    <div class="zpform-container">
+                        <ul class="zpform-outer">
+                            <li>
+                                <div class="zpform-field-container zpform-datetime-formula theme-custom-error-container">
+                                    <input aria-label="{{ custom_field.label }}" id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" type="text" data-default-value="{{ custom_field.value }}" data-field-type="{{ custom_field.field_type }}" data-label="{{ custom_field.label }}"
+                                        data-custom-field-id="{{ custom_field.customfield_id }}"
+                                        {% if custom_field.is_mandatory %}data-validate="required" {% endif %}
+                                        value="{{ custom_field.value }}"
+                                        format="yyyy-MM-dd"
+                                        placeholder="yyyy-MM-dd"
+                                        data-zs-app="datepicker_app" data-onchange-event>
+                                    <span class="zpform-icon-formula" data-element-id="date">
+                                      {% comment %}
+                                        <svg viewBox="0 0 128 128" class="svg-icon-16px">
+                                            <path
+                                                d="M108,8h-8V4c0-2.211-1.789-4-4-4s-4,1.789-4,4v4h-8V4c0-2.211-1.789-4-4-4s-4,1.789-4,4v4h-8V4    c0-2.211-1.789-4-4-4s-4,1.789-4,4v4h-8V4c0-2.211-1.789-4-4-4s-4,1.789-4,4v4h-8V4c0-2.211-1.789-4-4-4s-4,1.789-4,4v4h-8    C11.164,8,4,15.164,4,24v88c0,8.836,7.164,16,16,16h88c8.836,0,16-7.164,16-16V24C124,15.164,116.836,8,108,8z M116,112    c0,4.414-3.59,8-8,8H20c-4.412,0-8-3.586-8-8V24c0-4.416,3.588-8,8-8h8v4c0,2.211,1.789,4,4,4s4-1.789,4-4v-4h8v4    c0,2.211,1.789,4,4,4s4-1.789,4-4v-4h8v4c0,2.211,1.789,4,4,4s4-1.789,4-4v-4h8v4c0,2.211,1.789,4,4,4s4-1.789,4-4v-4h8v4    c0,2.211,1.789,4,4,4s4-1.789,4-4v-4h8c4.41,0,8,3.584,8,8V112z" />
+                                            <path
+                                                d="M20,40v72h88V40H20z M84,48v8h-8v-8H84z M52,72h-8v-8h8V72z M60,64h8v8h-8V64z M52,80v8h-8v-8H52z M60,80h8  v8h-8V80z M76,80h8v8h-8V80z M76,72v-8h8v8H76z M68,48v8h-8v-8H68z M52,48v8h-8v-8H52z M28,48h8v8h-8V48z M28,64h8v8h-8V64z M28,80  h8v8h-8V80z M28,104v-8h8v8H28z M44,104v-8h8v8H44z M60,104v-8h8v8H60z M76,104v-8h8v8H76z M100,104h-8v-8h8V104z M100,88h-8v-8h8  V88z M100,72h-8v-8h8V72z M100,56h-8v-8h8V56z" />
+                                        </svg>
+                                      {% endcomment %}
+                                        <svg width="15" height="15" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg">
+                                          <g fill="none" fill-rule="evenodd">
+                                            <rect x=".5" y="1.5" width="14" height="13" rx="2"/>
+                                            <path d="M1 4h13v1H1zM3 0h1v3H3zM11 0h1v3h-1z"/>
+                                          </g>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <span class="theme-date-error" style="color: #ff0000; display: none;">{{i18n.get("product.custom_field.date.invalid")}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                  {% else %}
+                    {% if custom_field.field_type == "amount" %}
+                      <div class="theme-custom-field-amount-container theme-custom-error-container">
+                        <span>{{ currency.symbol }}</span>
+                    {% endif %}
+                    {% if custom_field.field_type == "percent" %}
+                      <div class="theme-custom-field-percentage-container theme-custom-error-container">
+                        <span>%</span>
+                    {% endif %}
+                    {% if custom_field.field_type == "url" %}
+                      <div class="theme-custom-field-icon">
+                        <div class="theme-icon">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                            <path d="M14.4169 11.7046C14.1983 11.7037 13.9888 11.6169 13.8336 11.4629C13.6784 11.3068 13.5913 11.0956 13.5913 10.8754C13.5913 10.6553 13.6784 10.4441 13.8336 10.2879L15.6003 8.52125C15.7552 8.36646 15.8782 8.18265 15.962 7.98032C16.0459 7.77799 16.0891 7.56111 16.0891 7.34208C16.0891 7.12306 16.0459 6.90618 15.962 6.70385C15.8782 6.50152 15.7552 6.3177 15.6003 6.16292L14.4169 4.97958C14.0982 4.67835 13.6763 4.51052 13.2378 4.51052C12.7992 4.51052 12.3773 4.67835 12.0586 4.97958L10.2919 6.74625C10.1322 6.87406 9.93103 6.93864 9.72674 6.9277C9.52246 6.91675 9.32934 6.83105 9.18417 6.68691C9.039 6.54276 8.95192 6.35026 8.93952 6.14606C8.92712 5.94185 8.99027 5.74023 9.11694 5.57958L10.8836 3.81292C11.5191 3.20669 12.3637 2.86847 13.2419 2.86847C14.1202 2.86847 14.9648 3.20669 15.6003 3.81292L16.7753 4.98792C17.0852 5.29749 17.3311 5.66512 17.4988 6.06978C17.6666 6.47444 17.7529 6.9082 17.7529 7.34625C17.7529 7.7843 17.6666 8.21806 17.4988 8.62272C17.3311 9.02738 17.0852 9.395 16.7753 9.70458L15.0003 11.4629C14.8451 11.6169 14.6356 11.7037 14.4169 11.7046Z" fill="#464646"/>
+                            <path d="M6.75827 18.3296C6.3204 18.33 5.88675 18.244 5.4821 18.0767C5.07745 17.9094 4.70973 17.6641 4.39994 17.3546L3.22494 16.1796C2.91502 15.87 2.66915 15.5024 2.5014 15.0978C2.33366 14.6931 2.24731 14.2593 2.24731 13.8213C2.24731 13.3832 2.33366 12.9495 2.5014 12.5448C2.66915 12.1402 2.91502 11.7725 3.22494 11.463L4.99994 9.69629C5.16058 9.56962 5.36221 9.50647 5.56641 9.51887C5.77061 9.53126 5.96312 9.61834 6.10726 9.76351C6.2514 9.90869 6.33711 10.1018 6.34805 10.3061C6.35899 10.5104 6.29441 10.7115 6.1666 10.8713L4.39994 12.638C4.24498 12.7927 4.12204 12.9766 4.03817 13.1789C3.9543 13.3812 3.91113 13.5981 3.91113 13.8171C3.91113 14.0361 3.9543 14.253 4.03817 14.4554C4.12204 14.6577 4.24498 14.8415 4.39994 14.9963L5.58327 16.1796C5.90198 16.4809 6.3239 16.6487 6.76244 16.6487C7.20098 16.6487 7.62289 16.4809 7.9416 16.1796L9.70827 14.413C9.78099 14.3207 9.87238 14.2449 9.97645 14.1905C10.0805 14.1361 10.1949 14.1042 10.3122 14.0971C10.4294 14.09 10.5468 14.1078 10.6567 14.1492C10.7666 14.1906 10.8665 14.2548 10.9498 14.3376C11.0331 14.4203 11.0981 14.5198 11.1403 14.6294C11.1825 14.7389 11.2011 14.8562 11.1948 14.9735C11.1885 15.0908 11.1575 15.2054 11.1038 15.3099C11.0501 15.4143 10.975 15.5062 10.8833 15.5796L9.1166 17.3463C8.8075 17.6572 8.44008 17.9042 8.0354 18.0729C7.63072 18.2416 7.19672 18.3289 6.75827 18.3296Z" fill="#464646"/>
+                            <path d="M7.35013 14.0629C7.24046 14.0635 7.13174 14.0425 7.03021 14.0011C6.92867 13.9596 6.83633 13.8985 6.75846 13.8212C6.68035 13.7438 6.61836 13.6516 6.57605 13.5501C6.53374 13.4485 6.51196 13.3396 6.51196 13.2296C6.51196 13.1196 6.53374 13.0106 6.57605 12.9091C6.61836 12.8075 6.68035 12.7154 6.75846 12.6379L12.0668 7.33791C12.2229 7.1827 12.4341 7.09558 12.6543 7.09558C12.8745 7.09558 13.0857 7.1827 13.2418 7.33791C13.3199 7.41538 13.3819 7.50755 13.4242 7.60909C13.4665 7.71064 13.4883 7.81956 13.4883 7.92957C13.4883 8.03958 13.4665 8.14851 13.4242 8.25006C13.3819 8.3516 13.3199 8.44377 13.2418 8.52124L7.93346 13.8212C7.77824 13.9752 7.56874 14.062 7.35013 14.0629Z" fill="#464646"/>
+                          </svg>
+                        </div>
+                    {% endif %}
+                    {% if custom_field.field_type == "email" %}
+                      <div class="theme-custom-field-icon">
+                        <div class="theme-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                          <path d="M15.1715 4.57959H4.82847C4.21766 4.58312 3.63307 4.82824 3.20241 5.26141C2.77175 5.69457 2.53002 6.28057 2.53003 6.89139V14.2811C2.53003 14.8907 2.77219 15.4754 3.20323 15.9064C3.63427 16.3374 4.21889 16.5796 4.82847 16.5796H15.1715C15.781 16.5796 16.3657 16.3374 16.7967 15.9064C17.2277 15.4754 17.4699 14.8907 17.4699 14.2811V6.89139C17.4699 6.28057 17.2282 5.69457 16.7975 5.26141C16.3669 4.82824 15.7823 4.58312 15.1715 4.57959ZM4.82847 5.58182H15.1715C15.4322 5.58943 15.685 5.67321 15.8988 5.82281C16.1125 5.97241 16.2777 6.18129 16.3741 6.42369C15.904 6.73831 15.4574 7.08666 15.0378 7.466C13.7015 8.65531 11.51 10.4727 9.9866 10.4727C8.46321 10.4727 6.35186 8.65531 4.94874 7.466C4.52913 7.08666 4.08252 6.73831 3.61243 6.42369C3.70974 6.17923 3.87704 5.96894 4.09336 5.81918C4.30969 5.66942 4.56541 5.58684 4.82847 5.58182ZM16.4677 14.2811C16.4677 14.6356 16.3269 14.9755 16.0763 15.2261C15.8257 15.4767 15.4858 15.6175 15.1314 15.6175H4.82847C4.47406 15.6175 4.13417 15.4767 3.88356 15.2261C3.63296 14.9755 3.49217 14.6356 3.49217 14.2811V7.59963C3.7327 7.78672 4.01333 8.02725 4.25386 8.24106C5.77725 9.57736 8.07569 11.4883 9.95987 11.4883C11.8441 11.4883 14.1425 9.53727 15.6659 8.24106C15.9064 8.02725 16.187 7.78672 16.4276 7.59963L16.4677 14.2811Z" fill="black"/>
+                          </svg>
+                        </div>
+                    {% endif %}
+                    <input id="{{ custom_field.customfield_id }}-{{ variant.variant_id }}" aria-label="{{ custom_field.label }}" type="text" data-default-value="{{ custom_field.value }}" data-field-type="{{ custom_field.field_type }}" data-label="{{ custom_field.label }}" data-custom-field-id="{{ custom_field.customfield_id }}" {% if custom_field.is_mandatory %} data-validate="required"{% endif %} value="{{ custom_field.value }}" class="theme-custom-field-input">
+                    {% if custom_field.field_type == "amount" %}
+                      </div>
+                    {% endif %}
+                    {% if custom_field.field_type == "email" %}
+                      </div>
+                    {% endif %}
+                    {% if custom_field.field_type == "url" %}
+                      </div>
+                    {% endif %}
+                    {% if custom_field.field_type == "percent" %}
+                      </div>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </details>
+{% endif %}

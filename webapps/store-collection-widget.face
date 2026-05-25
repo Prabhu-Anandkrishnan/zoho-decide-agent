@@ -1,0 +1,37 @@
+{% assign cdn_prefix_url = "" %}
+{% assign cdn_suffix_url = "" %}
+{% if page.cdn_prefix_url %}
+	{% assign cdn_prefix_url = page.cdn_prefix_url %}
+	{% assign cdn_suffix_url = "?storefront_domain=" + page.domain_name %}
+{% endif %}
+
+{% assign collection_obj = collection %}
+{% if !collection_obj && category %}
+	{% assign collection_obj = category %}
+{% endif %}
+<h2 class="theme-section-heading">
+	{{ collection_obj.name }}
+</h2>
+{% if page.template_vars.product_list_style == '04' %}
+<div class="theme-store-collection-container">
+{% endif %}
+	<div class="zprow theme-product-ratio theme-store-style-collection-row-{{page.template_vars.product_list_style}} {% if page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07'  %}theme-collection-row-no-margin{% endif %}">
+	{% for product in collection_obj.products %}
+		{% include "store-product-list-view" %}
+	{% forelse %}
+		<div class="zpcol-md-12 theme-no-products-error {% if page.template_vars.product_list_style == '05' %}theme-no-products-error-style-05{% endif %} {% if page.template_vars.product_list_style == '02' || page.template_vars.product_list_style == '04' %}theme-no-products-error-style-02-04{% endif %}">
+			{{ no_products_message }}
+		</div>
+	{% endfor %}
+	</div>
+{% if page.template_vars.product_list_style == '04' %}
+</div>
+{% endif %}
+
+{% if pagination.has_more_page %}
+<div class="theme-collection-viewall">
+	<a href="{{ collection_obj.url }}" class="zpbutton-wrapper zpbutton zpbutton-type-primary zpbutton-size-md zpbutton-style-none">
+		<span class="theme-viewall-text">{% if category %}{{i18n.get("category.all.products")}}{% else %}{{i18n.get("collection.all.products")}}{% endif %}</span>
+	</a>
+</div>
+{% endif %}

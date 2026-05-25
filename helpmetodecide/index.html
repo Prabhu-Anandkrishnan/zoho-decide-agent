@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help Me Decide — local dev</title>
+  <link rel="stylesheet" href="dev-styles.css">
+</head>
+<body>
+  <main class="dev-page" data-zs-product-details-primary-section>
+    <header class="dev-page__header">
+      <h1>Product page — MacBook Neo</h1>
+      <p class="dev-page__hint">
+        Live API mode. The widget polls
+        <strong>POST /canshowComparison</strong> on every product visit.
+        Click "Visit product" below to simulate browsing. The popup appears
+        automatically once the backend sees ≥ 2 same-category products.
+      </p>
+    </header>
+
+    <!-- Current product being viewed -->
+    <section class="theme-product-image-area dev-page__product">
+      <img
+        src="https://placehold.co/400x400?text=MacBook+Neo"
+        alt="MacBook Neo"
+        width="400"
+        height="400"
+      />
+    </section>
+
+    <section class="dev-page__details">
+      <h2 data-zs-product-name>MacBook Neo</h2>
+      <p data-zs-selling-price>$699.00</p>
+      <button
+        type="button"
+        data-zs-add-to-cart
+        data-zs-product-variant-id="var-9000000008012-1"
+      >
+        Add to cart
+      </button>
+    </section>
+
+    <!-- Widget mount point -->
+    <div
+      id="help-me-decide-root"
+      data-zs-help-me-decide-root
+      data-product-id="9000000008012"
+      data-product-name="MacBook Neo"
+      data-product-url="/products/macbook-neo"
+    ></div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         Browse Simulator
+         Mirrors a real storefront where the shopper navigates between
+         product pages. Each "Visit product" click calls
+         zsHelpMeDecide.trackProductVisited() exactly as the real
+         storefront theme would, then the widget fires
+         POST /canshowComparison with the updated visited-ID list.
+         ───────────────────────────────────────────────────────────── -->
+    <section class="dev-page__simulator">
+      <h3 class="dev-page__simulator-title">
+        Browse simulator
+        <span class="dev-page__simulator-hint">
+          — visit another laptop to trigger the comparison popup
+        </span>
+      </h3>
+
+      <div class="dev-page__catalog" id="simulator-catalog">
+
+        <div class="dev-page__catalog-card" id="card-9000000008048">
+          <img src="https://placehold.co/160x120?text=Air+13" alt="MacBook Air 13 M3" />
+          <p class="dev-page__catalog-card-name">MacBook Air 13 M3</p>
+          <p class="dev-page__catalog-card-price">$1,099.00</p>
+          <button
+            class="theme-help-me-decide-btn theme-help-me-decide-btn--secondary dev-page__visit-btn"
+            data-product-id="9000000008048"
+            data-product-name="MacBook Air 13 M3"
+            data-price="$1,099.00"
+            data-url="/products/macbook-air-13-m3"
+            data-img-text="Air+13"
+            onclick="visitProduct(this)"
+          >Visit product</button>
+        </div>
+
+        <div class="dev-page__catalog-card" id="card-9000000008063">
+          <img src="https://placehold.co/160x120?text=Air+15" alt="MacBook Air 15 M3" />
+          <p class="dev-page__catalog-card-name">MacBook Air 15 M3</p>
+          <p class="dev-page__catalog-card-price">$1,299.00</p>
+          <button
+            class="theme-help-me-decide-btn theme-help-me-decide-btn--secondary dev-page__visit-btn"
+            data-product-id="9000000008063"
+            data-product-name="MacBook Air 15 M3"
+            data-price="$1,299.00"
+            data-url="/products/macbook-air-15-m3"
+            data-img-text="Air+15"
+            onclick="visitProduct(this)"
+          >Visit product</button>
+        </div>
+
+        <div class="dev-page__catalog-card" id="card-9000000008164">
+          <img src="https://placehold.co/160x120?text=ROG" alt="ASUS ROG Zephyrus G14" />
+          <p class="dev-page__catalog-card-name">ASUS ROG Zephyrus G14</p>
+          <p class="dev-page__catalog-card-price">$1,899.00</p>
+          <button
+            class="theme-help-me-decide-btn theme-help-me-decide-btn--secondary dev-page__visit-btn"
+            data-product-id="9000000008164"
+            data-product-name="ASUS ROG Zephyrus G14"
+            data-price="$1,899.00"
+            data-url="/products/asus-rog-zephyrus-g14"
+            data-img-text="ROG"
+            onclick="visitProduct(this)"
+          >Visit product</button>
+        </div>
+
+        <div class="dev-page__catalog-card" id="card-9000000008078">
+          <img src="https://placehold.co/160x120?text=MBP+14" alt="MacBook Pro 14 M4" />
+          <p class="dev-page__catalog-card-name">MacBook Pro 14 M4</p>
+          <p class="dev-page__catalog-card-price">$1,999.00</p>
+          <button
+            class="theme-help-me-decide-btn theme-help-me-decide-btn--secondary dev-page__visit-btn"
+            data-product-id="9000000008078"
+            data-product-name="MacBook Pro 14 M4"
+            data-price="$1,999.00"
+            data-url="/products/macbook-pro-14-m4"
+            data-img-text="MBP+14"
+            onclick="visitProduct(this)"
+          >Visit product</button>
+        </div>
+
+      </div><!-- /.dev-page__catalog -->
+    </section>
+  </main>
+
+  <!-- Portal for the comparison modal -->
+  <div id="help_me_decide_portal"></div>
+
+  <!-- Toast notification for Add to Cart -->
+  <div id="dev-toast" role="status" aria-live="polite"></div>
+
+  <script>
+    window.zs_view = "product";
+
+    // Same origin on localhost:5174 — Vite proxies /canshowComparison and /compare → :8000.
+    window.zsHelpMeDecideConfig = {
+      apiBaseUrl: "http://localhost:5174",
+      devAlwaysShowInlinePrompt: true,
+      debug: true
+    };
+
+    /**
+     * Show a brief "Added to cart" toast when the widget fires the
+     * zs-add-to-cart custom event.  In production the storefront theme
+     * would call its own cart API; here we just show visual feedback.
+     */
+    (function () {
+      var toastTimer = null;
+      document.addEventListener("zs-add-to-cart", function (e) {
+        var name  = (e.detail && e.detail.productName) ? e.detail.productName : "Item";
+        var toast = document.getElementById("dev-toast");
+        if (!toast) { return; }
+
+        toast.textContent = "🛒 " + name + " added to cart!";
+        toast.classList.add("dev-toast--visible");
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.classList.remove("dev-toast--visible");
+        }, 3000);
+      });
+    })();
+
+    /**
+     * Simulates the storefront theme visiting a product page.
+     * Mirrors exactly what a real product page would call on load.
+     */
+    function visitProduct(btn) {
+      var id      = btn.getAttribute("data-product-id");
+      var name    = btn.getAttribute("data-product-name");
+      var price   = btn.getAttribute("data-price");
+      var url     = btn.getAttribute("data-url");
+      var imgText = btn.getAttribute("data-img-text");
+
+      if (!window.zsHelpMeDecide) {
+        console.warn("Widget not ready yet — try again in a moment.");
+        return;
+      }
+
+      // Record the visit — this also dispatches zs-help-me-decide-poll
+      // so the widget immediately re-polls the backend.
+      zsHelpMeDecide.trackProductVisited({
+        product_id:      id,
+        product_name:    name,
+        price_formatted: price,
+        product_url:     url,
+        image_url:       "https://placehold.co/80x80?text=" + encodeURIComponent(imgText)
+      });
+
+      // Visual feedback on the card.
+      btn.textContent = "Visited ✓";
+      btn.disabled = true;
+      btn.closest(".dev-page__catalog-card")
+         .classList.add("dev-page__catalog-card--visited");
+    }
+  </script>
+
+  <!-- Widget scripts — no dev-mock.js; all calls go to the real backend -->
+  <script src="help_me_to_decide.js"></script>
+  <script src="storeeventlistner.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!--
+  Storefront snippet — paste into Zoho Pages (HTML), on product pages only.
+
+  Required on the same page (in this order):
+    1. window.zs_view = "product"
+    2. window.zsHelpMeDecideConfig = { apiBaseUrl: "https://your-api-host" }
+    3. <div id="help-me-decide-root" data-zs-help-me-decide-root></div>
+    4. <script src=".../help_me_to_decide.js"></script>
+    5. This snippet (or storeeventlistner.js)
+
+  Do NOT load this file via <script src="storeeventlistner.html"> — use the .js file
+  or paste this block into the theme HTML widget.
+-->
+<script type="text/javascript">
+(function () {
+  "use strict"; // No I18N
+
+  function warn(msg) {
+    if (window.zsHelpMeDecideConfig && window.zsHelpMeDecideConfig.debug) {
+      console.warn("[Help Me Decide]", msg); // No I18N
+    }
+  }
+
+  function onSelectedVariant(e) {
+    if (!window.zsHelpMeDecide) {
+      warn("zsHelpMeDecide missing — load help_me_to_decide.js before this snippet.");
+      return;
+    }
+
+    if (!e || !e.detail || e.detail.variant_id == null) { return; }
+
+    var variantId = e.detail.variant_id;
+    if (variantId === -1 || variantId === "-1") { return; }
+
+    window.zsHelpMeDecide.trackProductVisited({ variant_id: String(variantId) });
+    window.zsHelpMeDecide.pollNow();
+  }
+
+  function attachListener() {
+    document.addEventListener("zp-event-selected-variant", onSelectedVariant, false);
+    warn("zp-event-selected-variant listener attached.");
+  }
+
+  // Theme scripts often run after DOMContentLoaded — register immediately if DOM is ready.
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", attachListener);
+  } else {
+    attachListener();
+  }
+})();
+</script>

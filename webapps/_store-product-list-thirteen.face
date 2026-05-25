@@ -1,0 +1,81 @@
+<select style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+  {% for variant in product.variants %}
+    {% assign variant_options = variant.options %}
+    {% assign variant_option_identifiers = variant_options | map(attr="id") %}
+    {% assign variant_images = variant.images %}
+    {% assign variant_image_identifiers = variant_images | map(attr="id") %}
+    <option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-img-url='{{variant_images[0].url}}/400x400'></option>
+  {% endfor %}
+</select>
+
+<div class="theme-product-box-content">
+  <div class="theme-product-image-area" data-zs-image-container>
+    <div class="theme-product-ribbon-area">
+      {% if product.on_sale %}
+        <div class="theme-product-sale-ribbon" data-zs-sale>
+          <span class='theme-sale-message'>
+            {{i18n.get("product.message.sale")}}
+          </span>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="43" height="60" viewBox="0 0 43 60" fill="none">
+            <path d="M0.177979 0H42.3734V56.5947C42.3734 59.0989 39.7124 60.7063 37.4958 59.5412L22.8246 51.8291C21.8549 51.3194 20.6965 51.3194 19.7269 51.8291L5.05559 59.5412C2.839 60.7063 0.177979 59.0989 0.177979 56.5947V0Z" fill="url(#paint0_linear_3421_6824)"/>
+            <defs>
+              <linearGradient id="paint0_linear_3421_6824" x1="21.2757" y1="0" x2="21.2757" y2="62.1051" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#BF0000"/>
+                <stop offset="0.141962" stop-color="#F60D0D"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      {% endif %}
+      {% if product.is_out_of_stock %}
+        <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+      {% endif %}
+    </div>
+    <div class="theme-wishlist-icon">
+      {{ wishlistView("list", product, page ) }}
+    </div>
+    {% include '_store-product-list-image-loader' %}
+    {% include '_store-product-list-image' %}
+    {% if product.has_variants %}
+      {% include '_store-product-list-variants' %}
+    {% endif %}
+  </div>
+
+  <div class="theme-product-details-area">
+    <div class="theme-product-name-rating-price">
+      <div class='theme-name-and-rating'>
+        <div class="theme-product-name" data-zs-product-name>
+          <a title="{{ product.name }}" href="{{ product.url }}">{{ product.name }}</a>
+        </div>
+        {% if product.tags | size >= 1 %}
+          <div class='theme-product-tag' title="{% for tag in product.tags %}{{ tag.name }},{% endfor %}">
+            {% for tag in product.tags %}
+              {{ tag.name }}
+              {% if !loop.last %}
+                <span class='theme-tag-seperator'>|</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <div class="theme-product-price">
+          {% include '_store-product-pricing-three' %}
+          {% if product.is_product_review_enabled %}
+            <div class='theme-rating' style='display:none;'>
+              <div class="theme-rating-value" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "average-rating"></div>
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+                <path d="M9.49981 2.22644L11.9572 6.96207L17 7.95582L13.4759 11.8766L14.135 17.2264L9.49981 14.914L4.86465 17.2264L5.52408 11.8766L2 7.95582L7.04278 6.96207L9.49981 2.22644Z" fill="#FFCD4D" stroke="black" stroke-width="2"/>
+              </svg>
+            </div>
+          {% endif %}
+      </div>
+      <div class="theme-cta-area">
+        <a data-zs-view-details href="{{ product.url }}" class="theme-product-details">{{i18n.get("product.label.view_details")}}</a>
+        <button type="button" class="theme-product-quick-view" data-zs-quick-view onclick="javascript:viewProductQuickLook(this)" onkeypress="openQuickViewOnKeyPress(event, this)" data-zs-product-url="{{ product.url }}">
+          {{i18n.get("product.label.quick_view")}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class='theme-product-filler'></div>

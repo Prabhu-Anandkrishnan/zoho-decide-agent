@@ -1,0 +1,107 @@
+<select style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+	{% for variant in product.variants %}
+		{% assign variant_options = variant.options %}
+		{% assign variant_option_identifiers = variant_options | map(attr="id") %}
+		{% assign variant_images = variant.images %}
+		{% assign variant_image_identifiers = variant_images | map(attr="id") %}
+		<option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'></option>
+	{% endfor %}
+</select>
+<article class="theme-product-box-content" aria-labelledby="product-name-{{ product.product_id }}">
+  <div class="theme-product-image-area" data-zs-image-container>
+    {% include '_store-product-list-image-loader' %}
+    {% if product.images[0].is_placeholder_image %}
+      <picture>
+        <img data-src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}" alt="{{product.images[0].alternate_text}}"
+        style="display:none;" 
+        data-fallback="{{ product.images[0].url }}"
+        onerror="handleFallBackForImage(this)"/>
+      </picture>
+    {% else %}
+      <picture>
+        <source srcset="{{cdn_prefix_url}}{{ product.images[0].url }}/400x400{{cdn_suffix_url}} 1x, {{cdn_prefix_url}}{{ product.images[0].url }}/600x600{{cdn_suffix_url}} 2x">
+        <img data-src="{{cdn_prefix_url}}{{ product.images[0].url }}/400x400{{cdn_suffix_url}}" 
+          alt="{{ product.images[0].alternate_text }}" 
+          style="display:none;"
+          data-fallback="{{ product.images[0].url }}/400x400"
+          onerror="handleFallBackForImage(this)"/>
+      </picture>
+    {% endif %}
+
+    {% if product.is_out_of_stock == false %}
+      <button type="button" class="theme-product-quick-view-button" data-zs-quick-view onclick="javascript:viewProductQuickLook(this)" data-zs-product-url="{{ product.url }}">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M2.5 10.8334C5.5 4.16671 14.5 4.16671 17.5 10.8334" stroke="black" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10.0001 14.1665C9.67176 14.1665 9.34667 14.1018 9.04335 13.9762C8.74004 13.8506 8.46444 13.6664 8.23229 13.4343C8.00015 13.2021 7.816 12.9265 7.69036 12.6232C7.56473 12.3199 7.50006 11.9948 7.50006 11.6665C7.50006 11.3382 7.56473 11.0131 7.69036 10.7098C7.816 10.4065 8.00015 10.1309 8.23229 9.89874C8.46444 9.66659 8.74004 9.48244 9.04335 9.3568C9.34667 9.23117 9.67176 9.1665 10.0001 9.1665C10.6631 9.1665 11.299 9.4299 11.7678 9.89874C12.2367 10.3676 12.5001 11.0035 12.5001 11.6665C12.5001 12.3295 12.2367 12.9654 11.7678 13.4343C11.299 13.9031 10.6631 14.1665 10.0001 14.1665Z" fill="black" stroke="black" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    {% endif %}
+    <a aria-label="{{ product.name }}" href="{{ product.url }}" class="theme-product-overlay-link {% if product.is_out_of_stock %}theme-out-of-stock-overlay{% endif %}"></a>
+  </div>
+  <div class="theme-product-details-area">
+    {% if product.on_sale %}
+      <div class="theme-product-ribbon-area" data-zs-sale>
+        {% if product.on_sale || product.is_out_of_stock %}
+          <div class="theme-product-sale-ribbon">{{i18n.get("product.message.sale")}}</div>
+        {% endif %}
+        {% if product.is_out_of_stock == true %}
+          <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="theme-product-name-rating-price">
+      <div class="theme-name-wishlist-ctr">
+        <div class="theme-product-name" data-zs-product-name> 
+          <h2 id="product-name-{{ product.product_id }}">
+              <a href="{{ product.url }}" title="{{product.name}}">{{ product.name }}</a>
+          </h2>
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+        </div>
+      </div>
+      <div class="theme-product-price">
+        {% include '_store-product-pricing-three' %}
+      </div>
+      {% if page.is_delivery_location_enabled %}
+        <div class="theme-delivery-location-non-deliverable" data-zs-not-deliverable-message>
+          {{i18n.get("delivery_location_availability.product.not_deliverable.message")}}
+        </div>
+      {% endif %}
+      {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <div class="theme-prod-coupons-code-container">
+      {% endif %}
+      {% if product.is_product_review_enabled %}
+        <div class="theme-rating" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "star-rating"></div>
+      {% endif %}
+      {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <span class="theme-prod-coupons-code" data-list-coupon-code style="display:none"></span>
+        </div>
+        <div class="theme-prod-coupons-container" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+      {% endif %}
+    </div>
+    <div class="theme-cart-and-wishlist">
+      <div class="theme-product-list-quantity-addcart">
+        {% if product.is_out_of_stock == false && !product.is_input_custom_field_available %}
+          <div class="theme-product-button-area">
+              {% include '_store-product-list-add-to-cart' %}
+          </div>
+        {% elif (product.is_product_custom_fields_enabled && product.is_input_custom_field_available) || product.has_variants   %}
+          <div class="theme-product-button-area theme-product-button-details">
+            <a data-zs-view-details aria-label="{{i18n.get("product.label.view_details")}}" href="{{product.url}}">
+              <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("product.label.view_details")}}</span>
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2.84368 3.37508L8.48529 3.39032M8.48529 3.39032L8.50054 9.03193M8.48529 3.39032L2.82844 9.04718" stroke="#BC7119" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        {% endif %}
+        <div role="alert" data-theme-error="theme-error-message-list-{{product.product_id}}" style="display:none;"></div>
+      </div>
+      <div class="theme-wishlist-ctr">
+        {{ wishlistView("list", product, page ) }}
+      </div>
+    </div>
+  </div>
+</article>
+  

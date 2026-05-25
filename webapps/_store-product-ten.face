@@ -1,0 +1,228 @@
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+  <div class="zpcontainer ">
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+          
+        {% include '_store-product-image-three' %}
+        <div class="theme-product-stock-availability-details">
+        {% if product.has_variants %}
+            {% for variant in product.variants %}
+            <span  class="theme-prod-stock-details" data-variant-id-stock="{{ variant.variant_id }}" data-stock-avail="{{variant.is_out_of_stock}}" style="display:none;">
+                <span class="theme-out-of-stock-text">{{i18n.get("product.message.out_of_stock")}}</span>
+            </span>
+            {% endfor %}
+        {% else %}
+            {% if product.is_out_of_stock == true  %}
+            <span  data-zs-outofstock class="theme-prod-stock-details {% if product.is_out_of_stock == true %}theme-out-of-stock {% else %} theme-stock-background-color{% endif %}">
+                <span class="theme-out-of-stock-text">{{i18n.get("product.message.out_of_stock")}}</span>
+            </span>
+            {% endif %}
+        {% endif %}
+        </div>
+           
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-container">
+          
+        <div class="theme-tag-name-description">
+          <div class="theme-tag-contianer">
+            {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+              <div class="theme-tag-sku">
+                <nav aria-label="{{i18n.get("product.label.tags")}}">
+                  <ul class="theme-tag-list-container">
+                    {% for tag in product.tags %}
+                    <li>
+                      <a class="theme-product-tag-url" data-zs-product-tag href="{{ tag.url }}">
+                        <span class="theme-product-tag-name">{{ tag.name }}</span>
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </nav>
+              </div>
+            {% endif %}
+          </div>
+          <div class="theme-product-name-wishlist">
+            <h1 data-zs-product-name>{{ product.name }}</h1>
+      {{ wishlistView("detail", product, page ) }}
+          </div>
+            
+          
+          {% if product.short_description %}
+            <div class="theme-product-short-description" data-zs-product-short-description>
+              {{ product.short_description }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="theme-price-qty">
+          {% include '_store-product-pricing-four' %}
+
+          {% if product.is_out_of_stock == false  %}
+
+            <div class="theme-product-quantity">
+              <div class="theme-product-variant-label" data-zs-quantity-label>QTY</div>
+              <div class="theme-product-quantity-spinner" data-zs-quantity-container>
+                <input aria-label='Decrease Quantity' class="theme-quantity-decrease" onclick="decreaseCount(this)" type="button" value="-">
+                <input name="qty" aria-label="{{i18n.get("cart.quantity.label")}}" title="quantity" type="text"  onkeypress='return productQuantity(event);' value="1" data-quantity="{{ product.product_id }}" data-theme-quantity data-zs-quantity>
+                <input aria-label='Increase Quantity' class="theme-quantity-increase" onclick="increaseCount(this)" type="button" value="+">
+              </div>
+            </div>
+            <div data-theme-error="theme-error-message-{{product.product_id}}" aria-live="polite" style="display:none;"></div>
+          {% endif %}
+
+        </div>
+         
+        {% if product.has_variants %}
+          <div class="theme-product-varients-conatiner" >
+            {% include "_store-product-variants-two" %}
+          </div>
+        {% endif %}
+
+        {% if product.is_out_of_stock == false  %}
+          <div class="theme-product-quantity-cart-area" data-nostock-cart-add="theme-nostock-cart-add">
+            <button type='button' class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg" {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-cart-button {% endif %} data-zs-add-to-cart data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if product.variants[0].hide_add_to_cart %} style="display: none;" {% endif %}>
+              <span data-theme-cart-button-text="theme-cart-button-text">
+              {{i18n.get("product.action.add_to_cart")}}
+              </span>
+              <span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none">
+                {{i18n.get("product.message.please_wait")}} <div class="theme-cart-button-loading-dots"><span></span><span></span><span></span></div>
+              </span>
+            </button>
+          </div>
+        {% endif %}
+        {% if page.is_quotes_enabled_in_storefront %}
+					<button type="button" data-zs-add-to-quote {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-quote-button {% endif %} class="theme-quote-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width" data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if !product.variants[0].show_add_to_quote %} style="display: none;" {% endif %} >
+						<span data-theme-cart-button-text="theme-quote-button-text">{{i18n.get("page_title.request_quote")}}</span>
+						<span class="theme-quote-button-loading-container" data-theme-cart-button-loading="theme-quote-button-loading" style="display:none">
+							{{i18n.get("product.message.please_wait")}} <div class="theme-quote-button-loading-dots"><span></span><span></span><span></span></div>
+						</span>
+					</button>
+				{% endif %}
+    
+        <div class="theme-coupon-conatiner">
+          {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+            <div class="theme-product-coupons" style="width: 100%;">
+              <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+            </div>
+          {% endif %}
+          {% include "_store-product-custom-field-two" %}
+        </div>
+        
+        {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+              <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+              </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+        {% endif %}
+        {% if page.template_vars.product_content_style == '02' %}
+         <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <details name='product-details' open>
+              <summary class='theme-prod-content-summary'>
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                  <path d="M14.1028 27.3191H6.99115C5.20882 27.3191 3.75879 25.869 3.75879 24.0867V8.75618C3.75879 8.53066 3.83171 8.31138 3.96713 8.13117L7.25261 3.75139C7.44949 3.48889 7.75835 3.33472 8.08596 3.33472H21.2269C21.555 3.33472 21.8639 3.48889 22.0602 3.75139L25.3452 8.13117C25.4806 8.31138 25.5535 8.53066 25.5535 8.75618V15.7173C25.5535 16.2928 25.0868 16.759 24.5118 16.759C23.9368 16.759 23.4701 16.2923 23.4701 15.7173V9.10307L20.7065 5.41757H8.60681L5.84217 9.10307V24.0862C5.84217 24.7195 6.35728 25.2347 6.99063 25.2347H14.1022C14.6778 25.2347 15.1439 25.7013 15.1439 26.2763C15.1439 26.8514 14.6772 27.318 14.1022 27.318L14.1028 27.3191Z" fill="black"/>
+                  <path d="M24.5118 9.79785H4.80097C4.22543 9.79785 3.75928 9.33118 3.75928 8.75617C3.75928 8.18115 4.22595 7.71448 4.80097 7.71448H24.5118C25.0873 7.71448 25.5535 8.18115 25.5535 8.75617C25.5535 9.33118 25.0868 9.79785 24.5118 9.79785Z" fill="black"/>
+                  <path d="M14.6564 18.5583C11.6667 18.5583 9.23438 16.126 9.23438 13.1364C9.23438 12.5608 9.70105 12.0947 10.2761 12.0947C10.8511 12.0947 11.3178 12.5613 11.3178 13.1364C11.3178 14.977 12.8152 16.4744 14.6558 16.4744C16.4965 16.4744 17.9939 14.977 17.9939 13.1364C17.9939 12.5608 18.4606 12.0947 19.0356 12.0947C19.6106 12.0947 20.0773 12.5613 20.0773 13.1364C20.0773 16.126 17.645 18.5583 14.6553 18.5583H14.6564Z" fill="black"/>
+                  <path d="M21.0838 26.511C18.7556 26.511 16.8613 24.6167 16.8613 22.2885C16.8613 19.9604 18.7556 18.066 21.0838 18.066C23.412 18.066 25.3063 19.9604 25.3063 22.2885C25.3063 24.6167 23.412 26.511 21.0838 26.511ZM21.0838 20.1499C19.9046 20.1499 18.9452 21.1093 18.9452 22.2885C18.9452 23.4677 19.9046 24.4271 21.0838 24.4271C22.263 24.4271 23.2224 23.4677 23.2224 22.2885C23.2224 21.1093 22.263 20.1499 21.0838 20.1499Z" fill="black"/>
+                  <path d="M26.1084 28.3344C25.8417 28.3344 25.5751 28.2329 25.3719 28.0292L22.6938 25.351C22.287 24.9442 22.287 24.2843 22.6938 23.8776C23.1005 23.4708 23.7604 23.4708 24.1672 23.8776L26.8454 26.5557C27.2522 26.9625 27.2522 27.6224 26.8454 28.0292C26.6418 28.2329 26.3751 28.3344 26.1084 28.3344Z" fill="black"/>
+                </svg>
+                <span>{{i18n.get("product.label.details")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg aria-hidden="true" class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <details name='specification' open>
+              <summary class='theme-prod-content-summary'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                  <path d="M20.83 27.891H8.47768C6.55993 27.891 5 26.2972 5 24.3388V6.44315C5 4.48425 6.55993 2.89099 8.47768 2.89099H16.631C17.9701 2.89099 19.28 3.44829 20.2243 4.42019L22.8332 7.10514C23.7843 8.08433 24.3082 9.38383 24.3082 10.7651V24.3388C24.3082 26.2977 22.7483 27.891 20.8305 27.891H20.83ZM8.47716 4.74259C7.58078 4.74259 6.85108 5.50563 6.85108 6.44315V24.3388C6.85108 25.2764 7.58026 26.0394 8.47716 26.0394H20.8295C21.7259 26.0394 22.4556 25.2764 22.4556 24.3388V10.7651C22.4556 9.88176 22.1087 9.0182 21.504 8.39579L18.8951 5.71084C18.2888 5.08687 17.4841 4.74259 16.6299 4.74259H8.47664H8.47716Z" fill="black"/>
+                  <path d="M22.8765 11.941H18.4514C16.6581 11.941 15.1992 10.4821 15.1992 8.68885V4.94345C15.1992 4.43199 15.6138 4.0174 16.1253 4.0174C16.6368 4.0174 17.0513 4.43199 17.0513 4.94345V8.68885C17.0513 9.46074 17.6795 10.0889 18.4514 10.0889H22.8765C23.3879 10.0889 23.8025 10.5035 23.8025 11.0149C23.8025 11.5264 23.3879 11.941 22.8765 11.941Z" fill="black"/>
+                  <path d="M18.8199 18.0662H10.8338C10.3223 18.0662 9.90771 17.6516 9.90771 17.1401C9.90771 16.6286 10.3223 16.2141 10.8338 16.2141H18.8199C19.3314 16.2141 19.7459 16.6286 19.7459 17.1401C19.7459 17.6516 19.3314 18.0662 18.8199 18.0662Z" fill="black"/>
+                  <path d="M16.4537 22.2132H10.8338C10.3223 22.2132 9.90771 21.7986 9.90771 21.2871C9.90771 20.7757 10.3223 20.3611 10.8338 20.3611H16.4537C16.9652 20.3611 17.3797 20.7757 17.3797 21.2871C17.3797 21.7986 16.9652 22.2132 16.4537 22.2132Z" fill="black"/>
+                </svg>
+                <div>{{i18n.get("product.label.specifications")}}</div>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>
+                {% for specification_group in product.specification_group %}
+                <ul class='theme-spec-group'>
+                  {% for attributes in specification_group.attributes %}
+                    <li class='theme-spec'>
+                      <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                      <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endfor %}
+              </div>
+            </details>
+          {%endif%}
+
+          
+        </div>
+        {% endif %}
+
+        {% if !product.is_returnable %}
+          <div class="theme-prod-non-returnable">
+            <div class="theme-icon-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                <circle cx="16.5" cy="16.5" r="16.5" fill="#F6F6F6"/>
+                <path d="M10.5631 14.1948C11.5906 12.2073 13.665 10.8486 16.0568 10.8486C19.4701 10.8486 22.2372 13.6157 22.2372 17.029C22.2372 20.4424 19.4701 23.2094 16.0568 23.2094C13.0667 23.2094 10.5726 21.0862 10 18.2651" stroke="#9F9F9F" stroke-width="1.3"/>
+                <path d="M10.4014 10V14.263H14.6644" stroke="#9F9F9F" stroke-width="1.3"/>
+                <line x1="22.9469" y1="11.2838" x2="10.4946" y2="23.7362" stroke="#9F9F9F" stroke-width="1.3"/>
+            </svg>
+            <div class="theme-prod-non-returnable" data-zs-product-non-returnable>
+                {{i18n.get("product.label.non_returnable")}}
+            </div>
+            </div>
+          </div>
+        {% endif %}
+        {% if product.is_social_share_enabled %}
+          <div class="theme-social-share">
+            <h3> {{i18n.get("blog.post.share")}} : </h3>
+            <div class="theme-product-social-share" data-zs-product-socialshare data-zs-app="social_share" data-style="{{product.social_share_options.style}}" data-align="{{product.social_share_options.align}}" data-count="{{product.social_share_options.show_count}}"></div>
+          </div>
+        {% endif %}
+        
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      var shareLink = document.querySelector(".theme-social-share");
+      function sharePageLink() {
+          var currentPageUrl = window.location.href;
+          if (navigator.share) {
+              navigator.share({
+                  url: currentPageUrl
+              }).catch((error) => {
+                  console.error('Error sharing link:', error);
+              });
+          } else {
+              console.log('Sharing not supported on this device');
+              console.log('Page link:', currentPageUrl);
+          }
+      }
+      shareLink.addEventListener("touchstart", sharePageLink);
+  });
+</script>

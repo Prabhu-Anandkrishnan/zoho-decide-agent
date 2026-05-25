@@ -1,0 +1,156 @@
+<div class="theme-category-section" data-category-style-09>
+     <div class="zpcontainer theme-category-image-desc-container {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      <div {% if !category.images[0].is_placeholder_image %} role="img" {% endif %} class="theme-category-image-description-conatainer {% if category.images[0].is_placeholder_image %}theme-category-image-description-conatainer-no-image{% endif %}"
+      data-fallback-init data-bg="{{cdn_prefix_url}}{% if !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}{{cdn_suffix_url}}"
+      data-bg-fallback="{% if !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}"
+      style="background-image:url({% if !category.images[0].is_placeholder_image %}{{cdn_prefix_url}}{{category.images[0].url}}/1200x1200{{cdn_suffix_url}}{% endif %});">
+        <div class="theme-category-name-description-no-imgage {% if !category.images[0].is_placeholder_image %}theme-category-name-description zpdark-section{% endif %}">
+          {% if category.description %}
+            <div class="theme-category-description">
+              {{ category.description }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% comment %} BREADCRUMB STARTS HERE {% endcomment %}
+        {% if page.is_breadcrumb_enabled && page.template_vars.breadcrumb_style == '01' %}
+            <div class="theme-breadcrumb-container" data-breadcrumb-container>
+            <div class="zpcol-md-12">
+                <div class="theme-product-breadcrumb" data-breadcrumb>
+                {% for bread_crumb in page.breadcrumbs %}
+                    <a href="{{ bread_crumb.url}}">
+                    {{ bread_crumb.name }}
+                    </a>
+                    <span>/</span>
+                {% endfor %}
+                </div>
+            </div>
+            </div>
+        {% endif %}
+
+        {% if page.is_breadcrumb_enabled && page.template_vars.breadcrumb_style == '02' %}
+        <div class="theme-product-page-breadcrumb" data-breadcrumb-container>
+            <div class="theme-product-breadcrumb" data-breadcrumb>
+            {% for bread_crumb in page.breadcrumbs %}
+                <a href="{{ bread_crumb.url }}">
+                {{ bread_crumb.name }}
+                </a>
+                <svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+                </svg>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if page.is_breadcrumb_enabled && page.template_vars.breadcrumb_style == '04' %}
+        <div class="theme-product-page-breadcrumb" data-breadcrumb-container>
+            <div class="theme-product-breadcrumb" data-breadcrumb>
+            {% for bread_crumb in page.breadcrumbs %}
+                {% if loop.last %}
+                <span class="theme-last-breadcrumb-nav">
+                    {{ bread_crumb.name }}
+                </span>
+                {% else %}
+                <a href="{{ bread_crumb.url }}">
+                    {{ bread_crumb.name }}
+                </a>
+                <svg width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+                </svg>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+               
+        {% if page.is_breadcrumb_enabled && page.template_vars.breadcrumb_style == '05' %}
+        <div class="theme-breadcrumb-container" data-breadcrumb-container>
+            <div class="theme-product-breadcrumb" data-breadcrumb>
+            {% for bread_crumb in page.breadcrumbs %}
+                {% if loop.last %}
+                <div class="theme-breadcrumb-active">
+                    {{ bread_crumb.name }}
+                </div>
+                <span>/</span>
+                {% else %}
+                <a href="{{ bread_crumb.url}}">
+                    {{ bread_crumb.name }}
+                </a>
+                <span>/</span>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+          {% comment %} BREADCRUMB ENDS HERE {% endcomment %}
+
+
+
+<div class="theme-name-sortby-filter">
+  <div class="theme-category-name">
+    <h1 class="theme-category-heading" data-zs-catgeory-name>{{ category.name }}</h1>
+  </div>
+  <div class="theme-sort-by-filter">
+
+    {% if page.is_sorting_enabled && category.products | size > 1 %}
+      <div class="theme-category-sortby-section">
+        <div class=" {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+            <div class="theme-collection-sort" >
+              {% include "_store-custom-sortby" %}
+              {{ sortBy(category,page.template_vars.product_category_style) }}
+            </div>
+        </div>
+      </div>
+    {% endif %}
+
+     {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+        <div class = "theme-filter-container">  
+          <span role="button" tabindex="0" class="theme-filter-label" data-toggle-filters onclick='toggleFilters()'>{{i18n.get("product_filters.refine_by.label")}}
+            <svg aria-hidden="true" class='theme-filter-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+              <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+            </svg>
+          </span>
+            
+           <div class="theme-filter-overlay">
+          <div data-zs-filter-container class="theme-produt-filter-row">
+            {% include 'store-product-filters' %} 
+          </div>
+            </div>
+        </div>
+    {% endif %}
+
+  </div>
+</div>
+
+
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+
+<div class="theme-product-category-section theme-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    <div class="theme-store-category-container" data-zs-category-products>
+      {% if category.products | size == 0 %}
+        <div role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</div>
+      {% endif %}
+
+      <div class=" theme-produt-category-list-row">
+        <div class="theme-filter-selected-container">
+          {% include "_store-product-selected-filter" %}
+        </div>
+        <div class=" zpcol-sm-12">
+          <div class=" theme-product-ratio" data-sort-by-products-target>
+            {% for product in category.products %}
+              {% include "store-product-list-view" %}
+            {% endfor %}
+            {% include "_store-pagination" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% comment %} PRODUCTS LIST CATEGORY PAGE END {% endcomment %}

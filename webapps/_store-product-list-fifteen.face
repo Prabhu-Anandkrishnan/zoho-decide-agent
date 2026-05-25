@@ -1,0 +1,138 @@
+<select style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+	{% for variant in product.variants %}
+		{% assign variant_options = variant.options %}
+		{% assign variant_option_identifiers = variant_options | map(attr="id") %}
+		{% assign variant_images = variant.images %}
+		{% assign variant_image_identifiers = variant_images | map(attr="id") %}
+		<option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'></option>
+	{% endfor %}
+</select>
+<article class="theme-product-box-content" data-zs-product-id="{{ product.product_id }}" {% if !product.has_variants %}data-zs-product-variant-id="{{ product.variants[0].variant_id }}"{% endif %} aria-labelledby="product-name-{{ product.product_id }}">
+  <div class="theme-product-image-area">
+    {% include '_store-product-list-image-loader' %}
+    {% include '_store-product-list-image' %}
+    {% if product.on_sale %}
+      <div class="theme-product-ribbon-area">
+        {% if product.on_sale %}
+          <div class="theme-product-sale-ribbon">{{i18n.get("product.message.sale")}}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="theme-product-details-area">
+    <div class="theme-product-name-rating-price">
+      {% if product.variants[0].sku && page.template_vars.is_product_sku_enabled %}
+        <div class="theme-product-sku" data-zs-variant-id={{ product.variants[0].variant_id }} data-zs-skus="{{product.variants[0].sku}}">
+          <span class="theme-sku-label">SKU: </span>
+          <span class="theme-sku">{{ product.variants[0].sku }}</span>
+        </div>
+      {% endif %}
+      <div class="theme-product-name">
+        <h2 id="product-name-{{ product.product_id }}">
+            <a href="{{ product.url }}">{{ product.name }}</a>
+        </h2>
+      </div>
+      <div class="theme-product-price">
+        {% include '_store-product-pricing-three' %}
+      </div>
+      {% if !product.is_out_of_stock && page.template_vars.is_product_stocks_enabled && product.variants[0].is_stock_managed %}
+      <div class="theme-product-sku">
+        <span class="theme-stock-label">In Stock: </span>
+        <span class="theme-stock">{{ product.variants[0].stock_available }}</span>
+      </div>
+      {% endif %}
+      {% if page.is_delivery_location_enabled %}
+        <div class="theme-delivery-location-non-deliverable" data-zs-not-deliverable-message>
+          {{i18n.get("delivery_location_availability.product.not_deliverable.message")}}
+        </div>
+      {% endif %}
+      {% if page.is_coupon_enabled && !product.is_out_of_stock %}
+        <div class="theme-prod-coupons-code-container">
+      {% endif %}
+      {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <span class="theme-prod-coupons-code" data-list-coupon-code style="display:none"></span>
+        </div>
+        <div class="theme-prod-coupons-container" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+      {% endif %}
+    </div>
+    <div class="theme-cart-and-wishlist">
+      <div class="theme-product-list-quantity-addcart">
+        {% if !product.has_variants && !product.is_out_of_stock && !product.is_input_custom_field_available && !product.variants[0].hide_add_to_cart %}
+          <div class="theme-product-variant theme-product-quantity-cart-container">
+            <div class="theme-product-varient-quantity">
+              <div class="theme-product-quantity-spinner" data-zs-list-quantity-container style="display: none">
+                <input class="theme-quantity-remove" data-theme-qty-remove type="button" aria-label="Delete From Cart" style="display: none;" type="button" value="-">
+                <input class="theme-quantity-decrease" data-theme-qty-update data-decrease-quantity onclick="decreaseCount(this)" type="button" value="-">
+                <input name="qty" title="quantity" type="text" maxlength="999" onkeypress='return productQuantity(event);' value="1" data-quantity="{{ product.product_id }}" data-theme-quantity data-zs-quantity data-zs-product-variant-id="{{ product.variants[0].variant_id }}">
+                <input class="theme-quantity-increase" data-theme-qty-update onclick="increaseCount(this)" type="button" value="+">
+                <div data-quantity-error-cart="{{product.variants[0].variant_id}}" style="display:none;"></div>
+              </div>
+              <div data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+            </div>
+            <div class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width" role="button" aria-label={{i18n.get("product.action.add_to_cart")}} tabindex="0" data-zs-add-to-cart {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-cart-button {% endif %} data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %}>
+              <span data-theme-cart-button-text="theme-cart-button-text">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <g clip-path="url(#clip0_887_19482)">
+                    <path d="M13 7.66667C12.32 5.65333 11.4693 5 8.95333 5H6.43333C3.82999 5 2.82333 5.65867 2.10333 8.158C1.45466 10.4093 1.12999 11.5353 1.46999 12.408C1.68177 12.9479 2.05053 13.4118 2.52866 13.74C3.49333 14.4067 5.98666 14.7227 8.33333 14.6587" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4.66666 5.09473L4.66666 4.24267C4.66666 2.636 6.00999 1.33334 7.66666 1.33334C9.32332 1.33334 10.6667 2.636 10.6667 4.24267V5.09473M9.33332 12H14.6667M12 14.6667V9.33334M6.99999 7.33334H8.33332" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_887_19482">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              <span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none;"><div class="theme-cart-button-loading-dots"></div>
+              </span>
+            </div>
+          </div>
+        {% elif (product.is_product_custom_fields_enabled && product.is_input_custom_field_available) || product.has_variants %}
+          <div class="theme-product-variant theme-product-quantity-cart-container">
+            <a aria-label={{i18n.get("product.label.view_details")}} href="{{product.url}}" class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width" tabindex="0" data-zs-view data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %}>
+              <span data-theme-cart-button-text="theme-cart-button-text">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <g clip-path="url(#clip0_887_19482)">
+                    <path d="M13 7.66667C12.32 5.65333 11.4693 5 8.95333 5H6.43333C3.82999 5 2.82333 5.65867 2.10333 8.158C1.45466 10.4093 1.12999 11.5353 1.46999 12.408C1.68177 12.9479 2.05053 13.4118 2.52866 13.74C3.49333 14.4067 5.98666 14.7227 8.33333 14.6587" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M4.66666 5.09473L4.66666 4.24267C4.66666 2.636 6.00999 1.33334 7.66666 1.33334C9.32332 1.33334 10.6667 2.636 10.6667 4.24267V5.09473M9.33332 12H14.6667M12 14.6667V9.33334M6.99999 7.33334H8.33332" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_887_19482">
+                      <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              {% comment %}
+              <span class="theme-view-details-label">{{i18n.get("product.label.view_details")}}</span>
+              {% endcomment %}
+              <span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none;"><div class="theme-cart-button-loading-dots"></div>
+              </span>
+            </a>
+          </div>
+        {% elif product.is_out_of_stock %}
+          <a href="{{ product.url }}" class="theme-out-of-stock-button">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <g clip-path="url(#clip0_887_19482)">
+                <path d="M13 7.66667C12.32 5.65333 11.4693 5 8.95333 5H6.43333C3.82999 5 2.82333 5.65867 2.10333 8.158C1.45466 10.4093 1.12999 11.5353 1.46999 12.408C1.68177 12.9479 2.05053 13.4118 2.52866 13.74C3.49333 14.4067 5.98666 14.7227 8.33333 14.6587" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.66666 5.09473L4.66666 4.24267C4.66666 2.636 6.00999 1.33334 7.66666 1.33334C9.32332 1.33334 10.6667 2.636 10.6667 4.24267V5.09473M9.33332 12H14.6667M12 14.6667V9.33334M6.99999 7.33334H8.33332" stroke="#5E2BFF" stroke-linecap="round" stroke-linejoin="round"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_887_19482">
+                  <rect width="16" height="16" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
+            <span>{{i18n.get("product.message.out_of_stock")}}</span>
+          </a>
+        {% endif %}
+        <div role="alert" data-theme-error="theme-error-message-list-{{product.product_id}}" style="display:none;"></div>
+      </div>
+      <div class="theme-wishlist-ctr">
+        {{ wishlistView("list", product, page ) }}
+      </div>
+    </div>
+  </div>
+</article>
+  

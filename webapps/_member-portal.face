@@ -1,0 +1,104 @@
+<div data-theme-portal="zptheme-portal" aria-label="{{i18n.get('common.member_portal')}}" tabindex='0' class="theme-portal-login {% if ((page.template_vars.header_style == "04" || page.template_vars.header_style == "08") ||  page.template_vars.header_style == "09") && page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.template_vars.header_style == "05" && page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.template_vars.header_style == "05" && page.is_contact_information_enabled %}theme-portal-space{% endif %} {% if portal_position == "02" %}theme-portal-icon-enabled{% endif %}">
+  {% if portal_position == "02" %}
+    {% if page.template_vars.store_template_no == "13" %}
+      <svg class="theme-portal-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+        <path d="M8 0.140503C9.06087 0.140503 10.0783 0.56193 10.8284 1.31208C11.5786 2.06222 12 3.07964 12 4.1405C12 5.20137 11.5786 6.21878 10.8284 6.96893C10.0783 7.71908 9.06087 8.1405 8 8.1405C6.93913 8.1405 5.92172 7.71908 5.17157 6.96893C4.42143 6.21878 4 5.20137 4 4.1405C4 3.07964 4.42143 2.06222 5.17157 1.31208C5.92172 0.56193 6.93913 0.140503 8 0.140503ZM8 2.1405C7.46957 2.1405 6.96086 2.35122 6.58579 2.72629C6.21071 3.10136 6 3.61007 6 4.1405C6 4.67094 6.21071 5.17964 6.58579 5.55472C6.96086 5.92979 7.46957 6.1405 8 6.1405C8.53043 6.1405 9.03914 5.92979 9.41421 5.55472C9.78929 5.17964 10 4.67094 10 4.1405C10 3.61007 9.78929 3.10136 9.41421 2.72629C9.03914 2.35122 8.53043 2.1405 8 2.1405ZM8 9.1405C10.67 9.1405 16 10.4705 16 13.1405V16.1405H0V13.1405C0 10.4705 5.33 9.1405 8 9.1405ZM8 11.0405C5.03 11.0405 1.9 12.5005 1.9 13.1405V14.2405H14.1V13.1405C14.1 12.5005 10.97 11.0405 8 11.0405Z" fill="black"/>
+      </svg>
+    {% elif page.template_vars.store_template_no == "14" %}
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none"><path d="M3.33398 15.5932C3.33398 14.7091 3.68517 13.8613 4.31029 13.2361C4.93542 12.611 5.78326 12.2598 6.66732 12.2598H13.334C14.218 12.2598 15.0659 12.611 15.691 13.2361C16.3161 13.8613 16.6673 14.7091 16.6673 15.5932C16.6673 16.0352 16.4917 16.4591 16.1792 16.7717C15.8666 17.0842 15.4427 17.2598 15.0007 17.2598H5.00065C4.55862 17.2598 4.1347 17.0842 3.82214 16.7717C3.50958 16.4591 3.33398 16.0352 3.33398 15.5932Z" stroke="#8C3832" stroke-width="1.5" stroke-linejoin="round"></path><path d="M10 8.92584C11.3807 8.92584 12.5 7.80655 12.5 6.42584C12.5 5.04513 11.3807 3.92584 10 3.92584C8.61929 3.92584 7.5 5.04513 7.5 6.42584C7.5 7.80655 8.61929 8.92584 10 8.92584Z" stroke="#8C3832" stroke-width="1.5"></path></svg>
+    {% elif page.template_vars.header_style == "02" %}
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M19.8498 22C19.4681 22 19.159 21.6909 19.159 21.3092V19.2404C19.159 17.34 17.6127 15.7938 15.7123 15.7938H7.43771C5.53729 15.7938 3.99104 17.34 3.99104 19.2404V21.3092C3.99104 21.6909 3.68187 22 3.30021 22C2.91854 22 2.60938 21.6909 2.60938 21.3092V19.2404C2.60938 16.5779 4.77521 14.4121 7.43771 14.4121H15.7123C18.3748 14.4121 20.5406 16.5779 20.5406 19.2404V21.3092C20.5406 21.6909 20.2315 22 19.8498 22Z" fill="black"/>
+          <path d="M11.5749 11.6567C8.91242 11.6567 6.74658 9.49084 6.74658 6.82834C6.74658 4.16583 8.91283 2 11.5749 2C14.237 2 16.4033 4.16583 16.4033 6.82834C16.4033 9.49084 14.2374 11.6567 11.5749 11.6567ZM11.5749 3.38167C9.6745 3.38167 8.12825 4.92792 8.12825 6.82834C8.12825 8.72875 9.6745 10.275 11.5749 10.275C13.4753 10.275 15.0216 8.72875 15.0216 6.82834C15.0216 4.92792 13.4753 3.38167 11.5749 3.38167Z" fill="black"/>
+      </svg>
+    {% elif page.template_vars.header_style == "04" %}
+       <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none"><circle cx="8.99922" cy="4.8" r="4.05" stroke="black" stroke-width="1.5"></circle><path d="M17 20C17 15.5817 13.4183 12 9 12C4.58172 12 1 15.5817 1 20" stroke="black" stroke-width="1.5"></path></svg>
+    {% elif page.template_vars.header_style == "07" %}
+      <svg aria-hidden="true" class="theme-portal-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M19.8498 22C19.4681 22 19.159 21.6909 19.159 21.3092V19.2404C19.159 17.34 17.6127 15.7938 15.7123 15.7938H7.43771C5.53729 15.7938 3.99104 17.34 3.99104 19.2404V21.3092C3.99104 21.6909 3.68187 22 3.30021 22C2.91854 22 2.60938 21.6909 2.60938 21.3092V19.2404C2.60938 16.5779 4.77521 14.4121 7.43771 14.4121H15.7123C18.3748 14.4121 20.5406 16.5779 20.5406 19.2404V21.3092C20.5406 21.6909 20.2315 22 19.8498 22Z" fill="black"/>
+        <path d="M11.5744 11.6567C8.91193 11.6567 6.74609 9.49084 6.74609 6.82834C6.74609 4.16583 8.91235 2 11.5744 2C14.2365 2 16.4028 4.16583 16.4028 6.82834C16.4028 9.49084 14.2369 11.6567 11.5744 11.6567ZM11.5744 3.38167C9.67401 3.38167 8.12776 4.92792 8.12776 6.82834C8.12776 8.72875 9.67401 10.275 11.5744 10.275C13.4748 10.275 15.0211 8.72875 15.0211 6.82834C15.0211 4.92792 13.4748 3.38167 11.5744 3.38167Z" fill="black"/>
+      </svg>
+    {% elif page.template_vars.header_style == "08" %}
+    
+      <svg aria-hidden="true" class="theme-portal-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12 4C13.0609 4 14.0783 4.42143 14.8284 5.17157C15.5786 5.92172 16 6.93913 16 8C16 9.06087 15.5786 10.0783 14.8284 10.8284C14.0783 11.5786 13.0609 12 12 12C10.9391 12 9.92172 11.5786 9.17157 10.8284C8.42143 10.0783 8 9.06087 8 8C8 6.93913 8.42143 5.92172 9.17157 5.17157C9.92172 4.42143 10.9391 4 12 4ZM12 6C11.4696 6 10.9609 6.21071 10.5858 6.58579C10.2107 6.96086 10 7.46957 10 8C10 8.53043 10.2107 9.03914 10.5858 9.41421C10.9609 9.78929 11.4696 10 12 10C12.5304 10 13.0391 9.78929 13.4142 9.41421C13.7893 9.03914 14 8.53043 14 8C14 7.46957 13.7893 6.96086 13.4142 6.58579C13.0391 6.21071 12.5304 6 12 6ZM12 13C14.67 13 20 14.33 20 17V20H4V17C4 14.33 9.33 13 12 13ZM12 14.9C9.03 14.9 5.9 16.36 5.9 17V18.1H18.1V17C18.1 16.36 14.97 14.9 12 14.9Z" fill="black"/>
+      </svg>
+
+    {% elif page.template_vars.header_style == "09" %}
+      <svg aria-hidden="true" class="theme-portal-icon" width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.1533 3.90009C10.1533 5.77397 8.62033 7.30018 6.72046 7.30018C4.82059 7.30018 3.2876 5.77397 3.2876 3.90009C3.2876 2.02621 4.82059 0.5 6.72046 0.5C8.62033 0.5 10.1533 2.02621 10.1533 3.90009Z" fill = "none" stroke="#750A27"></path>
+        <path d="M0.931864 15.1002C1.01969 11.7605 3.7546 9.08008 7.11555 9.08008C10.4765 9.08008 13.2114 11.7605 13.2992 15.1002H0.931864Z" stroke="#750A27" fill = "none"></path>
+      </svg>
+    {% elif page.template_vars.header_style == "10" %}
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12.0117" cy="7.71291" r="3.23158" stroke="#150004" stroke-width="0.962665"/>
+        <path d="M5.48133 18.5466C5.48133 15.5482 7.912 13.1176 10.9104 13.1176H13.1162C16.1146 13.1176 18.5452 15.5482 18.5452 18.5466V19.5188H5.48133V18.5466Z" stroke="#150004" stroke-width="0.962665"/>
+      </svg>
+    {% elif page.template_vars.header_style == "11" %}
+      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="11" height="15" viewBox="0 0 11 15" fill="none">
+        <circle cx="5.44426" cy="3.10314" r="2.32576" stroke="#4A260C" stroke-width="0.828196"/>
+        <path d="M10.0107 14.9757V11.3226C10.0107 9.305 8.37515 7.66943 6.35758 7.66943H4.53101C2.51344 7.66943 0.877869 9.305 0.877869 11.3226V14.9757" stroke="#4A260C" stroke-width="0.828196"/>
+      </svg>
+    {% else %}
+      <svg aria-hidden="true"  class = "theme-portal-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px"
+          viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+          <path d="M255.6,84c-55.1,0-100,44.9-100,100s44.9,100,100,100s100-44.9,100-100S310.8,84,255.6,84z M255.6,228
+                  c-24.3,0-44-19.7-44-44s19.7-44,44-44c24.3,0,44,19.7,44,44S279.9,228,255.6,228z"/>
+          <path d="M436.6,74.7c-48.4-48.4-112.6-75-181-75c-68.4,0-132.7,26.6-181,75s-75,112.6-75,181s26.6,132.7,75,181
+                  c48.4,48.4,112.6,75,181,75c68.4,0,132.7-26.6,181-75c48.4-48.4,75-112.6,75-181S485,123,436.6,74.7z M147.8,424.1
+                  c10.9-14.5,24.1-26.8,39-36.1c20.9-13.1,44.7-20,68.8-20c24.2,0,48.1,6.9,69,20.1c14.8,9.3,28,21.5,38.8,36
+                  c-31.1,20-68.1,31.6-107.8,31.6C215.9,455.7,178.9,444.1,147.8,424.1z M405.9,387.5c-14.5-18.6-32-34.5-51.6-46.8
+                  c-29.9-18.7-64-28.6-98.8-28.6c-34.7,0-68.7,9.8-98.5,28.5c-19.7,12.3-37.2,28.2-51.8,46.9c-30.9-35.2-49.7-81.3-49.7-131.8
+                  c0-110.3,89.7-200,200-200c110.3,0,200,89.7,200,200C455.6,306.1,436.9,352.2,405.9,387.5z"/>
+      </svg>
+    {% endif %}
+    <div class="theme-portal-container-dropdown">
+  {% endif %}
+
+    <div class="theme-portal-container" data-portal-loggedout style="display:block">
+      <div class="theme-portal-content"> <a data-portal-signin href="javascript:;">{{ i18n.get("portal.signin") }}</a> </div>
+      {% if page.is_portal_signup_enabled %}
+        <div class="theme-portal-content"> <a data-portal-signup href="javascript:;">{{ i18n.get("portal.signup") }}</a> </div>
+      {% endif %}
+
+    </div>
+    <div class="theme-portal-container" data-portal-loggedin style="display:none">
+      <div class="theme-portal-content {% if page.is_store_enabled %}theme-portal-username-content {% else %} theme-portal-content-loggedin-site {% endif %}">
+        <div class="{% if page.is_store_enabled %}theme-user-name-dropdown{% endif %}" data-portal-profile>
+          <span class="theme-portal-username" id="theme-portal-username-info" data-portal-user-name></span>
+          {% if page.is_store_enabled %}
+            <span class="theme-user-profile-down-arrow" aria-hidden="true"></span>
+          {% endif %}
+        </div>
+        {% if page.is_store_enabled %}
+          <ul aria-labelledby="theme-portal-username-info" class="theme-username-dropdown-list" data-zs-portal-user-dropdown>
+            <li data-zs-portal-profile>
+              <a href="/account/profile">{{i18n.get("portal.profile.title")}}</a>
+            </li>
+            <li data-zs-portal-myorders>
+              <a href="/account/orders">{{i18n.get("orders.title.myorders")}}</a>
+            </li>
+            <li data-zs-portal-addressbook>
+              <a href="/account/address">{{i18n.get("address.title")}}</a>
+            </li>
+            <li data-show-wishlist-icon style="display: none;">
+              <a href="/wishlist">{{i18n.get("wishlist.mywishlist")}}</a>
+            </li>
+            {% if page.is_quotes_enabled_in_storefront %}
+              <li data-zs-quotes>
+                <a href="/account/quotes">{{i18n.get("page_title.myquotes")}}</a>
+              </li>
+            {% endif %}
+          </ul>
+        {% endif %}
+
+      </div>
+      <div class="theme-portal-content">
+        <a data-portal-logout href="javascript:;">{{ i18n.get("portal.signout") }}</a>
+      </div>
+    </div>
+  {% if portal_position == "02" %}
+  </div>
+  {% endif %}
+  
+</div>

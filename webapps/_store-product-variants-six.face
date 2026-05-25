@@ -1,0 +1,52 @@
+{% for attribute in product.attributes %}
+  <div class="theme-product-varients-row" data-zs-product-variant-container>
+    <div class="theme-product-variant" data-zs-product-variant-container="{{attribute.name}}" {% if attribute.type == 'Color' %}data-zs-product-color-variants{% endif %}>
+      <div class="theme-product-variant-label" data-zs-product-variant-label>{{ attribute.name }}</div>
+        {% assign colorCount = 0 %}
+        {% if attribute.type == 'Color' && colorCount < 1 %}
+          <div class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+            {% for coloroption in attribute.options %}
+              {% if loop.index < 4 %}
+                <span class="theme-product-color">
+                  <label data-theme-color-label style="background:{{coloroption.color_code}}" onclick="selectcolor(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+                    <input type="radio" name="{{product.product_id}}_{{ attribute.id }}" data-zs-attribute-option value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+                  </label>
+                </span>
+              {% endif %}
+            {% endfor %}
+
+            {% if (attribute.options | size) + 1 > 4 %}
+              {% assign variants = (attribute.options | size) + 1 - 4 %}
+              <span class="theme-product-additional-variant"> {{variants}}+ </span>
+            {% endif %}
+
+            <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+        </div>
+
+        {% else %}
+        {% assign variantCount = 0 %}
+          <div class="theme-variant-select-container-main">
+            <div class="theme-variant-select-container" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+              {% if variantCount < 1 %}
+                {% for variantOption in attribute.options %}
+                  {% if loop.index < 4 %}
+                    <span class="theme-product-variant">
+                      <label data-theme-variant-label onclick="selectVariant(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">{{variantOption.value}}
+                        <input type="radio" name="{{product.product_id}}_{{ attribute.id }}" data-zs-attribute-option value="{{ variantOption.id }}" data-text="{{ variantOption.value }}">
+                      </label>
+                    </span>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+                {% if (attribute.options | size) + 1 > 4 %}
+                  {% assign variants = (attribute.options | size) + 1 - 4 %}
+                  <span class="theme-product-additional-variant"> {{variants}}+ </span>
+                {% endif %}
+            </div>
+
+            <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+          </div>
+        {% endif %}
+    </div>
+  </div>
+{% endfor %}

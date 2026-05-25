@@ -1,0 +1,125 @@
+<div class="theme-mini-cart theme-search-and-mini-cart-group-item" data-zs-cart-iconcount-container {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart {% endif %}>
+  {% if page.template_vars.header_style != "07" %}
+    <span class="theme-minicart-icon theme-carticon-style-{{page.template_vars.store_carticon_style}}" aria-label="{{i18n.get("product.label.view_cart")}}" role="button" tabindex='0' data-zs-cart-icon>
+          {% if page.template_vars.store_carticon_style == "01" %}
+            {% include '_store-carticon-01' %}
+          {% elif page.template_vars.store_carticon_style == "02" %}
+            {% include '_store-carticon-02' %}
+          {% elif page.template_vars.store_carticon_style == "03" %}
+            {% include '_store-carticon-03' %}
+          {% elif page.template_vars.store_carticon_style == "04" %}
+            {% include '_store-carticon-04' %}
+          {% elif page.template_vars.store_carticon_style == "05" %}
+            {% include '_store-carticon-05' %}
+          {% elif page.template_vars.store_carticon_style == "06" %}
+            {% include '_store-carticon-06' %}
+          {% elif page.template_vars.store_carticon_style == "07" %}
+            {% include '_store-carticon-07' %}
+          {% elif page.template_vars.store_carticon_style == "08" %}
+            {% include '_store-carticon-08' %}
+          {% elif page.template_vars.store_carticon_style == "09" %}
+            {% include '_store-carticon-09' %}
+          {% elif page.template_vars.store_carticon_style == "10" %}
+            {% include '_store-carticon-10' %}
+          {% elif page.template_vars.store_carticon_style == "11" %}
+            {% include '_store-carticon-11' %}
+          {% elif page.template_vars.store_carticon_style == "12" %}
+            {% include '_store-carticon-12' %}
+          {% elif page.template_vars.store_carticon_style == "13" %}
+            {% include '_store-carticon-13' %}
+          {% elif page.template_vars.store_carticon_style == "14" %}
+            {% include '_store-carticon-14' %}
+          {% elif page.template_vars.store_carticon_style == "15" %}
+            {% include '_store-carticon-15' %}
+          {% elif page.template_vars.store_carticon_style == "16" %}
+            {% include '_store-carticon-16' %}
+          {% elif page.template_vars.store_carticon_style == "17" %}
+            {% include '_store-carticon-17' %}
+          {% elif page.template_vars.store_carticon_style == "18" %}
+            {% include '_store-carticon-18' %}
+          {% elif page.template_vars.store_carticon_style == "19" %}
+            {% include '_store-carticon-19' %}
+          {% elif page.template_vars.store_carticon_style == "20" %}
+            {% include '_store-carticon-20' %}
+          {% elif page.template_vars.store_carticon_style == "22" %}
+            {% include '_store-carticon-22' %}
+          {% elif page.template_vars.store_carticon_style == "21" %}
+            {% include '_store-carticon-21' %}
+          {% elif page.template_vars.store_carticon_style == "23" %}
+            {% include '_store-carticon-23' %}
+          {% elif page.template_vars.store_carticon_style == "24" %}
+            {% include '_store-carticon-24' %}
+          {% elif page.template_vars.store_carticon_style == "25" %}
+            {% include '_store-carticon-25' %}
+          {% elif page.template_vars.store_carticon_style == "26" %}
+            {% include '_store-carticon-26' %}
+          {% elif page.template_vars.store_carticon_style == "27" %}
+            {% include '_store-carticon-27' %}
+          {% elif page.template_vars.store_carticon_style == "28" %}
+            {% include '_store-carticon-28' %}
+          {% endif %}
+        <span class="theme-mini-cart-count" data-zs-view-cart-count>0</span>
+      </span>
+    {% else %}
+      <span class="theme-minicart-icon theme-carticon-headerseven-style-{{page.template_vars.store_carticon_style_header_07}}" tabindex='0' data-zs-cart-icon>
+          {% if page.template_vars.store_carticon_style_header_07 == "01" %}
+            {% include '_store-carticon-01' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "02" %}
+            {% include '_store-carticon-02' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "03" %}
+            {% include '_store-carticon-03' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "04" %}
+            {% include '_store-carticon-04' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "05" %}
+            {% include '_store-carticon-05' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "06" %}
+            {% include '_store-carticon-06' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "07" %}
+            {% include '_store-carticon-07' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "08" %}
+            {% include '_store-carticon-08' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "09" %}
+            {% include '_store-carticon-09' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "10" %}
+            {% include '_store-carticon-10' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "11" %}
+            {% include '_store-carticon-11' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "12" %}
+            {% include '_store-carticon-12' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "13" %}
+            {% include '_store-carticon-13' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "14" %}
+            {% include '_store-carticon-14' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "15" %}
+            {% include '_store-carticon-15' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "16" %}
+            {% include '_store-carticon-16' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "17" %}
+            {% include '_store-carticon-17' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "18" %}
+            {% include '_store-carticon-18' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "19" %}
+            {% include '_store-carticon-19' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "20" %}
+            {% include '_store-carticon-20' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "22" %}
+            {% include '_store-carticon-22' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "21" %}
+            {% include '_store-carticon-21' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "23" %}
+            {% include '_store-carticon-23' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "24" %}
+            {% include '_store-carticon-24' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "25" %}
+            {% include '_store-carticon-25' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "26" %}
+            {% include '_store-carticon-26' %}
+          {% elif page.template_vars.store_carticon_style_header_07 == "27" %}
+            {% include '_store-carticon-27' %}
+          {% elif page.template_vars.store_carticon_style == "28" %}
+            {% include '_store-carticon-28' %}
+          {% endif %}
+        <span class="theme-mini-cart-count" data-zs-view-cart-count>0</span>
+      </span>
+    {% endif %}
+</div>

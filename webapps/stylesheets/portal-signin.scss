@@ -1,0 +1,2422 @@
+/*$Id$*/
+/* #EXCLUDEOUTPUTSTARTS */
+@import "_base-variable";
+/* #EXCLUDEOUTPUTENDS */
+
+@import "_mixin";
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+img{
+  max-inline-size : 100%;
+  border: 0 none;
+  vertical-align: middle;
+}
+a,
+a:hover,
+a:active,
+a:focus{
+  text-decoration:none;
+}
+:focus,:active,
+.active{
+  outline : 0 none;
+}
+
+ul,
+ol,
+ul li,
+ol li{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// BUTTON RESET STARTS
+
+button,
+input[type='submit'],
+input[type='reset'],
+input[type='button']{
+  margin-block-end: 0;
+  font-size: inherit;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  text-decoration:none;
+  line-height:1.42857143;
+  border:0 none;
+  -webkit-appearance: none;
+  &:hover{
+   transition: 0.3s linear;
+  }
+  &:active,
+  &.active {
+    outline: 0;
+    background-image: none;
+    box-shadow: none;
+  }
+  &::-moz-focus-inner{
+	  border: none;
+	  padding:0;
+  }
+}
+
+// BUTTON RESET END
+button,
+input[type='submit'],
+input[type='reset'],
+input[type='button'],
+input,
+textarea,
+select{
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] {
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+    opacity:0.65;
+    box-shadow: none;
+  }
+}
+
+// INPUT AND FORM RESET STARTS
+
+input,
+textarea,
+select,
+.ccmobile {
+  border: 1px solid #ccc;
+  padding-block-start:10px;
+  padding-block-end:10px;
+  padding-inline-start:5px;
+  padding-inline-end:5px;
+  width:100%;
+  font-family: inherit;
+  font-size:inherit;
+  color:inherit;
+}
+textarea{
+  resize:none;
+  height:110px;
+  display: block;
+}
+input[type='radio'],
+input[type='file'],
+input[type='checkbox']{
+  padding:0;
+  border:0 none;
+  width:auto;
+}
+select{
+  background:#fff;
+  height:39px;
+  padding-inline-end:0;
+  border-radius: 0;
+}
+select[multiple]{
+  height:75px;
+  padding-block-start:10px;
+  padding-block-end:10px;
+  padding-inline-start:5px;
+  padding-inline-end:0;
+}
+input[type="date"] {
+  cursor: text;
+}
+// INPUT AND FORM RESET END
+
+// TABLE RESET STARTS
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+tr{
+  vertical-align: middle;
+}
+
+// TABLE RESET ENDS
+
+// NO SCRIPTS TAG STYLE
+
+noscript{
+  height: 100%;
+}
+
+body{
+  color:map-get($default_vars,'color-text');
+	font-family:map-get($default_vars, 'font-family-text');
+	font-size:map-get($default_vars, 'font-size-text');
+	font-weight:map-get($default_vars, 'font-weight-text');
+	text-transform:map-get($default_vars, 'font-transform-text');
+	line-height: map-get($default_vars, 'font-line-height-text');
+	letter-spacing:map-get($default_vars, 'font-letter-spacing-text');
+}
+
+// BRANDING INFO STYLE
+
+.theme-branding-info{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    min-inline-size: 1%;
+    padding-block-start:16px;
+    padding-block-end:16px;
+    padding-inline-start:0;
+    padding-inline-end:16px;
+    margin-block-start:0;
+    margin-block-end:0;
+    @include respond-to(mediumdevice){
+      flex-wrap: nowrap;
+      width: 500px;
+      margin-inline-start:auto;
+      margin-inline-end:auto;
+      padding-block-start:20px;
+      padding-block-end:20px;
+      padding-inline-start:0;
+      padding-inline-end:0;
+    }
+  .theme-site-name-caption{
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    min-inline-size: 1%;
+    @include respond-to(mediumdevice){
+      display: block;
+      margin-block-start:0px;
+      align-items: center;
+    }
+  }
+  .theme-logo-parent{
+    padding-inline-end:0;
+    display: flex;
+    justify-content: center;
+    min-inline-size: 1%;
+    @media(max-width: 991px){
+      margin-inline-end: 12px;
+    }
+    @include respond-to(mediumdevice){
+      height:100%;
+      padding-block-start:0;
+      flex: 0 1 auto;
+      padding-inline-end:15px;
+    }
+    a{
+      @include respond-to(largedevice){
+        height:auto;
+        line-height:normal;
+        max-inline-size:none;
+      }
+      img{
+        max-inline-size : 500px;
+        max-block-size : 500px;
+      }
+    }
+    &.theme-disable-logo-mobile{
+      display: none;
+      @include respond-to(mediumdevice){
+        display: flex;
+      }
+    }
+  }
+  .theme-site-name-caption{
+    .theme-site-name{
+      color:map-get($default_vars, 'color-site-name');
+      font-size:map-get($default_vars, 'font-size-site-name');
+      font-family:map-get($default_vars, 'font-family-site-name');
+      font-weight: map-get($default_vars, 'font-weight-site-name');
+      text-transform: map-get($default_vars, 'font-transform-site-name');
+      line-height: map-get($default_vars, 'font-line-height-site-name');
+      letter-spacing: map-get($default_vars, 'font-letter-spacing-site-name');
+      &.theme-disable-sitename-mobile{
+        display: none;
+        @include respond-to(mediumdevice){
+          display: block;
+        }
+      }
+    }
+    .theme-site-caption{
+      color:map-get($default_vars, 'color-site-caption');
+      font-family:map-get($default_vars, 'font-family-site-caption');
+      font-size:map-get($default_vars, 'font-size-site-caption');
+      font-weight: map-get($default_vars, 'font-weight-site-caption');
+      text-transform: map-get($default_vars, 'font-transform-site-caption');
+      line-height: map-get($default_vars, 'font-line-height-site-caption');
+      letter-spacing: map-get($default_vars, 'font-letter-spacing-site-caption');
+      &.theme-disable-sitecaption-mobile{
+        display: none;
+        @include respond-to(mediumdevice){
+          display: block;
+        }
+      }
+    }
+    .theme-site-name,
+    .theme-site-caption{
+      word-break: break-word;
+      word-wrap: break-word;
+      transition: 0.15s linear;
+    }
+    &.theme-site-title-caption-space{
+      @include respond-to(mediumdevice){
+        margin-block-start:0px;
+      }
+    }
+  }
+}
+
+.theme-header{
+  @media(max-width: 991px){
+    display: flex;
+  }
+  .theme-responsive-goback{
+    display: none;
+    @media(max-width: 991px){
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      a{
+        display: flex;
+        svg{
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+  }
+  &.zpdark-header-portion{
+    background: map-get($default_vars,'darkbg-color-header-background');
+    .theme-branding-info{
+      .theme-site-name-caption{
+        .theme-site-name{
+          color: map-get($default_vars, 'darkbg-color-site-name');
+        }
+        .theme-site-caption{
+          color:map-get($default_vars, 'darkbg-color-site-caption');
+        }
+      }
+    }
+    .theme-responsive-goback{
+      a{
+        svg{
+          fill:map-get($default_vars, 'darkbg-color-site-name');
+        }
+      }
+    }
+  }
+}
+
+// FORM STYLE STARTS
+
+// Form Container Style - 01
+@if map-get($user_layout_vars, 'portal_style')==01 {
+  .theme-portal-form-container {
+    width: 90%;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    padding-block-start: 50px;
+    padding-block-end: 50px;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+
+    @include respond-to(mediumdevice) {
+      width: 400px;
+    }
+  }
+  .theme-portal-heading,
+  #headtitle,.verifytitle{
+    margin-block-end: 0;
+    font-family: map-get($default_vars,  'font-family-portal-form-heading');
+    font-size: 20px;
+    text-transform: normal;
+    font-weight: normal;
+    line-height: 1.8;
+    letter-spacing: normal;
+    color: map-get($base_vars, 'color-secondary');
+    display: block;
+  }
+}
+// Form Container Style - 02
+@if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+  .theme-portal-form-container {
+    width: 90%;
+    margin-block: 10vh;
+    margin-inline: auto;
+    @include respond-to(mediumdevice) {
+      width: 440px;
+    }
+  }
+  .theme-portal-heading,
+  #headtitle,.verifytitle{
+    text-align: center;
+    margin-block-end: 0.5rem;
+    font-family: map-get($default_vars,  'font-family-portal-form-heading');
+    font-size: map-get($default_vars,  'font-size-portal-form-heading');
+    text-transform: map-get($default_vars,  'font-transform-portal-form-heading');
+    font-weight: map-get($default_vars,  'font-weight-portal-form-heading');
+    line-height: map-get($default_vars,  'font-line-height-portal-form-heading');
+    letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-heading');
+    color: map-get($default_vars,  'color-portal-form-heading');
+    display: block;
+  }
+  #nextbtn{
+    width: 100%;
+  }
+  #captcha_container{
+    gap: 10px;
+    #captcha_img{
+      padding: 5px;
+      border-inline-start: 1px solid;
+    }
+    .fielderror{
+      background: #fff;
+      padding: 5px 10px;
+      margin-inline: 10px;
+      box-shadow: 2px 4px 9px 0px rgba(0, 0, 0, 0.5);
+    }
+  }
+  .bold_font{
+    font-weight: 700;
+  }
+}
+// FORM STYLE ENDS
+
+// SIGNUP STYLES STARTS
+
+.theme-portal-heading,.verifytitle{
+  margin-block-end: 8px;
+}
+
+.ccmobile {
+  width: auto;
+  display: inline-block;
+  vertical-align: top;
+  border-right: none;
+}
+
+.user-signup-form-container,
+.signin_container,.recovery_container{
+  input,
+  textarea,
+  select,
+  .ccmobile {
+    &::-webkit-input-placeholder{
+      color: map-get($default_vars,  'color-portal-form-placeholder');
+    }
+    &::-moz-placeholder{
+      color: map-get($default_vars,  'color-portal-form-placeholder');
+    }
+  }
+	label{
+		font-family: map-get($default_vars,  'font-family-portal-form-label');
+		font-size: map-get($default_vars,  'font-size-portal-form-label');
+		text-transform: map-get($default_vars,  'font-transform-portal-form-label');
+		font-weight: map-get($default_vars,  'font-weight-portal-form-label');
+		line-height: map-get($default_vars,  'font-line-height-portal-form-label');
+		letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-label');
+    color: map-get($default_vars,  'color-portal-form-label');
+    display: inline-flex;
+    margin-block-end: 5px;
+    align-items: flex-start;
+	}
+	h2{
+		font-family: map-get($default_vars,  'font-family-portal-form-heading');
+		font-size: map-get($default_vars,  'font-size-portal-form-heading');
+		text-transform: map-get($default_vars,  'font-transform-portal-form-heading');
+		font-weight: map-get($default_vars,  'font-weight-portal-form-heading');
+		line-height: map-get($default_vars,  'font-line-height-portal-form-heading');
+		letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-heading');
+    color: map-get($default_vars,  'color-portal-form-heading');
+	}
+  @if map-get($user_layout_vars, 'portal_style')==01{
+    input[type='text'],
+    input[type='email'],
+    input[type='date'],
+    input[type="file"],
+    input[type="password"],
+    textarea,
+    select,
+    .textbox,
+    .ccmobile{
+      font-family: map-get($default_vars,  'font-family-portal-form-field');
+      font-size: 14px;
+      text-transform: map-get($default_vars,  'font-transform-portal-form-field');
+      font-weight: map-get($default_vars,  'font-weight-portal-form-field');
+      line-height: map-get($default_vars,  'font-line-height-portal-form-field');
+      letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-field');
+      background: map-get($default_vars,  'color-portal-form-field-background');
+      border-color: map-get($default_vars,  'color-portal-form-field-border');
+      color: map-get($default_vars,  'color-portal-form-field');
+      height: 42px;
+      &:focus{
+        border-color : map-get($base_vars, 'color-text');
+      }
+      &.errorborder{
+        border: 2px solid map-get($default_vars,'color-portal-form-error-message-text');
+      }
+    }
+    label {
+      font-family: map-get($default_vars,  'font-family-portal-form-label');
+      font-size: 14px;
+      text-transform: none;
+      font-weight: normal;
+      line-height: 1.8;
+      letter-spacing: normal;
+      color: map-get($base_vars, 'color-text');
+      display: inline-flex;
+      margin-block-end: 5px;
+      align-items: flex-start;
+    }
+    .signup-button,
+    .btn.blue{
+      font-family: map-get($default_vars,  'font-family-portal-form-button-submit');
+      font-size: 14px;
+      font-weight: normal;
+      text-transform: none;
+      border-width: map-get($default_vars,  'size-portal-form-button-submit-border');
+      border-style: map-get($default_vars,  'style-portal-form-button-submit-border');
+      line-height: 1.43;
+      letter-spacing: normal;
+      background-color: map-get($default_vars,  'color-portal-form-button-submit-background');
+      color: map-get($default_vars,  'color-portal-form-button-submit');
+      border-color: map-get($default_vars,  'color-portal-form-button-submit-border');
+      padding-block-start:8px;
+      padding-block-end:8px;
+      padding-inline-start:17px;
+      padding-inline-end:17px;
+      margin-inline-start: auto;
+      transition: none;
+      &:hover{
+        background-color: map-get($default_vars,  'color-portal-form-button-submit-hover-background');
+        color: map-get($default_vars,  'color-portal-form-button-submit-hover-text-and-icon');
+        border-color: map-get($default_vars,  'color-portal-form-button-submit-hover-border');
+      }
+    }
+  }
+  @if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+    input[type='text'],
+    input[type='email'],
+    input[type='date'],
+    input[type="file"],
+    input[type="password"],
+    textarea,
+    select,
+    .textbox,
+    .ccmobile{
+      font-family: map-get($default_vars,  'font-family-portal-form-field');
+      font-size: map-get($default_vars,  'font-size-portal-form-field');
+      text-transform: map-get($default_vars,  'font-transform-portal-form-field');
+      font-weight: map-get($default_vars,  'font-weight-portal-form-field');
+      line-height: map-get($default_vars,  'font-line-height-portal-form-field');
+      letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-field');
+      background: map-get($default_vars,  'color-portal-form-field-background');
+      border-color: map-get($default_vars,  'color-portal-form-field-border');
+      color: map-get($default_vars,  'color-portal-form-field');
+      height: 48px;
+      &:focus{
+        border-color : map-get($default_vars,  'color-portal-form-field-active-border');
+      }
+      &.errorborder{
+        border: 2px solid map-get($default_vars,'color-portal-form-error-message-text');
+      }
+    }
+    .signup-button,
+    .btn.blue{
+      font-family: map-get($default_vars,  'font-family-portal-form-button-submit');
+      font-size: map-get($default_vars,  'font-size-portal-form-button-submit');
+      font-weight: map-get($default_vars,  'font-weight-portal-form-button-submit');
+      text-transform: map-get($default_vars,  'font-transform-portal-form-button-submit');
+      border-width: map-get($default_vars,  'size-portal-form-button-submit-border');
+      border-style: map-get($default_vars,  'style-portal-form-button-submit-border');
+      line-height: map-get($default_vars,  'font-line-height-portal-form-button-submit');
+      letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-button-submit');
+      background-color: map-get($default_vars,  'color-portal-form-button-submit-background');
+      color: map-get($default_vars,  'color-portal-form-button-submit');
+      border-color: map-get($default_vars,  'color-portal-form-button-submit-border');
+      padding-block-start:12px;
+      padding-block-end:12px;
+      padding-inline-start:0;
+      padding-inline-end:0;
+      margin-inline-start: auto;
+      transition: none;
+      width: 100%;
+      border-radius: map-get($default_vars,  'portal-form-button-submit-border-radius');
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover{
+        background-color: map-get($default_vars,  'color-portal-form-button-submit-hover-background');
+        color: map-get($default_vars,  'color-portal-form-button-submit-hover-text-and-icon');
+        border-color: map-get($default_vars,  'color-portal-form-button-submit-hover-border');
+      }
+    }
+  }
+
+  .user-signup-form-field-wrapper{
+    margin-block-end: 12px;
+  }
+  .signup-form-submit{
+    margin-block-start: 12px;
+    display: flex;
+  }
+  .field-msg{
+    .error{
+      font-size: 14px;
+      font-family: map-get($default_vars,'font-family-text');
+      color: map-get($default_vars,'color-portal-form-error-message-text');
+      margin-block-start: 5px;
+    }
+  }
+  .za-captcha-container{
+    .form-field-and-message{
+      margin-block-end: 12px;
+    }
+  }
+  .za-submitbtn-otp{
+    .signupbtn{
+      font-family: map-get($default_vars,  'font-family-portal-form-button-submit');
+      font-size: map-get($default_vars,  'font-size-portal-form-button-submit');
+      font-weight: map-get($default_vars,  'font-weight-portal-form-button-submit');
+      text-transform: map-get($default_vars,  'font-transform-portal-form-button-submit');
+      border-width: map-get($default_vars,  'size-portal-form-button-submit-border');
+      border-style: map-get($default_vars,  'style-portal-form-button-submit-border');
+      line-height: map-get($default_vars,  'font-line-height-portal-form-button-submit');
+      letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-button-submit');
+      background-color: map-get($default_vars,  'color-portal-form-button-submit-background');
+      color: map-get($default_vars,  'color-portal-form-button-submit');
+      border-color: map-get($default_vars,  'color-portal-form-button-submit-border');
+      padding-block-start:8px !important;
+      padding-block-end:8px !important;
+      padding-inline-start:17px !important;
+      padding-inline-end:17px !important;
+      width: auto;
+      transition: 0.1s linear;
+      margin-block-start: 12px;
+      &:hover{
+        background-color: map-get($default_vars,  'color-portal-form-button-submit-hover-background');
+        color: map-get($default_vars,  'color-portal-form-button-submit-hover-text-and-icon');
+        border-color: map-get($default_vars,  'color-portal-form-button-submit-hover-border');
+      }
+      &.changeloadbtn{
+        width: auto;
+        height: auto;
+      }
+    }
+    .loadingImg{
+      display: none;
+    }
+  }
+  .signupotpcontainer{
+    .verifyheader{
+      margin-block-end: 12px;
+    }
+    .resendotp{
+      color: map-get($base_vars,'color-link');
+      cursor: pointer;
+      margin-block-start: 20px;
+      display: block;
+    }
+  }
+  .za-country-container,
+  .za-country_code-container{
+    position: relative;
+    select{
+      appearance: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+    }
+    &:after{
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 50%;
+      border-color: transparent map-get($default_vars,  'color-portal-form-field') map-get($default_vars,  'color-portal-form-field') transparent;
+      border-style: solid;
+      transform: translateY(-50%) rotate(45deg);
+      border-width: 2px;
+      height: 8px;
+      width: 8px;
+      top: -2px;
+      border-radius: 1px;
+      display: inline-block;
+      left: auto;
+      display: block;
+      right: 10px;
+      top: 50%;
+    }
+  }
+  .za-country-container{
+    &:after{
+      display: none;
+    }
+    .form-field-and-message{
+      position: relative;
+      &:after{
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        border-color: transparent map-get($base_vars,'color-text') map-get($base_vars,'color-text') transparent;
+        border-style: solid;
+        transform: translateY(-50%) rotate(45deg);
+        border-width: 2px;
+        height: 8px;
+        width: 8px;
+        top: -2px;
+        border-radius: 1px;
+        display: inline-block;
+        left: auto;
+        display: block;
+        right: 10px;
+        top: 50%;
+      }
+    }
+  }
+  li{
+    &.za-country_code-container{
+      &:after{
+        display: none;
+      }
+    }
+  }
+}
+
+@if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+  .user-signup-form-container,
+  .signin_container,.recovery_container{
+    input[type='text'],
+    input[type='email'],
+    input[type='date'],
+    input[type="file"],
+    input[type="password"],
+    textarea,
+    select,
+    .textbox, 
+    .ccmobile{
+      border: 1px solid map-get($default_vars,'color-portal-form-field-border');
+      padding-inline: 1rem;
+      padding-block: 1rem;
+      &:hover{
+        border-color: map-get($default_vars,'color-portal-form-field-active-border');
+      }
+    }
+    form{
+      margin-block: 1rem;
+    }
+  }
+  .user-signup-form-container{
+    input[type='text'],
+    input[type='email'],
+    input[type='date'],
+    input[type="file"],
+    input[type="password"],
+    textarea,
+    select,
+    .textbox{
+      padding-inline: 1rem;
+      padding-block-start: 1rem;
+      padding-block-end: 10px;
+    }
+  }
+}
+
+.theme-already-signin-info,
+.theme-noaccount-signup{
+  margin-block-start: 15px;
+  text-align: center;
+  color:map-get($default_vars,'color-text');
+	font-family:map-get($default_vars, 'font-family-text');
+  text-transform:map-get($default_vars, 'font-transform-text');
+	letter-spacing:map-get($default_vars, 'font-letter-spacing-text');
+  @if map-get($user_layout_vars, 'portal_style')==01 {
+    font-size:map-get($default_vars, 'font-size-text');
+    font-weight:map-get($default_vars, 'font-weight-text');
+    line-height: map-get($default_vars, 'font-line-height-text');
+    a{
+      color:map-get($base_vars, 'color-link');
+    }
+  }
+  @if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+    font-size:map-get($default_vars, 'font-size-portal-form-name');
+    font-weight:map-get($default_vars, 'font-weight-portal-form-name');
+    line-height: map-get($default_vars, 'font-line-height-portal-form-name');
+    a{
+      text-decoration: underline;
+    }
+  }
+}
+
+.theme-noaccount-signup {
+  justify-content: space-between;
+  flex-direction:column;
+  display: flex;
+}
+.signin-iframe{
+  width: 100%;
+}
+.signin_container {
+	display: block;
+	margin: auto;
+	position: relative;
+	z-index: 1;
+}
+.mod_container{
+	width:500px;
+}
+.checkbox_label {
+	display: inline-block;
+  margin-block-start:0px;
+  margin-block-end:8px;
+  margin-inline-start:8px;
+  margin-inline-end:8px;
+	float: left;
+  float: inline-start;
+	cursor:pointer;
+}
+.signin_box {
+	transition: all .1s ease-in-out;
+  width: 100%;
+}
+#getusername,
+#login_id_container{
+  label{
+    &.select_country_code{
+      display: none;
+    }
+  }
+}
+#forgotpassword, #blueforgotpassword{
+  display: none !important;
+  a{
+    color: map-get($default_vars,'color-link');
+  }
+}
+.forgotpassword-bottom a{
+  color: map-get($default_vars,'color-link');
+}
+.nopassword_message {
+  a{
+    color: map-get($default_vars,'color-link');
+  }
+}
+.portal_logo{
+	display: block;
+	height: 30px;
+	width: auto;
+	margin-block-end: 20px;
+	background-size: auto 100%;
+}
+.pointer {
+	cursor: pointer;
+}
+.text16 {
+	display: block;
+	text-align: center;
+	margin-block-end: 30px;
+	color: map-get($default_vars,'color-text');
+	text-decoration: none;
+}
+.checkbox {
+	float: left;
+  float: inline-start;
+	z-index: 0;
+	height: 15px;
+	width: 15px;
+	display: inline-block;
+	border: 2px solid map-get($base_vars,'color-border');
+	border-radius: 2px;
+	position: relative;
+	overflow: hidden;
+  min-inline-size: 15px;
+  margin-block-start: 5px
+}
+.show_hide_password {
+  font-size: 34px;
+  color: #a7a7a7;
+  position: relative;
+  top: -32px;
+  right: 13px;
+  float: right;
+  cursor: pointer;
+  height: 16px;
+  display: block;
+  z-index: 2;
+  width: 20px;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMCcgaGVpZ2h0PScxNic+PHBhdGggZmlsbD0nI0FEQjRCOCcgZmlsbC1ydWxlPSdldmVub2RkJyBkPSdNNS4yOTggMy40MDNjLTEuNDk2IDEuMTY0LTIuODEgMi43NjMtMy43MzMgNC40ODNsLS42NzctLjM2OC42NzcuMzY3YS4yNDYuMjQ2IDAgMCAwIDAgLjIzYy45MjMgMS43MiAyLjIzNyAzLjMyIDMuNzMzIDQuNDgzIDEuNDk5IDEuMTY1IDMuMTMgMS44NTQgNC43MDEgMS44NTQgMS41NzEgMCAzLjIwMi0uNjkgNC43MDItMS44NTUgMS40OTUtMS4xNjQgMi44MDktMi43NjMgMy43MzMtNC40ODJhLjI0Ni4yNDYgMCAwIDAgMC0uMjNjLS45MjQtMS43MTgtMi4yMzgtMy4zMTgtMy43MzQtNC40ODItMS40OTctMS4xNjYtMy4xMjktMS44NTUtNC43MDEtMS44NTUtMS41NyAwLTMuMjAyLjY5LTQuNzAxIDEuODU1Wm0tLjk0LTEuMjI1QzYuMDMuODc4IDcuOTg0IDAgOS45OTggMGMyLjAxNSAwIDMuOTY4Ljg3NiA1LjY0MyAyLjE3OCAxLjY3OSAxLjMwNyAzLjEyOCAzLjA3OCA0LjE0NSA0Ljk3MS4yODQuNTMxLjI4NCAxLjE3IDAgMS43MDItMS4wMTggMS44OTQtMi40NjYgMy42NjQtNC4xNDUgNC45N0MxMy45NjcgMTUuMTI1IDEyLjAxNCAxNiAxMCAxNmMtMi4wMTUgMC0zLjk2OS0uODc2LTUuNjQ0LTIuMTc4QzIuNjc4IDEyLjUxNCAxLjIzIDEwLjc0Mi4yMTMgOC44NWExLjgwMyAxLjgwMyAwIDAgMSAwLTEuNzAyQzEuMjMgNS4yNTUgMi42OCAzLjQ4NCA0LjM1NyAyLjE3N3YuMDAxWm04LjMzNiAzLjExMWEzLjc5MyAzLjc5MyAwIDAgMC01LjM4OCAwIDMuODUxIDMuODUxIDAgMCAwIDAgNS40MjIgMy43OTMgMy43OTMgMCAwIDAgMy42OC45OTIgMy44MjIgMy44MjIgMCAwIDAgMi42OTMtMi43MSAzLjg1IDMuODUgMCAwIDAtLjk4NS0zLjcwNFptLTEuMDM2IDEuMDQzYTIuMzM1IDIuMzM1IDAgMCAwLTIuMjgtLjY0IDIuMzUyIDIuMzUyIDAgMCAwLTEuNjcyIDEuNjgzIDIuMzcgMi4zNyAwIDAgMCAuNjM1IDIuMjkzYy45Mi44OTcgMi4zODUuODg2IDMuMjktLjAyNWEyLjM3IDIuMzcgMCAwIDAgLjAyNy0zLjMxMVonLz48L3N2Zz4=");
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.phone-input-wrapper {
+  display: flex;
+  flex-wrap: wrap; 
+}
+
+.phone-input {
+  flex: 1;
+}
+
+.phone-input-wrapper .field-msg {
+  flex: 0 0 100%;
+}
+
+.phone-input-group {
+    display: flex;
+    position: relative;
+    width: 80px;
+    cursor: pointer;
+}
+
+.phone-input-group input {
+    position: absolute;
+    z-index: 2;
+    top: 0px;
+    left: 4px;
+    width: 95%;
+    height: 20px;
+    margin: auto;
+    height: 10px;
+    border: 1px solid;
+    box-shadow: none;
+    pointer-events: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.country-code-select {
+    border: none;
+}
+
+.phone-input-group:before {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    z-index: 9;
+    top: 12px;
+    right: 8px;
+    border: solid #2d2d2d;
+    border-width: 0 2px 2px 0;
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.phone-input-group:after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    z-index: 9;
+    top: 18px;
+    right: 8px;
+    border: solid #2d2d2d;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+.phone-input-group .country-code-select {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.phone-input-group .theme-signup-country-code-display {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.show_hide_password.icon-hide:after {
+  content: "";
+  height: 2px;
+  width: 100%;
+  display: block;
+  background: #ADB4B8;
+  transform: rotate(33deg);
+  top: 7px;
+  position: absolute;
+  left: 0;
+}
+
+.show_hide_password.icon-show:after {
+  display: none
+}
+.pass_policy,
+.pass_policy_error {
+    color: map-get($default_vars,'color-portal-form-info-message-text');
+    padding-block-start: 10px;
+}
+.pass_policy_error {
+    color: map-get($default_vars,'color-portal-form-warning-message-text');
+    display: block;
+}
+.checkbox_check {
+	position: absolute;
+	z-index: 1;
+	opacity: 0;
+	margin:0px;
+	height:16px;
+	cursor: pointer;
+	width: 16px;
+  &:checked{
+    ~ .checkbox{
+      background-color: map-get($base_vars,'color-primary');
+      border-color: map-get($base_vars,'color-primary');
+    }
+  }
+}
+.checkbox_div {
+	display: flex;
+  height: auto;
+  width: auto;
+  margin-block-end: 30px;
+  padding: 0 !important;
+  label{
+    margin-block-end: 0;
+    display: inline;
+    align-items: flex-start
+  }
+}
+.checkbox_mod{
+	margin-block-end: 50px;
+}
+.checkbox_tick {
+  display: block;
+  height: 5px;
+  width: 8px;
+	border-block-end: 2px solid map-get($base_vars,'color-default');
+	border-inline-start: 2px solid map-get($base_vars,'color-default');
+	transform: rotate(-45deg);
+	margin: 2px;
+}
+.signin_head {
+	transition: all .1s ease-in-out;
+  margin-block-end: 8px;
+}
+
+@if map-get($user_layout_vars, 'portal_style')==01 {
+  .service_name,
+  .backup_desc,.pass_name,
+  .titlename {
+    display: block;
+    color: map-get($base_vars,'color-secondary');
+  }
+  .titlename {
+    display: none;
+    margin-block-end: 20px;
+  }
+}
+@if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+  .service_name,
+  .backup_desc,.pass_name,
+  .titlename {
+    display: block;
+    color: map-get($default_vars,'color-portal-form-name');
+    text-align: center;
+    font-size: map-get($default_vars,'font-size-portal-form-name');
+    font-weight: map-get($default_vars,'font-weight-portal-form-name');
+    line-height: map-get($default_vars,'font-line-height-portal-form-name');
+  }
+  .service_name{
+    display: none;
+  }
+  .titlename {
+    display: none;
+    margin-block-end: 16px;
+    text-align: center;
+  }
+}
+
+.extramargin{
+	margin-block-start:10px;
+}
+
+.textbox_div {
+	display: block;
+	margin-block-end: 20px;
+	position: relative;
+}
+.textbox_label {
+	display: block;
+	padding-block-end: 10px;
+}
+.textbox {
+	display: block;
+	outline: none;
+	transition: all .2s ease-in-out;
+}
+.textindent42 {
+	text-indent: 44px;
+}
+.textindent62 {
+	text-indent: 56px;
+}
+.textintent52 {
+	text-indent: 46px;
+}
+::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    pointer-events: none;
+    position: absolute;
+    right: 0px;
+}
+.errorborder {
+	border: 2px solid map-get($default_vars,'color-portal-form-error-message-text');
+}
+#otp_container.errorborder {
+  border: none;
+}
+.btn,
+.btn.blue{
+	cursor: pointer;
+	display: block;
+	outline: none;
+	margin-inline-start: auto;
+	margin-block-end: 0;
+	transition: all .2s ease-in-out;
+  padding-block-start:8px;
+  padding-block-end:8px;
+  padding-inline-start:17px;
+  padding-inline-end:17px;
+}
+.grey {
+	background-color: map-get($base_vars,'color-light');
+	color: map-get($base_vars,'color-secondary');
+	letter-spacing: 0px;
+}
+.green {
+	background-color: map-get($default_vars,  'color-portal-form-button-submit-background');
+	color: map-get($default_vars,  'color-portal-form-button-submit');
+}
+.changeloadbtn {
+	display: block;
+	height: 44px;
+	width: 44px;
+	border-radius: 0px;
+	padding: 0px !important;
+}
+.changeloadbtn{
+  &:before {
+  	content: "";
+  	height: 20px;
+  	width: 20px;
+  	display: inline-block;
+    border: 3px solid map-get($default_vars,'color-portal-form-button-submit');
+  	border-block-start: 3px solid map-get($default_vars,'color-portal-form-button-submit-background');
+  	border-radius: 50%;
+  	animation: spin .5s linear infinite;
+  }
+}
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}
+.hellouser,
+#recovery_user_info,
+.user_info, .otpmobile{
+  display: inline-flex;
+  padding-block-start:10px;
+  padding-block-end:10px;
+  padding-inline-start:12px;
+  padding-inline-end:12px;
+  border: 1px solid map-get($default_vars,  'color-portal-form-field-border');
+  margin-block-end: 12px;
+  max-inline-size: 100%;
+  flex-wrap: wrap;
+  border-radius: 5px;
+}
+.username,
+#recovery_user_info .menutext,
+.user_info .menutext, .otpmobile #mobileotp{
+	display: inline-block;
+	max-inline-size: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-inline-end: 10px;
+	float: left;
+  float: inline-start;
+  color: map-get($base_vars,'color-secondary');
+}
+.Notyou,
+#recovery_user_info .change_user,
+.user_info .change_user, .otpmobile .change{
+	display: inline-block;
+}
+.backbtn {
+	display: none;
+	float: left;
+  float: inline-start;
+	height: 28px;
+	width: 28px;
+	border-radius: 50%;
+	position: absolute;
+  padding-block-start:0px;
+  padding-block-end:0px;
+  padding-inline-start:5px;
+  padding-inline-end:5px;
+	cursor: pointer;
+	overflow: hidden;
+	transition: all .1s ease;
+}
+.zeroheight{
+	width:0px;
+	height:0px;
+	overflow: hidden;
+	display: block;
+}
+#captcha,#bcaptcha{
+  width:50%;
+  display: inline-block;
+}
+.recovery_container{
+  #captcha,#bcaptcha{
+    margin-inline-start: 35px;
+  }
+}
+.recovery_container {
+  #captcha{
+    margin-inline-start: 0;
+    order: 1;
+  }
+  #captcha_img {
+    order: 2;
+  }
+  .reloadcaptcha {
+    order: 3;
+  }
+}
+#captcha_img,#bcaptcha_img{
+  width: auto;
+  border-inline-start: none;
+  padding-inline-start: 5px;
+}
+#captcha_img img,#bcaptcha_img img{
+  height: 40px;
+}
+.reloadcaptcha{
+  height: 30px;
+  width: 30px;
+  display: flex;
+  background: map-get($base_vars,'color-light');
+  border-radius: 50px;
+  position: relative;
+  cursor: pointer;
+  margin-inline-start: 15px;
+  &:after{
+    content: "";
+    align-content: center;
+    display: block;
+    position: absolute;
+    color: map-get($base_vars,'color-text');
+    height: 40%;
+    width: 40%;
+    border-radius: 100%;
+    border: 2px solid;
+    top: 8px;
+    left: 7px;
+  }
+  &:before{
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-block-end: 2px solid;
+    border-inline-end: 2px solid;
+    left: 10px;
+    top: 6px;
+    transform: rotate(314deg);
+    box-shadow: 4px 5px 0px map-get($base_vars,'color-light');
+    z-index: 2;
+    color: map-get($base_vars,'color-text');
+  }
+}
+#captcha_container{
+	display: none;
+  align-items: center;
+  &[style="display: block;"],
+  &[style="display:block;"]{
+    display: flex !important;
+  }
+  .fielderror{
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+}
+.errorlabel,
+.field_error {
+    color: map-get($default_vars,'color-portal-form-error-message-text');
+}
+.fielderror a {
+    text-decoration: none;
+    color: map-get($default_vars,'color-link');
+}
+.bluetext,
+#recovery_user_info .change_user,
+.user_info .change_user, .otpmobile .change {
+	color: map-get($base_vars,'color-primary');
+	cursor: pointer;
+}
+#country_code_select {
+	width: 50px;
+  height: 40px;
+  position: absolute;
+  opacity: 0;
+  display: none;
+  z-index: 0;
+}
+.select_country_code{
+	width: 50px;
+  height: 40px;
+  display: inline-block;
+  float: left;
+  float: inline-start;
+  position: absolute;
+  line-height: 40px;
+  text-align: center;
+  color: black;
+  display: none;
+  z-index: 0;
+}
+.searchparent {
+	height: auto;
+}
+.searchlbl {
+	display: inline-block;
+	margin-block-start: 15px;
+	margin-block-end: 10px;
+	margin-inline-start: 10px;
+}
+
+.cntrysearch {
+	width: 380px;
+	height: 32px;
+	border-radius: 2px;
+  padding-block-start:8px;
+  padding-block-end:8px;
+  padding-inline-start:10px;
+  padding-inline-end:10px;
+	background: map-get($base_vars,'color-light');
+	outline: none;
+	border: none;
+	margin-block-start: 10px;
+}
+
+.select2-results__option {
+	list-style-type: none;
+	height: 40px;
+  padding-block-start:12px;
+  padding-block-end:12px;
+  padding-inline-start:0;
+  padding-inline-end:0;
+  display: flex;
+  .cc{
+    margin-inline-start: auto;
+  }
+}
+
+.select2-search__field {
+	width: 100%;
+	height: 32px;
+	border: none;
+	outline: none;
+	background: map-get($base_vars,'color-light');
+	border-radius: 2px;
+  margin-block-start:10px;
+  margin-block-end:0;
+  margin-inline-start:0;
+  margin-inline-end:0;
+  padding-block-start:10px;
+  padding-block-end:10px;
+  padding-inline-start:8px;
+  padding-inline-end:8px;
+}
+
+.select2-selection {
+	display: flex;
+	outline: none;
+	height: 40px;
+	text-align: center;
+	padding: 10px;
+	cursor: pointer;
+  align-items: center;
+}
+
+.selection {
+	transition: all .2s ease-in-out;
+	-webkit-user-select: none;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 0px;
+	height: 43px;
+}
+
+#select2-combobox-results {
+	padding-inline-start: 0px;
+	max-block-size: 200px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 400px;
+	margin-block-start: 10px;
+	margin-block-end: 0px;
+	background: white;
+}
+
+.select2-container--open {
+	z-index: 10;
+	background: map-get($base_vars,'color-default');
+	box-shadow: 0 2px 4px 0 RGBA(map-get($default_vars,'color-secondary-rgba'), 0.13);
+  padding-block-start:0;
+  padding-block-end:0;
+  padding-inline-start:10px;
+  padding-inline-end:10px;
+  left: 2px !important;
+  .select2-selection{
+    padding: 0;
+  }
+}
+
+.select2 {
+	position: absolute;
+	background: transparent;
+	box-shadow: none;
+	display:none;
+}
+.select2-results__options{
+	overflow-y: auto;
+  max-block-size: 200px;
+}
+.selection{
+	width:auto;
+	width:-moz-fit-content;
+  width:-webkit-fit-content;
+	margin: auto;
+	display: block;
+}
+.select2-search--hide,.select2-selection__clear {
+  display: none;
+}
+#otp_container,#enableotpoption,
+#mfa_ga_container,#mfa_otp_container,
+#mfa_totp_container,#recoverybtn,
+#recovery_container,#enableforgot,
+#enablesaml,.trustbrowser_ui,
+#backup_ver_container,#backup_container,
+#enablemore,.password_expiry_container,
+.terminate_session_container,
+#problemsignin, .tryanother,
+.error_portion,
+#terminate_session_div,#Last_password_div,
+#password_matched_div,#username_div,
+#other_options_div,#confirm_otp_div,
+#recovery_device_div,#email_confirm_div,
+#mobile_confirm_div,#mfa_totp_section,
+#change_password_div,#contact_support_div,.hide,#loading_div{
+	display:none;
+}
+.titlename.service_logo, #lookup_div .head_info {
+	display:none !important;
+}
+.info_head{
+  margin-block-end: 15px;
+}
+.errorlabel {
+  color: map-get($default_vars,'color-portal-form-error-message-text');
+}
+.fielderror{
+	display:none;
+	margin-block-start: 10px;
+}
+@if map-get($user_layout_vars, 'portal_style')==01{
+  .textbox_actions,
+  .textbox_actions_saml,
+  .textbox_actions_more {
+    display: block;
+    margin-block-start: 20px;
+    height: 20px;
+  }
+  .bluetext_action {
+    display: inline-block;
+    float: left;
+    float: inline-start;
+    color: map-get($default_vars,'color-link');
+    cursor: pointer;
+  }
+  .bluetext_action a{
+    text-decoration: none;
+  }
+}
+@if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+  .textbox_actions,
+  .textbox_actions_saml,
+  .textbox_actions_more {
+    display: block;
+    margin-block-start: 8px;
+    height: 16px;
+  }
+  .bluetext_action {
+    display: inline-block;
+    float: left;
+    float: inline-start;
+    color: map-get($default_vars,'color-primary');
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    text-decoration: underline;
+  }
+  .bluetext_action a{
+    text-decoration: underline;
+  }
+  .hellouser,
+  #recovery_user_info,
+  .user_info, .otpmobile{
+    width: 100%;
+    justify-content: space-between;
+    .bluetext{
+      color: map-get($default_vars,'color-link');
+    }
+  }
+}
+.bluetext_action_right {
+  float: right;
+  float: inline-end;
+}
+
+.Alert,
+.Errormsg{
+	margin: auto;
+	height: auto;
+	min-inline-size: 200px;
+	width: fit-content;
+	width: -moz-fit-content;
+	max-inline-size:600px;
+	background-color: map-get($base_vars,'color-secondary');
+	border-radius: 6px;
+	position: fixed;
+	top: -100px;
+	left: 0px;
+	right: 0px;
+	transition: all .2s ease;
+  padding-block-start:0;
+  padding-block-end:0;
+  padding-inline-start:20px;
+  padding-inline-end:20px;
+	z-index:2;
+  display: flex;
+  align-items: center;
+  margin-block-start: -20px;
+}
+.tick_icon,.error_icon{
+	display: inline-block;
+	height: 20px;
+	width: 20px;
+	background-color: map-get($base_vars,'color-primary');
+	border-radius: 50%;
+	background-size: 60px;
+	margin: 15px;
+	float: left;
+  float: inline-start;
+}
+.tick_icon{
+  &:after{
+		display: block;
+		content: "";
+		height: 5px;
+		width: 9px;
+		border-block-end: 2px solid map-get($base_vars,'color-default');
+		border-inline-start: 2px solid map-get($base_vars,'color-default');
+		transform: rotate(-45deg);
+		margin: 5px;
+	}
+}
+
+.alert_message,
+.error_message{
+	display: inline-block;
+	color: map-get($base_vars,'color-default');
+  margin-block:16px;
+  margin-inline-start:0;
+	margin-inline-end: 20px;
+	max-inline-size: 510px;
+}
+.select2-results__options{
+  padding-inline-start:0px;
+}
+.showcountry_code {
+	height: 42px;
+  display: flex !important;
+  align-items: center;
+}
+.textindent70 {
+	text-indent: 70px;
+}
+.countrybox {
+	width: 400px;
+	height: 220px;
+	overflow: auto;
+}
+.focusmanage {
+	position: absolute;
+	z-index: 10;
+	width: 400px;
+	height: 266px;
+	padding: 10px;
+	margin-block-start: -25px;
+	background: map-get($base_vars,'color-default');
+	box-shadow: 0 2px 4px 0 map-get($base_vars,'color-secondary');
+	border-radius: 2px;
+}
+.nopassword_container {
+    display: none;
+    background: map-get($base_vars,'color-light');
+    border: 1px solid map-get($base_vars,'color-border');
+    border-radius: 5px;
+    width: 400px;
+    height: auto;
+    position: absolute;
+    bottom: 50px;
+    padding: 20px;
+}
+.nopassword_container{
+  position:static !important;
+}
+.nopassword_icon{
+  display: none;
+}
+.mailsearch {
+	width: 400px;
+	height: 30px;
+	padding: 0px;
+	border: none;
+	position: absolute;
+}
+
+#ui-id-1 {
+	height: 200px;
+	width: auto;
+	outline: none;
+	border: none;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+.ui-menu-item-wrapper {
+	overflow: auto;
+}
+
+.nonclickelem,.user-signup-form-container .signupotpcontainer .resendotp.nonclickelem{
+	color: map-get($base_vars,'color-secondary');
+	pointer-events: none;
+}
+
+.trustdevicebox{
+	width:500px;
+	min-block-size:auto !important;
+}
+.trustdevice {
+    width: auto;
+    float: left;
+    float: inline-start;
+    margin-inline-end: 18px;
+    min-inline-size: 100px;
+    margin-block-end: 0px;
+}
+
+.loadwithbtn {
+	display: inline-block;
+	height: 22px;
+	width: 22px;
+	border: 3px solid map-get($default_vars,  'color-portal-form-button-submit');
+	border-radius: 50%;
+	position: absolute;
+	margin: -2px;
+	border-inline-start: 3px solid transparent;
+	animation-name: rotate1;
+	animation-iteration-count: infinite;
+	animation-duration: 1s;
+	animation-timing-function: linear;
+}
+@keyframes rotate1 {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+  	transform: rotate(360deg);
+  }
+}
+.waitbtn .waittext,.loadbtntext{
+	display: inline-block;
+  text-indent: 25px;
+}
+#waitbtn{
+	display:none;
+}
+.notnowbtn .loadwithbtn{
+  border: 3px solid map-get($base_vars,'color-secondary');
+  border-inline-start: 3px solid transparent;
+}
+.trustdevice .loadwithbtn{
+  display: none;
+}
+.bottom_line_opt{
+  text-align: center;
+}
+.bottom_option{
+  color: map-get($base_vars,'color-link');
+  cursor: pointer;
+  width: max-content;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.recovery_container{
+  .otp_container{
+    display: block;
+    width: 100%;
+    padding-block:0;
+    padding-inline:15px;
+    transition: all .2s ease-in-out;
+    text-indent: 0px;
+    border:1px solid;
+    font-family: map-get($default_vars,  'font-family-portal-form-field');
+		font-size: map-get($default_vars,  'font-size-portal-form-field');
+		text-transform: map-get($default_vars,  'font-transform-portal-form-field');
+		font-weight: map-get($default_vars,  'font-weight-portal-form-field');
+		line-height: map-get($default_vars,  'font-line-height-portal-form-field');
+		letter-spacing: map-get($default_vars,  'font-letter-spacing-portal-form-field');
+    background: map-get($default_vars,  'color-portal-form-field-background');
+    border-color: map-get($default_vars,  'color-portal-form-field-border');
+    color: map-get($default_vars,  'color-portal-form-field');
+    height: 42px;
+    &:after{
+      content: attr(placeholder);
+      height: 42px;
+      line-height: 42px;
+      position: absolute;
+      color: map-get($default_vars,  'color-portal-form-field');
+      left: 15px;
+      top: 0px;
+      z-index: 1;
+    }
+    &.hidePlaceHolder{
+      &:after{
+        z-index: -1 !important;
+      }
+    }
+  }
+  .info_head{
+    .backoption{
+      width: 30px;
+      height: 30px;
+      float: left;
+      float: inline-start;
+      color: map-get($base_vars,'color-link');
+      display: inline-block;
+      cursor: pointer;
+      &:after{
+        content: '\2190';
+        font-size: 16px;
+      }
+    }
+  }
+}
+.customOtp {
+  border: none;
+  outline: none;
+  background: transparent;
+  height: 100%;
+  font-size: 16px;
+  text-align: start;
+  width: 22px;
+  padding: 0px;
+}
+.support_sections{
+  .info_head{
+    display: block;
+    font-size: map-get($default_vars,  'font-size-portal-form-heading');
+    margin-block-end: 20px;
+    line-height: 30px;
+    overflow: auto;
+    transition: all .1s ease-in-out;
+  }
+  #headtitle{
+    font-size: inherit;
+    line-height: inherit;
+    display: block;
+  }
+  .head_info{
+  	font-size:map-get($default_vars, 'font-size-text');
+  	line-height: map-get($default_vars, 'font-line-height-text');
+  }
+}
+.fed_2show{
+  padding-block-start: 0;
+  border-block-start: 0 solid map-get($base_vars,'color-border');
+  overflow: hidden; 
+}
+@if map-get($user_layout_vars, 'portal_style')==01{
+  .signin_fed_text{
+    color: map-get($base_vars,'color-secondary') !important;
+    font-size:map-get($default_vars, 'font-size-text') !important;
+    font-weight:map-get($default_vars, 'font-weight-text') !important;
+  }
+}
+.rec_modes_contact_support{
+  display: none !important;
+}
+.theme-forgotpassword-back{
+  text-align:center;
+  a {
+    color: map-get($base_vars,'color-link');
+  }
+}
+.form-field-datetime-formula {
+  position: relative;
+}
+
+.form-field-icon-formula {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  transform: translate(0, -50%);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 0;
+}
+
+.form-field-icon-formula svg {
+  width: 20px;
+  height: 20px;
+}
+
+.user-signup-choice-field {
+	display: inline-flex;
+	margin-block-start: 8px;
+	flex-wrap: wrap;
+	.form-field-choice-container {
+		display: flex;
+		align-items: center;
+		margin-block-start: 2px;
+		margin-inline-start: 12px;
+		height: 20px;
+		input[type="radio"] {
+			margin-right: 8px;
+			&+label {
+				display: flex;
+				margin-block-end: 0;
+			}
+		}
+	}
+}
+.newsletter-container {
+	.form-field-and-message {
+		display: flex;
+		align-items: baseline;
+		.newsletter-message {
+			margin-inline-start: 8px;
+		}
+	}
+}
+.error_content
+{
+	text-align:center;
+}
+.error_content .error_header
+{
+	font-size: 20px;
+  font-weight: 500;
+  margin-block-start: 30px;
+  line-height: 26px;
+  color:map-get($default_vars,'color-portal-form-error-message-text')
+}
+.error_content .error_desc
+{
+  font-size: 16px;
+  margin-block-end: 30px;
+  margin-block-start: 10px;
+  margin-inline-end: 0;
+  margin-inline-start: 0;
+  line-height: 16px;
+  color: #000000cc;
+}
+#change_password_div .bottom_line_opt .bottom_option {
+display:none
+}
+.user-signup-form-container .field-error-msg {
+  color: #EB4C5C;
+  display: none;
+}
+.user-signup-field-mandatory {
+  position: relative;
+}
+
+.user-signup-field-mandatory:after {
+  content: "*";
+  margin-inline-start: 3px;
+  color: red;
+}
+#terminate_session_div #contact_support {
+    display: none;
+}
+.user-signup-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-block-start:30px;
+    margin-block-end:50px;
+    margin-inline-start:auto;
+    margin-inline-end:auto;
+    background: #ffffff;
+}
+
+@media all and (min-width: 768px) {
+    .user-signup-container {
+        width: 500px;
+        margin-block-start:30px;
+        margin-block-end:50px;
+        margin-inline-start:auto;
+        margin-inline-end:auto;
+    }
+}
+
+.user-signup-disabled {
+    padding: 40px;
+    margin-block-start:0px;
+    margin-block-end:0px;
+    margin-inline-start: auto;
+    margin-inline-end: auto;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #e7e5e5;
+    margin-block-start: 20px;
+    box-shadow: 2px 2px 0px #f2efef;
+}
+.user-signup-container .user-signup-error-header {
+    text-align: center;
+}
+.user-signup-container .user-signup-error-text {
+    line-height: 1.8;
+    color: #333;
+    padding-block-start: 20px;
+    padding-block-end: 20px;
+    padding-inline-start: 0;
+    padding-inline-end: 0;
+}
+.user-signup-back-button{
+  border-radius: 2px;
+  color: #ffffff;
+  padding-block-start:10px;
+  padding-block-end:10px;
+  padding-inline-start:20px;
+  padding-inline-end:20px;
+  position: relative;
+  text-decoration: none;
+  border:0 solid;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  background-color: map-get($default_vars,  'color-portal-form-button-submit-background');
+  color: map-get($default_vars,  'color-portal-form-button-submit');
+  margin-inline-start:auto;
+  margin-inline-end:auto;
+  margin-block-start:0;
+  margin-block-end:0;
+}
+.error_icon {
+    background-color: #FF676F;
+    position: relative;
+    display: flex;
+    flex: 0 0 20px;
+}
+.error_icon:before, .error_icon:after {
+    position: absolute;
+    left: 9px;
+    top: 5px;
+    content: ' ';
+    height: 10px;
+    width: 2px;
+    background-color: #FFFFFF;
+}
+
+.error_icon:before {
+    transform: rotate(45deg);
+}
+
+.error_icon:after {
+    transform: rotate(-45deg);
+}
+
+// SIGNUP STYLE 02 
+
+@if map-get($user_layout_vars, 'portal_style')==02 or map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04{
+  .user-signup-form-fields-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    row-gap: 16px;
+    column-gap: 10px;
+    & > * {
+      width: 100%;
+    }
+    .za-firstname-container, .za-lastname-container, .za-companyname-container, .za-jobTitle-container, .za-city-container {
+      width: calc(50% - 5px);
+    }
+    .phone-input-group:before {
+      top: 20px;
+    }
+    .phone-input-group:after {
+      top: 25px;
+    }
+    .phone-input-group input {
+      left: 0;
+      width: 100%;
+    }
+    .user-signup-form-field-wrapper:has(select) label {
+        visibility: hidden;
+    }
+    .user-signup-form-field-wrapper, .za-captcha-container{
+      margin-block-end: 0;
+      position: relative;
+      .user-signup-field-mandatory{
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        translate: 0 0px;
+        z-index: 2;
+        transition: all 0.1s linear;
+        pointer-events: none;
+        margin-block-end: 0;
+        &::after{
+          display: none;
+        }
+      }
+      .float-label {
+        top: 6px;
+        font-size: 10px!important;
+        line-height: 14px;
+      }
+    }
+    .za-captcha-container{
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 16px;
+      column-gap: 10px;
+      justify-content: flex-start;
+      align-items: center;
+      .user-signup-field-mandatory{
+          width: 100%;
+      }
+      .form-field-and-message, .za-captcha{
+          width: calc( 50% - 5px );
+      }
+    }
+  }
+  .signin_container{
+    .fed_2show{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      row-gap: 16px;
+      column-gap: 10px;
+    }
+    .signin_fed_text {
+      width: 100%;
+      margin-block-start: 1rem;
+      margin-block-end: 0;
+      text-align: center;
+      position: relative;
+      color: map-get($default_vars,'color-portal-form-name') !important;
+      font-size:map-get($default_vars, 'font-size-portal-form-name') !important;
+      font-weight:map-get($default_vars, 'font-weight-portal-form-name') !important;
+      line-height:map-get($default_vars, 'font-line-height-portal-form-name') !important;
+    }
+
+    .signin_fed_text:before{
+      display: block;
+      content: "";
+      width: 64px;
+      height: 1px;
+      background: #000;
+      position: absolute;
+      top: 50%;
+      left: 12%;
+    }
+
+    .signin_fed_text:after{
+      display: block;
+      content: "";
+      width: 64px;
+      height: 1px;
+      background: #000;
+      position: absolute;
+      top: 50%;
+      right: 12%;
+    }
+    .fed_div{
+      margin: 4px;
+      background: #f5f5f5;
+      flex: 1;
+      max-width: 50%;
+      border-radius: 0;
+      box-shadow: none;
+      text-align: center;
+      height: 56px;
+      .fed_center_google,.fed_center{
+        padding: 18px;
+        margin: 0;
+        width: 100%;
+      }
+    }
+    .fedicon-facebook_small:before{
+      color: #1877F2;
+    }
+  }
+  .Alert{
+    width: 100%;
+    background-color: #d6ffd8;
+    padding-block: 8px;
+    padding-inline: 8px;
+    border: 1px solid #4caf50;
+    .tick_icon{
+      height: 24px;
+      width: 24px;
+      background-color: #4caf50;
+      &:after {
+        display: block;
+        content: "";
+        height: 5px;
+        width: 9px;
+        border-block-end: 2px solid #ffffff;
+        border-inline-start: 2px solid #ffffff;
+        transform: rotate(-45deg);
+        margin: 7px;
+      }
+    }
+    .alert_message{
+      color: #000;
+      line-height: 24px;
+      margin-inline-end: 24px;
+      span{
+        font-weight: 600;
+      }
+    }
+  }
+  .signin-iframe{
+    min-height: 25vh;
+  }
+}
+
+// SIGNUP STYLES ENDS
+
+// RTL STYLES
+
+html[dir="rtl"] {
+  .signin_box {
+    padding:2px;
+  }
+  .checkbox_label, .checkbox {
+    float: right;
+  }
+  .user-signup-form-container {
+    .za-country_code-container {
+      &:after {
+        left:10px;
+        right:auto;
+      }
+    }
+  }
+  .signin_head {
+    span {
+      display: inline;
+    }
+  }
+  .form-field-icon-formula {
+    left: 10px;
+    right:auto;
+  }
+  .signin_container {
+    .btn {
+      &.blue {
+        span {
+          display:inline-block;
+        }
+      }
+    }
+  }
+
+  .recover_sections {
+    #captcha_container {
+      .fielderror {
+        right:0px;
+        left:auto;
+        top:80%;
+      }
+    }
+    .btn {
+      &.blue {
+        margin-block-start:10px;
+      }
+    }
+    .textbox_div {
+      margin-block-end:30px;
+    }
+    #headtitle {
+      display: block;
+    }
+  }
+  .fed_2show {
+    .signin_fed_text {
+      margin-block-start:10px;
+      margin-block-end:10px;
+    }
+    .fed_div {
+      float:right;
+      &.small_box {
+        margin-right:0px;
+        margin-inline-end:10px;
+        margin-block-end:10px;
+      }
+    }
+  }
+  .bottom_line_opt {
+    margin-block-start:10px;
+    margin-block-end:10px;
+  }
+  .tick_icon{
+    &:after{
+  		transform: rotate(45deg);
+  	}
+  }
+}
+.za-submitbtn-otp {
+  display: flex;
+  justify-content: end;
+}
+.session_terminate_desc {
+  display: inline-block;
+  margin-inline-start: 8px;
+  line-height: normal;
+}
+/* RTL changes starts */
+html[dir="rtl"] {
+  .theme-header{
+    .theme-responsive-goback{
+      svg{
+        @media(max-width: 991px){
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+/* RTL changes ends */
+
+
+
+// Popup Portal Styles
+@if map-get($user_layout_vars, 'portal_style')==03{
+  .theme-portal-form-container{
+    margin-inline: 0;
+    width: 100%;
+    height: 100%;
+    margin-block: 0;
+    border-radius: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    iframe {
+      flex-grow: 1;
+    }
+  }
+  .theme-portal-popup {
+    position: fixed;
+    left: 0%;
+    bottom: 0;
+    padding: 40px;
+    z-index: 258;
+    display: flex;
+    width: 100%;
+    height: 75vh;
+    flex-direction: column;
+    animation: slideUp 0.3s linear;
+    background: #fff;
+    box-shadow: 0px 0px 80px 0px rgba(0, 0, 0, 0.32);
+
+    @include respond-to(mediumdevice) {
+      width: 540px;
+      height: 580px;
+      padding: 80px;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+    } 
+    iframe {
+      border: 0px;
+      flex-shrink: 1;
+      height: 100%;
+    }
+    .theme-close-portal-button{
+      background: transparent;
+      position: absolute;
+      top: 40px;
+      right: 40px;
+    }
+  }
+  .theme-close-portal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 256;
+    background: rgba(0,0,0,0.5);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(500px);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+@if map-get($user_layout_vars, 'portal_style')==04{
+  .theme-portal-form-container{
+    margin-inline: 0;
+    width: 100%;
+    height: 100%;
+    margin-block: 0;
+    border-radius: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .theme-portal-popup {
+    position: fixed;
+    top: 0%;
+    right: 0%;
+    z-index: 256;
+    width: 540px;
+    background: #fff;
+    height: 100vh;
+    display: flex;
+    gap: 24px;
+    flex-direction: column;
+    @media(max-width: 992px){
+      width: 90%;
+      padding: 40px;
+    }
+    iframe {
+      border: 0px;
+      flex-shrink: 1;
+      min-height: 50%;
+    }
+    div:first-of-type {
+      height: 100%;
+    }
+  
+    padding: 40px;
+    box-shadow: 0px 0px 80px 0px rgba(0, 0, 0, 0.32);
+    animation: slide-in-filter 0.3s linear;
+    .theme-close-portal-button{
+      background: transparent;
+      position: absolute;
+      top: 40px;
+      right: 40px;
+    }
+  }
+  .theme-close-portal-overlay {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 255;
+    background: rgba(0,0,0,0.4);
+  }
+}
+@if map-get($user_layout_vars, 'portal_style')==03 or map-get($user_layout_vars, 'portal_style')==04 {
+  #notificationBar, .theme-footer-area, #product_quick_look, [data-headercontainer]{
+    display: none !important;
+  }
+  .theme-noaccount-signup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  body:has(.theme-portal-form-container#main-content:first-child) {
+    height: 100vh;
+    .theme-portal-form-container {
+      height: fit-content;
+      margin-block-start: 20vh;
+      padding: 1rem;
+      max-width: 450px;
+      margin-inline: auto;
+    }
+  }
+}
+
+@if map-get($user_layout_vars, 'portal_style')==01 {
+  .theme-footer-area {
+    display: none !important;
+  }
+}
+
+// Country code selector css fix for mobile
+@media screen and (max-width: 991px) {
+
+  #login_id.textindent62 {
+    text-indent: 80px;
+  }
+
+  .MobflagContainer {
+    left: 10px;
+
+    .select_country_code {
+      display: inline;
+      direction: ltr;
+      position: relative;
+      width: 40px;
+      line-height: 40px;
+    }
+    .arrow_position {
+      position: relative;
+      top: 15px;
+    }
+  }
+
+}

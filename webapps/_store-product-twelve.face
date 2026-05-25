@@ -1,0 +1,134 @@
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+  <div class="zpcontainer ">
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+        {% include '_store-product-image-three' %}
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-varients-container">
+
+        {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+          <div class="theme-tag-contianer">
+            <nav aria-label="{{i18n.get("product.label.tags")}}">
+              <ul class="theme-tag-list-container">
+                {% for tag in product.tags %}
+                  <li>
+                    <a class="theme-product-tag-url" data-zs-product-tag href="{{ tag.url }}">
+                      <span class="theme-product-tag-name"  data-zs-tag-name="{{tag.name}}">{{ tag.name }}</span>
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        {% endif %}
+
+        <div class="theme-product-name">
+          <h1 data-zs-product-name>{{ product.name }}</h1>
+        </div>
+
+        {% if product.short_description %}
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+        {% endif %}
+
+        <div class="theme-prod-non-returnable-out-of-stock">
+          {% if !product.is_returnable %}
+            <div class="theme-prod-non-returnable" data-zs-product-non-returnable>
+            {{i18n.get("product.label.non_returnable")}}
+            </div>
+          {% endif %}
+          <div class="theme-product-stock-availability-details">
+            {% if product.has_variants %}
+              {% for variant in product.variants %}
+                <span  class="theme-prod-stock-details" data-variant-id-stock="{{ variant.variant_id }}" data-stock-avail="{{variant.is_out_of_stock}}" style="display:none;">
+                  {{i18n.get("product.message.out_of_stock")}}
+                </span>
+              {% endfor %}
+            {% else %}
+              {% if product.is_out_of_stock == true  %}
+                <span  data-zs-outofstock class="theme-prod-stock-details {% if product.is_out_of_stock == true %}theme-out-of-stock {% else %} theme-stock-background-color{% endif %}">
+                    {{i18n.get("product.message.out_of_stock")}}
+                </span>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+
+        {% if product.is_product_review_enabled %}
+          <div class="theme-rating-review-container">
+            <div class="theme-rating-review" data-comments-summary = "average-rating-review-count-write-review"></div>
+          </div>
+        {% endif %}
+
+        {% include '_store-product-pricing-one' %}
+       
+        {% if product.has_variants %}
+          <div class="theme-product-varients-area">
+            {% include "_store-product-variants-one" %}
+          </div>
+        {% endif %}
+
+        {% include "_store-product-custom-field-two" %}
+
+        {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+          <details class="theme-product-coupon" data-coupon-container>
+            <summary class="theme-coupon-summary"><div class="theme-coupon-heading">Available Offer</div>
+              <svg  xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none"><path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black">						</path>
+              </svg>
+            </summary>
+            <div class="theme-product-varients-row" style="width: 100%;">
+              <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+            </div>
+          </details>
+	    {% endif %}
+
+        {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+                <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+                </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="theme-cart-wishlist">
+          {% include "_store-product-quantity-add-to-cart-five" %}
+        </div>
+
+        {% if product.is_social_share_enabled %}
+          <div class="theme-social-share">
+            <h3> {{i18n.get("blog.post.share")}} : </h3>
+            <div class="theme-product-social-share" data-zs-product-socialshare data-zs-app="social_share" data-style="{{product.social_share_options.style}}" data-align="{{product.social_share_options.align}}" data-count="{{product.social_share_options.show_count}}"></div>
+          </div>
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      var shareLink = document.querySelector(".theme-social-share");
+      function sharePageLink() {
+          var currentPageUrl = window.location.href;
+          if (navigator.share) {
+              navigator.share({
+                  url: currentPageUrl
+              }).catch((error) => {
+                  console.error('Error sharing link:', error);
+              });
+          } else {
+              console.log('Sharing not supported on this device');
+              console.log('Page link:', currentPageUrl);
+          }
+      }
+      shareLink.addEventListener("touchstart", sharePageLink);
+  });
+</script>

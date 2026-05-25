@@ -1,0 +1,12 @@
+<div class="theme-currency-label" data-zs-currency-label>{{i18n.get("currency.label")}} : </div>
+<ul data-theme-currency-list-ul="mymenu1">
+  {% for currency in currencies %}
+    <li data-theme-currency-list onclick="currentCurrency(this)" data-zs-currency-code="{{ currency.currency_code }}" {% if currency.is_base_currency %}data-theme-base-currency{%endif %}>
+      {{ currency.currency_code }}
+    </li>
+  {% endfor %}
+</ul>
+<div class="tooltip" data-theme-currency-tooltip>
+  <svg class="tooltip-svg" xmlns="http://www.w3.org/2000/svg" id="Layer_2" data-name="Layer 2" viewBox="0 0 430 430"><defs/><g id="Layer_1-2" data-name="Layer 1"><path d="M367 63a214 214 0 0 0-304 0 214 214 0 0 0 152 367 214 214 0 0 0 215-215c0-57-22-111-63-152Zm21 152a173 173 0 0 1-346 0 173 173 0 0 1 346 0Z"/><path d="M236 176v154a21 21 0 0 1-42 0V176a21 21 0 1 1 42 0ZM236 101a21 21 0 0 1-2 10 21 21 0 0 1-15 10 23 23 0 0 1-6 1 24 24 0 0 1-6-2 21 21 0 0 1-13-15 20 20 0 0 1 3-14 21 21 0 0 1 16-11 22 22 0 0 1 10 1 19 19 0 0 1 5 3 23 23 0 0 1 4 5 21 21 0 0 1 4 12Z" /></g></svg>
+  <span class="tooltiptext">{{i18n.get("currency.message.error.not_configured")}}</span>
+</div>

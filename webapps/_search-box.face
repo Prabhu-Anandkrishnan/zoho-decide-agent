@@ -1,0 +1,152 @@
+{% if page.template_vars.header_style == "02" %}
+  <div class="theme-search-and-mini-cart-group-item" data-zs-search-container>
+    <div class="theme-search-field-container fashion-theme-search-field-container" data-search="zptheme-search-container">
+      <form method="get" action="{{ page.search_url }}">
+        <a role="button" class="theme-search-go-icon" aria-label="{{i18n.get("search.page.title")}}" onclick="submitSearch(this)" data-zs-search-icon tabindex='0' onkeypress="handleKeyPress(event, this)">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M10.9658 19.9313C6.02208 19.9313 2 15.9092 2 10.9654C2 6.02167 6.02208 2 10.9658 2C15.9096 2 19.9317 6.02208 19.9317 10.9658C19.9317 15.9096 15.9096 19.9317 10.9658 19.9317V19.9313ZM10.9658 3.38167C6.78417 3.38167 3.38208 6.78375 3.38208 10.9654C3.38208 15.1471 6.78417 18.5492 10.9658 18.5492C15.1475 18.5492 18.5496 15.1471 18.5496 10.9654C18.5496 6.78375 15.1475 3.38167 10.9658 3.38167Z" fill="black"/>
+          <path d="M21.3091 22.0003C21.1324 22.0003 20.9553 21.9328 20.8207 21.7978L16.3212 17.2982C16.0512 17.0282 16.0512 16.5912 16.3212 16.3212C16.5912 16.0512 17.0282 16.0512 17.2982 16.3212L21.7978 20.8207C22.0678 21.0907 22.0678 21.5278 21.7978 21.7978C21.6628 21.9328 21.4862 22.0003 21.3095 22.0003H21.3091Z" fill="black"/>
+          </svg>
+        </a>
+        <input type="text" name="q" placeholder="{{i18n.get("search.page.title")}}" aria-label="{{i18n.get("search.page.title")}}" {% if page.template_vars.search_style == "01" %}id="search-with-suggestion"{% endif %} data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+        {% if page.template_vars.mobile_header_style == "02" %}
+          <input type="submit" name="" class="theme-search-go" value="{{i18n.get("search.button.label")}}" data-zs-search="{{page.primary_search}}" />
+        {% endif %}
+        <a role="button" aria-label="{{i18n.get("product.label.close")}}" class='theme-search-close-icon' data-zs-search-close-icon tabindex='0' onclick="toggleFullSearchbox(this)" onkeypress="handleKeyPress(event, this)">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M1.39982 13.9993L-0.000183105 12.5993L5.59982 6.99927L-0.000183105 1.39927L1.39982 -0.000732422L6.99982 5.59927L12.5998 -0.000732422L13.9998 1.39927L8.39982 6.99927L13.9998 12.5993L12.5998 13.9993L6.99982 8.39927L1.39982 13.9993Z" fill="#646464"/>
+            </svg>
+        </a>
+        <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+            <span></span>
+        </div>
+      </form>
+    </div>
+    {% if page.template_vars.mobile_header_style == "02" %}
+      <div class="theme-search-hide-overlay" data-theme-search-overlay="theme-search-overlay" style="display:none;"></div>
+      <a role="button" class="theme-search-icon" onclick="toggleSearch(this)" data-zs-search-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M10.9658 19.9313C6.02208 19.9313 2 15.9092 2 10.9654C2 6.02167 6.02208 2 10.9658 2C15.9096 2 19.9317 6.02208 19.9317 10.9658C19.9317 15.9096 15.9096 19.9317 10.9658 19.9317V19.9313ZM10.9658 3.38167C6.78417 3.38167 3.38208 6.78375 3.38208 10.9654C3.38208 15.1471 6.78417 18.5492 10.9658 18.5492C15.1475 18.5492 18.5496 15.1471 18.5496 10.9654C18.5496 6.78375 15.1475 3.38167 10.9658 3.38167Z" fill="black"/>
+            <path d="M21.3091 22.0003C21.1324 22.0003 20.9553 21.9328 20.8207 21.7978L16.3212 17.2982C16.0512 17.0282 16.0512 16.5912 16.3212 16.3212C16.5912 16.0512 17.0282 16.0512 17.2982 16.3212L21.7978 20.8207C22.0678 21.0907 22.0678 21.5278 21.7978 21.7978C21.6628 21.9328 21.4862 22.0003 21.3095 22.0003H21.3091Z" fill="black"/>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+  {% if page.template_vars.is_search_suggestion_enabled %}
+    {% include '_search-suggestions' %}
+  {% endif %}
+  <script>
+    function toggleFullSearchbox(closeIcon){
+      let searchContainer = closeIcon.closest('.fashion-theme-search-field-container');
+      searchContainer.classList.toggle('theme-search-open');
+      let inputElement = searchContainer.querySelector('[data-zs-search-input]');
+      if (inputElement && searchContainer.classList.contains('theme-search-open')) {
+        inputElement.focus();
+      }
+      let suggestionContainer = document.querySelector('#search-suggestions');
+      if(suggestionContainer) {
+        toggleSearchSuggestions(closeIcon);
+      }
+    }
+    function handleKeyPress(event, element) {
+      if (event.key === 'Enter' || event.keyCode === 13) {
+        toggleFullSearchbox(element);
+      }
+    }
+  </script>
+{% elif page.template_vars.header_style == "07" %}
+  <div class="theme-search theme-search-and-mini-cart-group-item" data-zs-search-container>
+    <div class="theme-search-field-container theme-search-field-container-07" data-search="zptheme-search-container">
+      <form method="get" action="{{ page.search_url }}" {% if page.template_vars.is_search_suggestion_enabled %}onclick="toggleSearchSuggestions(this)"{% endif %}>
+        <input {% if page.template_vars.search_style == "01" %}id="search-with-suggestion"{% endif %} type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+        {% if page.template_vars.mobile_header_style == "02" %}
+        <input type="submit" name="" class="theme-search-go" value="{{i18n.get("search.button.label")}}" data-zs-search="{{page.primary_search}}" />
+        {% endif %}
+        <input class="theme-search-go-input" aria-label="{{i18n.get("search.button.label")}}" type="submit" name="" class="theme-search-go" data-zs-search="{{page.primary_search}}" value="" />
+        <span class="theme-search-go-icon" data-zs-search-icon aria-label="{{i18n.get("search.button.label")}}">
+          <svg aria-hidden="true" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.111.5a7.611 7.611 0 015.724 12.628l3.385 3.385a.5.5 0 01-.638.765l-.069-.058-3.385-3.385A7.611 7.611 0 118.11.5zm0 1a6.611 6.611 0 104.393 11.552.499.499 0 01.548-.55A6.611 6.611 0 008.112 1.5z" fill-rule="nonzero"/>
+          </svg>
+        </span>
+        <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+          <span></span>
+        </div>
+      </form>
+    </div>
+    {% if page.template_vars.mobile_header_style == "02" %}
+    <div class="theme-search-hide-overlay" data-theme-search-overlay="theme-search-overlay" style="display:none;"></div>
+    <span class="theme-search-icon" onclick="toggleSearch(this)" data-zs-search-icon aria-label="{{i18n.get("search.button.label")}}">
+      <svg aria-label="true" viewBox="0 9 17 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6.11998304,9 C9.49467136,9 12.2401638,11.7792946 12.2401638,15.1954945 C12.2401638,16.6310021 11.7542814,17.9528473 10.9418418,19.0044723 L16.7453489,24.8898164 C17.0883131,25.2377224 17.0843596,25.7977325 16.7364536,26.1406967 C16.5642797,26.3106962 16.3399198,26.3953006 16.11556,26.3953006 C15.8872467,26.3953006 15.6589333,26.3075334 15.485771,26.131999 L9.6721825,20.2361782 C8.6697783,20.9620366 7.44380495,21.3911866 6.11998304,21.3911866 C2.74529472,21.3911866 0,18.611892 0,15.1954945 C0,11.7792946 2.74529472,9 6.11998304,9 Z M6.11998304,19.8186909 C8.62787144,19.8186909 10.6678658,17.7446967 10.6678658,15.1954945 C10.6678658,12.6464899 8.62787144,10.5724956 6.11998304,10.5724956 C3.61248999,10.5724956 1.57229797,12.6464899 1.57229797,15.1954945 C1.57229797,17.7446967 3.61248999,19.8186909 6.11998304,19.8186909 Z M4.50063869,16.7758971 C4.64592899,16.6284323 4.85052144,16.5440256 5.05669529,16.5440256 C5.26306681,16.5440256 5.46548485,16.6284323 5.61294956,16.7758971 C5.75843753,16.921385 5.84284427,17.1238031 5.84284427,17.3301746 C5.84284427,17.5385228 5.75843753,17.7409409 5.61294956,17.8864289 C5.46548485,18.0338936 5.26306681,18.1163236 5.05669529,18.1163236 C4.85052144,18.1163236 4.64592899,18.0338936 4.50063869,17.8864289 C4.35515072,17.7409409 4.2705463,17.5385228 4.2705463,17.3301746 C4.2705463,17.1238031 4.35515072,16.921385 4.50063869,16.7758971 Z M3.05228224,15.2674477 C2.77810858,13.2116395 4.82640523,12.2782235 4.91377708,12.2394794 C5.25970635,12.0864798 5.66236803,12.2416538 5.81773969,12.5865947 C5.97311135,12.9315356 5.81912341,13.3381508 5.47517087,13.4956968 C5.42614775,13.518034 4.27865093,14.0561023 4.4158366,15.0855878 C4.46604576,15.4623542 4.20155812,15.8082835 3.8249894,15.8584926 C3.79415228,15.8626438 3.76351283,15.8646205 3.73326872,15.8646205 C3.39366501,15.8646205 3.09834025,15.6131793 3.05228224,15.2674477 Z" stroke="none" fill-rule="evenodd"></path>
+      </svg>
+    </span>
+    {% endif %}
+  </div>
+
+{% elif page.template_vars.header_style == "04" %}
+  <div class="theme-search theme-search-and-mini-cart-group-item" data-zs-search-container>
+    <div class="theme-search-field-container" data-search="zptheme-search-container">
+      <form method="get" action="{{ page.search_url }}">
+        <input {% if page.template_vars.search_style == "01" %}id="search-with-suggestion"{% endif %} type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+        {% if page.template_vars.store_template_no == "12"%}
+          <button type="submit" name="" aria-label="{{i18n.get("search.page.title")}}" class="theme-search-go" data-zs-search="{{page.primary_search}}">{{i18n.get("search.button.label")}}</button>
+        {% endif %}
+        <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+          <span></span>
+        </div>
+      </form>
+      {% if page.template_vars.is_search_suggestion_enabled && page.template_vars.store_template_no == "10" %}
+        {% include '_search-suggestions' %}
+      {% endif %}
+    </div>
+      
+    <div class="theme-search-hide-overlay" data-theme-search-overlay="theme-search-overlay" style="display:none;">
+      <svg class="theme-search-close-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <line x1="5.85551" y1="5.14669" x2="16.8541" y2="16.1453" stroke="black"/>
+        <line x1="5.1484" y1="16.1457" x2="16.147" y2="5.14711" stroke="black"/>
+      </svg>
+    </div>
+
+    <span class="theme-search-icon" onclick="toggleSearch(this)" data-zs-search-icon>
+      {% if page.template_vars.store_template_no == "13" %}
+        <svg class="theme-mobile-header-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none"><path d="M5.94286 0.140503C7.519 0.140503 9.03059 0.766623 10.1451 1.88113C11.2596 2.99563 11.8857 4.50722 11.8857 6.08336C11.8857 7.55536 11.3463 8.9085 10.4594 9.95079L10.7063 10.1976H11.4286L16 14.7691L14.6286 16.1405L10.0571 11.5691V10.8468L9.81029 10.5999C8.73176 11.5201 7.36059 12.0258 5.94286 12.0262C4.36671 12.0262 2.85512 11.4001 1.74062 10.2856C0.62612 9.17109 0 7.6595 0 6.08336C0 4.50722 0.62612 2.99563 1.74062 1.88113C2.85512 0.766623 4.36671 0.140503 5.94286 0.140503ZM5.94286 1.96907C3.65714 1.96907 1.82857 3.79765 1.82857 6.08336C1.82857 8.36907 3.65714 10.1976 5.94286 10.1976C8.22857 10.1976 10.0571 8.36907 10.0571 6.08336C10.0571 3.79765 8.22857 1.96907 5.94286 1.96907Z" fill="black"></path></svg>
+      {% elif page.template_vars.store_template_no == "12" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4.66667 10.7778C4.66667 7.40269 7.40271 4.66666 10.7778 4.66666C14.1529 4.66666 16.8889 7.40269 16.8889 10.7778C16.8889 14.1529 14.1529 16.8889 10.7778 16.8889C7.40271 16.8889 4.66667 14.1529 4.66667 10.7778ZM10.7778 3C6.48224 3 3 6.48223 3 10.7778C3 15.0733 6.48224 18.5555 10.7778 18.5555C12.6253 18.5555 14.3225 17.9113 15.6568 16.8353L21.5775 22.7559C21.9029 23.0813 22.4305 23.0813 22.7559 22.7559C23.0814 22.4304 23.0814 21.9029 22.7559 21.5774L16.8354 15.6568C17.9114 14.3224 18.5556 12.6253 18.5556 10.7778C18.5556 6.48223 15.0733 3 10.7778 3Z" fill="#212121"></path></svg>
+      {% elif page.template_vars.store_template_no == "14" %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none"><path d="M14.0772 14.6915L16.6438 17.2582M15.833 10.1749C15.833 11.8325 15.1745 13.4222 14.0024 14.5943C12.8303 15.7664 11.2406 16.4249 9.58301 16.4249C7.9254 16.4249 6.33569 15.7664 5.16359 14.5943C3.99149 13.4222 3.33301 11.8325 3.33301 10.1749C3.33301 8.51726 3.99149 6.92755 5.16359 5.75545C6.33569 4.58335 7.9254 3.92487 9.58301 3.92487C11.2406 3.92487 12.8303 4.58335 14.0024 5.75545C15.1745 6.92755 15.833 8.51726 15.833 10.1749Z" stroke="#8C3832" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="7.875" cy="7.875" r="7.125" stroke="black" stroke-width="1.5"/>
+          <line x1="11.7702" y1="12.9598" x2="18.5202" y2="19.4598" stroke="#10100F" stroke-width="1.5"/>
+        </svg>
+      {% endif %}
+    </span>
+  </div>
+  
+{% else %}
+  <div class="theme-search theme-search-and-mini-cart-group-item" data-zs-search-container>
+    <div class="theme-search-field-container" data-search="zptheme-search-container">
+      <form method="get" action="{{ page.search_url }}">
+        <input {% if page.template_vars.search_style == "01" %}id="search-with-suggestion"{% endif %} type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+        {% if page.template_vars.header_style != "09"%}
+          <input type="submit" name="" aria-label="{{i18n.get("search.page.title")}}" class="theme-search-go" value="{{i18n.get("search.button.label")}}" data-zs-search="{{page.primary_search}}" />
+        {% endif %}
+        <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+          <span></span>
+        </div>
+      </form>
+    </div>
+    <div class="theme-search-hide-overlay" data-theme-search-overlay="theme-search-overlay" style="display:none;"></div>
+    {% if page.template_vars.header_style == "09" %} 
+       <span class="theme-search-icon"  data-zs-search-icon>
+         <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.39233 9.30957L11.2779 12.1434" stroke="#750A27" stroke-width="0.642857"></path><path d="M9.70335 5.71463C9.70335 8.38527 7.5954 10.5361 5.01239 10.5361C2.42938 10.5361 0.321429 8.38527 0.321429 5.71463C0.321429 3.044 2.42938 0.893206 5.01239 0.893206C7.5954 0.893206 9.70335 3.044 9.70335 5.71463Z" stroke="#750A27" stroke-width="0.642857"></path></svg>
+       </span>
+    {% else %}
+      <span class="theme-search-icon" onclick="toggleSearch(this)" data-zs-search-icon>
+        <svg viewBox="0 9 17 18" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6.11998304,9 C9.49467136,9 12.2401638,11.7792946 12.2401638,15.1954945 C12.2401638,16.6310021 11.7542814,17.9528473 10.9418418,19.0044723 L16.7453489,24.8898164 C17.0883131,25.2377224 17.0843596,25.7977325 16.7364536,26.1406967 C16.5642797,26.3106962 16.3399198,26.3953006 16.11556,26.3953006 C15.8872467,26.3953006 15.6589333,26.3075334 15.485771,26.131999 L9.6721825,20.2361782 C8.6697783,20.9620366 7.44380495,21.3911866 6.11998304,21.3911866 C2.74529472,21.3911866 0,18.611892 0,15.1954945 C0,11.7792946 2.74529472,9 6.11998304,9 Z M6.11998304,19.8186909 C8.62787144,19.8186909 10.6678658,17.7446967 10.6678658,15.1954945 C10.6678658,12.6464899 8.62787144,10.5724956 6.11998304,10.5724956 C3.61248999,10.5724956 1.57229797,12.6464899 1.57229797,15.1954945 C1.57229797,17.7446967 3.61248999,19.8186909 6.11998304,19.8186909 Z M4.50063869,16.7758971 C4.64592899,16.6284323 4.85052144,16.5440256 5.05669529,16.5440256 C5.26306681,16.5440256 5.46548485,16.6284323 5.61294956,16.7758971 C5.75843753,16.921385 5.84284427,17.1238031 5.84284427,17.3301746 C5.84284427,17.5385228 5.75843753,17.7409409 5.61294956,17.8864289 C5.46548485,18.0338936 5.26306681,18.1163236 5.05669529,18.1163236 C4.85052144,18.1163236 4.64592899,18.0338936 4.50063869,17.8864289 C4.35515072,17.7409409 4.2705463,17.5385228 4.2705463,17.3301746 C4.2705463,17.1238031 4.35515072,16.921385 4.50063869,16.7758971 Z M3.05228224,15.2674477 C2.77810858,13.2116395 4.82640523,12.2782235 4.91377708,12.2394794 C5.25970635,12.0864798 5.66236803,12.2416538 5.81773969,12.5865947 C5.97311135,12.9315356 5.81912341,13.3381508 5.47517087,13.4956968 C5.42614775,13.518034 4.27865093,14.0561023 4.4158366,15.0855878 C4.46604576,15.4623542 4.20155812,15.8082835 3.8249894,15.8584926 C3.79415228,15.8626438 3.76351283,15.8646205 3.73326872,15.8646205 C3.39366501,15.8646205 3.09834025,15.6131793 3.05228224,15.2674477 Z" stroke="none" fill-rule="evenodd"></path>
+        </svg>
+      </span>
+    {% endif %}
+  </div>
+{% endif %}

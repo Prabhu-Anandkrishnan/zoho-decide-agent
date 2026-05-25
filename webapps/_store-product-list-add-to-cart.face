@@ -1,0 +1,4 @@
+<a role="button" {% if page.template_vars.product_list_style != "05" %}class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-full-width"{% endif %} href="javascript:;" data-zs-add-to-cart {% if page.template_vars.store_message_style == "03"%}data-zs-view-mini-cart-button{% endif %} data-zs-product-variant-id="{{ product.variants[0].variant_id }}" {% if product.variants[0].hide_add_to_cart %} style="display: none;" {% endif %}>
+  <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("product.action.add_to_cart")}}</span>
+  {% include '_store-product-add-to-cart-loader' %}
+</a>

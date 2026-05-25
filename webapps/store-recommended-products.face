@@ -1,0 +1,51 @@
+{% assign cdn_prefix_url = "" %}
+{% if page.cdn_prefix_url %}
+	{% assign cdn_prefix_url = page.cdn_prefix_url %}
+	{% assign cdn_suffix_url = "?storefront_domain=" + page.domain_name %}
+{% endif %}
+<div class="theme-section-heading-container">
+	<h2 class="theme-section-heading">
+		{% if recommended_products.name == "upsell_products" %}
+		  {{i18n.get("smartRecommendations.upsell.label")}}
+		{% elif recommended_products.name == "cross_sell_products" %}
+		  {{i18n.get("smartRecommendations.crossSell.label")}}
+		{% else %}
+		  {{i18n.get("smartRecommendations.label")}}
+		{% endif %}
+	</h2>
+	{% if recommended_products.products | size > page.template_vars.store_product_list_count_md %}
+		<div class="theme-rec-prod-slider-btn-container" data-rec-prod-slider-btn-container>
+			<button class="theme-rec-prod-navigation theme-navigate-left" onclick="slideRecommendedProds(this,'left')" aria-label="{{i18n.get("common.previous")}}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 17" fill="none">
+					<mask id="path-1-inside-1_3029_7081" fill="white">
+						<path d="M8 16.3042L-1.75292e-06 8.3042L8 0.3042"/>
+					</mask>
+					<path d="M7.29289 17.0113L8 17.7184L9.41421 16.3042L8.7071 15.5971L7.29289 17.0113ZM-1.75292e-06 8.3042L-0.707109 7.5971C-1.09763 7.98762 -1.09763 8.62079 -0.707108 9.01131L-1.75292e-06 8.3042ZM8.7071 1.01131L9.41421 0.3042L8 -1.11001L7.29289 -0.402906L8.7071 1.01131ZM8.7071 15.5971L0.707105 7.5971L-0.707108 9.01131L7.29289 17.0113L8.7071 15.5971ZM0.707105 9.01131L8.7071 1.01131L7.29289 -0.402906L-0.707109 7.5971L0.707105 9.01131Z" fill="#4F3622" mask="url(#path-1-inside-1_3029_7081)"/>
+				</svg>
+			</button>
+			<button class="theme-rec-prod-navigation theme-navigate-right" onclick="slideRecommendedProds(this,'right')" aria-label="{{i18n.get("common.next")}}">
+				<svg xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 17" fill="none">
+					<mask id="path-1-inside-1_3029_7083" fill="white">
+						<path d="M3.50584e-06 16.3042L8 8.3042L3.33786e-06 0.3042"/>
+					</mask>
+					<path d="M0.70711 17.0113L2.86204e-06 17.7184L-1.41421 16.3042L-0.707103 15.5971L0.70711 17.0113ZM8 8.3042L8.70711 7.5971C9.09763 7.98762 9.09763 8.62079 8.70711 9.01131L8 8.3042ZM-0.707104 1.01131L-1.41421 0.3042L3.98166e-06 -1.11001L0.707111 -0.402906L-0.707104 1.01131ZM-0.707103 15.5971L7.2929 7.5971L8.70711 9.01131L0.70711 17.0113L-0.707103 15.5971ZM7.29289 9.01131L-0.707104 1.01131L0.707111 -0.402906L8.70711 7.5971L7.29289 9.01131Z" fill="#4F3622" mask="url(#path-1-inside-1_3029_7083)"/>
+				</svg>
+			</button>
+		</div>
+	{% endif %}
+</div>
+{% if page.template_vars.product_list_style == '04' %}
+<div class="theme-store-collection-container">
+{% endif %}
+	<div class="zprow theme-store-style-collection-row-{{page.template_vars.product_list_style}} {% if page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07'  %}theme-collection-row-no-margin{% endif %}">
+	{% for product in recommended_products.products %}
+		{% include "store-product-list-view" %}
+	{% forelse %}
+		<div class="zpcol-md-12 theme-no-products-error {% if page.template_vars.product_list_style == '05' %}theme-no-products-error-style-05{% endif %} {% if page.template_vars.product_list_style == '02' || page.template_vars.product_list_style == '04' %}theme-no-products-error-style-02-04{% endif %}">
+			{{ no_products_message }}
+		</div>
+	{% endfor %}
+	</div>
+{% if page.template_vars.product_list_style == '04' %}
+</div>
+{% endif %}

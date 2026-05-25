@@ -1,0 +1,18 @@
+<div  data-checkout-headercontainer="zptheme-data-checkout-headercontainer" class="zpcheckoutheader {% if page.template_vars.is_mobile_header_fixed %}theme-mobile-header-fixed{% endif %} {% if page.template_vars.is_site_full_stretch %}theme-pages-full-stretch{% endif %}">
+	{% comment %} THEME MAIN HEADER STARTS HERE {% endcomment %}
+    <div class="theme-checkout-header {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}" data-dark-part-applied="{% if page.template_vars.header_background == "dark" %}true{% else %}false{% endif %}" data-banner-base-header="theme-banner-base-header">
+      <div class="zpcontainer">
+        <div class="theme-checkout-go-back">
+          <a class="zpbutton zpbutton-type-link" href="/cart">
+            <svg class="zpbutton-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path fill="#3E4152" fillrule="evenodd" d="M20.25 11.25H5.555l6.977-6.976a.748.748 0 000-1.056.749.749 0 00-1.056 0L3.262 11.43A.745.745 0 003 12a.745.745 0 00.262.57l8.214 8.212a.75.75 0 001.056 0 .748.748 0 000-1.056L5.555 12.75H20.25a.75.75 0 000-1.5"></path></svg>
+            <span>Back</span>
+          </a>
+        </div>
+        {% include '_branding' %}
+        {% comment %} MINI-CART START {% endcomment %}
+          {% include '_store-cart-count' %}
+        {% comment %} MINI-CART END {% endcomment %}
+      </div>
+    </div>
+    {% comment %} THEME MAIN HEADER ENDS HERE {% endcomment %}
+</div>

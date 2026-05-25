@@ -1,0 +1,60 @@
+<div class="theme-product-card">
+  <div class="theme-product-image-area" data-zs-image-container>
+    
+    {% if product.is_out_of_stock == false && product.on_sale %}
+      <div class="theme-product-sale-ribbon" data-zs-sale>
+        <span class='theme-sale-message'>{{i18n.get("product.message.sale")}}</span>
+      </div>
+    {% endif %}
+    {% if product.is_out_of_stock == true %}
+      <div class="theme-product-out-of-stock-area" >
+        <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+      </div>
+    {% endif %}
+
+    <div class="theme-wishlist-icon">
+      {{ wishlistView("list", product, page ) }}
+    </div>
+    {% include '_store-product-list-image-loader' %}
+    {% include '_store-product-list-image' %}
+    
+
+  </div>
+
+  <div class="theme-product-details-area">
+    <div class="theme-product-name-description">
+      <div class="theme-product-name" data-zs-product-name>
+        <a title="{{ product.name }}" href="{{ product.url }}">{{ product.name }}</a>
+      </div>
+      <div class="theme-product-description" data-zs-product-description>
+        {{ product.short_description }}
+      </div>
+    </div>
+    {% if product.is_product_review_enabled %}
+      <div class="theme-rating" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "star-rating"></div>   
+    {% endif %}
+    <div class = "theme-product-price-coupon">
+      {% include '_store-product-pricing-six' %}
+      {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <div class="theme-prod-coupons-code-container">
+          <span class="theme-prod-coupons-code" data-list-coupon-code style="display:none"></span>
+        </div> 
+        <div class="theme-prod-coupons-container" style = "display:none" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+      {% endif %}
+        
+    </div>
+    {% if !product.has_variants && product.is_out_of_stock == false && !product.is_input_custom_field_available %}
+      <div class="theme-product-button-area">
+        {% include '_store-product-list-add-to-cart' %}
+      </div>
+    {% else %}
+      <div class="theme-product-view-details">
+        <a data-zs-view-details  href="{{product.url}}">
+          <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("product.label.view_details")}}</span>
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+                  

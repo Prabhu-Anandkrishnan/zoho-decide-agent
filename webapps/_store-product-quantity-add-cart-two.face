@@ -1,0 +1,61 @@
+<div class="theme-product-quantity-cart-area" data-nostock-cart-add="theme-nostock-cart-add">
+  {% if product.is_out_of_stock == false  %}
+  <div class="theme-product-varient-quantity">
+    {% if page.template_vars.product_details_style != '07' %}
+      <div class="theme-product-variant-label" data-zs-quantity-label>
+        {{i18n.get("product.message.choose_quantity")}} :
+      </div>
+    {% endif %}
+      <div class="theme-product-quantity-spinner" data-zs-quantity-container>
+        <input aria-label='Decrease Quantity' class="theme-quantity-decrease" onclick="decreaseCount(this)" type="button" value="-">
+        <input name="qty" title="aria-label="{{i18n.get("cart.quantity.label")}}"" aria-label="{{i18n.get("cart.quantity.label")}}" type="text" maxlength="999" onkeypress='return productQuantity(event);' value="1" data-quantity="{{ product.product_id }}" data-theme-quantity data-zs-quantity>
+        <input aria-label='Increase Quantity' class="theme-quantity-increase" onclick="increaseCount(this)" type="button" value="+">
+      </div>
+      <div data-theme-error="theme-error-message-{{product.product_id}}" aria-live="polite" style="display:none;"></div>
+  </div> 
+  {% endif %}
+  <div class="theme-product-cart-buttons">
+    {% if product.is_out_of_stock == false  %}
+      <button type='button' class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg" {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-cart-button {% endif %} data-zs-add-to-cart data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if product.variants[0].hide_add_to_cart %} style="display: none;" {% endif %}>
+        {% if page.template_vars.product_details_style == '02' && page.template_vars.product_details_style != '07' %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="19" height="21" viewBox="0 0 19 21" fill="none">
+            <g id="Group">
+              <path id="Vector" d="M15.5855 20.2342H2.55286C1.14539 20.2342 0 19.0892 0 17.6813V4.64911C0 4.49953 0.0483352 4.35412 0.138333 4.23454L2.93119 0.510863C3.06161 0.337117 3.26619 0.234619 3.48368 0.234619H14.6543C14.8718 0.234619 15.0764 0.337117 15.2072 0.510863L18 4.23454C18.0896 4.35412 18.1384 4.49953 18.1384 4.64911V17.6818C18.1384 19.0892 16.9934 20.2346 15.5855 20.2346V20.2342ZM1.38206 4.87952V17.6818C1.38206 18.3276 1.90746 18.8526 2.55286 18.8526H15.5855C16.2313 18.8526 16.7563 18.3272 16.7563 17.6818V4.87952L14.3093 1.61667H3.82951L1.38248 4.87952H1.38206Z" fill="white"/>
+              <path id="Vector_2" d="M17.447 5.33989H0.691127C0.309469 5.33989 0.000305176 5.03073 0.000305176 4.64907C0.000305176 4.26741 0.309469 3.95825 0.691127 3.95825H17.447C17.8287 3.95825 18.1378 4.26741 18.1378 4.64907C18.1378 5.03073 17.8287 5.33989 17.447 5.33989Z" fill="white"/>
+              <path id="Vector_3" d="M9.06891 12.7872C6.63479 12.7872 4.65442 10.8068 4.65442 8.3727C4.65442 7.99105 4.96357 7.68188 5.34523 7.68188C5.72689 7.68188 6.03605 7.99105 6.03605 8.3727C6.03605 10.0448 7.39644 11.4056 9.06891 11.4056C10.7414 11.4056 12.1018 10.0452 12.1018 8.3727C12.1018 7.99105 12.4109 7.68188 12.7926 7.68188C13.1742 7.68188 13.4834 7.99105 13.4834 8.3727C13.4834 10.8068 11.503 12.7872 9.06891 12.7872Z" fill="white"/>
+            </g>
+          </svg>
+        {% elif page.template_vars.product_details_style == '05' && page.template_vars.product_details_style != '07' %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.92089 8.16873C9.1084 8.10246 9.31456 8.11337 9.49402 8.19907C9.67349 8.28477 9.81156 8.43824 9.87789 8.62573C10.033 9.06477 10.3204 9.44491 10.7005 9.7138C11.0806 9.98268 11.5348 10.1271 12.0004 10.1271C12.466 10.1271 12.9202 9.98268 13.3003 9.7138C13.6804 9.44491 13.9678 9.06477 14.1229 8.62573C14.1545 8.53137 14.2046 8.44425 14.2703 8.36944C14.3359 8.29464 14.4158 8.23365 14.5053 8.19003C14.5947 8.1464 14.692 8.12102 14.7913 8.11536C14.8907 8.1097 14.9902 8.12387 15.084 8.15705C15.1779 8.19023 15.2641 8.24176 15.3379 8.30862C15.4116 8.37548 15.4713 8.45635 15.5134 8.54651C15.5556 8.63667 15.5793 8.73432 15.5834 8.83376C15.5874 8.93321 15.5716 9.03246 15.5369 9.12573C15.2783 9.85707 14.7994 10.4903 14.1661 10.9381C13.5327 11.386 12.7761 11.6265 12.0004 11.6265C11.2247 11.6265 10.4681 11.386 9.83472 10.9381C9.20137 10.4903 8.72244 9.85707 8.46389 9.12573C8.39761 8.93822 8.40853 8.73207 8.49423 8.5526C8.57993 8.37314 8.7334 8.23506 8.92089 8.16873ZM12.3609 6.37573H11.6389C10.0139 6.37573 8.93189 6.37873 8.11189 6.47973C7.33389 6.57573 6.97489 6.74273 6.72289 6.95173C6.47089 7.16173 6.24089 7.48273 6.00289 8.22973C5.75289 9.01673 5.55089 10.0797 5.25089 11.6777C4.83089 13.9177 4.54889 15.4387 4.49889 16.5847C4.45089 17.6897 4.63589 18.1597 4.89589 18.4727C5.15589 18.7857 5.58289 19.0537 6.67789 19.2097C7.81289 19.3717 9.36089 19.3757 11.6399 19.3757H12.3599C14.6399 19.3757 16.1869 19.3717 17.3219 19.2097C18.4169 19.0537 18.8439 18.7857 19.1039 18.4727C19.3639 18.1587 19.5489 17.6897 19.5009 16.5847C19.4509 15.4387 19.1689 13.9177 18.7489 11.6777C18.4489 10.0797 18.2479 9.01773 17.9969 8.22973C17.7589 7.48273 17.5289 7.16073 17.2769 6.95173C17.0249 6.74273 16.6669 6.57573 15.8879 6.47973C15.0679 6.37873 13.9859 6.37573 12.3609 6.37573ZM5.76489 5.79773C4.65489 6.71973 4.36189 8.28073 3.77689 11.4017C2.95389 15.7907 2.54189 17.9847 3.74189 19.4307C4.94189 20.8757 7.17389 20.8757 11.6399 20.8757H12.3599C16.8259 20.8757 19.0589 20.8757 20.2589 19.4307C21.4589 17.9847 21.0469 15.7907 20.2239 11.4007C19.6389 8.28073 19.3459 6.71973 18.2349 5.79773C17.1249 4.87573 15.5359 4.87573 12.3609 4.87573H11.6389C8.46389 4.87573 6.87589 4.87573 5.76489 5.79773Z" fill="white"></path>
+          </svg>
+        {% endif %}
+        <span data-theme-cart-button-text="theme-cart-button-text">
+          {{i18n.get("product.action.add_to_cart")}}
+        </span>
+        <span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none">
+          {{i18n.get("product.message.please_wait")}} <div class="theme-cart-button-loading-dots"><span></span><span></span><span></span></div>
+        </span>
+      </button>
+      {% if page.is_quotes_enabled_in_storefront %}
+          <button type="button" data-zs-add-to-quote {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-quote-button {% endif %} class="theme-quote-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width"  data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if !product.variants[0].show_add_to_quote %} style="display: none;" {% endif %} >
+            <span data-theme-cart-button-text="theme-quote-button-text">{{i18n.get("page_title.request_quote")}}</span>
+            <span class="theme-quote-button-loading-container" data-theme-cart-button-loading="theme-quote-button-loading" style="display:none">
+              {{i18n.get("product.message.please_wait")}} <div class="theme-quote-button-loading-dots"><span></span><span></span><span></span></div>
+            </span>
+          </button>
+        {% endif %}
+      {% if page.template_vars.product_details_style == '09' %}
+        {{ wishlistView("detail", product, page ) }}
+      {% endif %}
+      <a class="theme-cart-button theme-more-details zpbutton zpbutton-type-primary zpbutton-size-lg" data-zs-more-details data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} href="{{product.url}}">
+        <span data-theme-cart-button-text="theme-cart-button-text">
+          {{i18n.get("product.label.view_details")}}
+        </span>
+      </a>
+    {% endif %}
+    {% if page.template_vars.product_details_style == '05' || page.template_vars.product_details_style == '07' || page.template_vars.product_details_style == '14' %}
+      <span data-show-wishlist-icon style="display: none;">{{ wishlistView("detail", product, page ) }}</span>
+    {% endif %}
+  </div>
+</div>

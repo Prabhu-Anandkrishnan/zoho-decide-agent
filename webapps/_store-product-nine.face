@@ -1,0 +1,191 @@
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+  <div class="zpcontainer ">
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+        {% include '_store-product-image-two' %}
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-container">
+        <div class="theme-tag-name-description">
+          <div class="theme-tag-contianer">
+            {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+              <div class="theme-tag-sku">
+                <ul class="theme-tag-list-container">
+                  {% for tag in product.tags %}
+                  <li>
+                    <a class="theme-product-tag-url" data-zs-product-tag href="{{ tag.url }}">
+                      <span class="theme-product-tag-name">{{ tag.name }}</span>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+          <div class="theme-product-name-ratings">
+            <h1 data-zs-product-name>{{ product.name }}</h1>
+            {% if product.is_product_review_enabled %}
+              <div class="theme-rating-review-container">
+                <div class="theme-rating-review" data-comments-summary = "average-rating-review-count-write-review"></div>
+             </div>
+            {% endif %}
+          </div>
+          
+          {% if product.short_description %}
+            <div class="theme-product-short-description" data-zs-product-short-description>
+              {{ product.short_description }}
+            </div>
+          {% endif %}
+        </div>
+        
+         <div class="theme-prod-non-returnable-out-of-stock">
+          {% if !product.is_returnable %}
+            <div class="theme-prod-non-returnable" data-zs-product-non-returnable>
+            {{i18n.get("product.label.non_returnable")}}
+            </div>
+          {% endif %}
+          <div class="theme-product-stock-availability-details">
+            {% if product.has_variants %}
+              {% for variant in product.variants %}
+                <span  class="theme-prod-stock-details" data-variant-id-stock="{{ variant.variant_id }}" data-stock-avail="{{variant.is_out_of_stock}}" style="display:none;">
+                  {{i18n.get("product.message.out_of_stock")}}
+                </span>
+              {% endfor %}
+            {% elif product.is_out_of_stock %}
+              <span  data-zs-outofstock class="theme-prod-stock-details theme-out-of-stock">
+                {{i18n.get("product.message.out_of_stock")}}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if product.has_variants %}
+        <div class="theme-product-varients-conatiner" >
+          {% include "_store-product-variants-two" %}
+        </div>
+        {% endif %}
+        <div class="theme-price-coupon-cart-conatiner">
+          {% include '_store-product-pricing-four' %}
+          {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+            <div class="theme-product-coupons" style="width: 100%;">
+              <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+            </div>
+          {% endif %}
+          {% include "_store-product-custom-field-two" %}
+          {% include "_store-product-quantity-add-cart-two" %}
+        </div>
+        
+        {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+              <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+              </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+        {% endif %}
+        {% if page.template_vars.product_content_style == '02' %}
+        <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <details name='product-details' open>
+              <summary class='theme-prod-content-summary'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                  <path d="M14.1028 27.3191H6.99115C5.20882 27.3191 3.75879 25.869 3.75879 24.0867V8.75618C3.75879 8.53066 3.83171 8.31138 3.96713 8.13117L7.25261 3.75139C7.44949 3.48889 7.75835 3.33472 8.08596 3.33472H21.2269C21.555 3.33472 21.8639 3.48889 22.0602 3.75139L25.3452 8.13117C25.4806 8.31138 25.5535 8.53066 25.5535 8.75618V15.7173C25.5535 16.2928 25.0868 16.759 24.5118 16.759C23.9368 16.759 23.4701 16.2923 23.4701 15.7173V9.10307L20.7065 5.41757H8.60681L5.84217 9.10307V24.0862C5.84217 24.7195 6.35728 25.2347 6.99063 25.2347H14.1022C14.6778 25.2347 15.1439 25.7013 15.1439 26.2763C15.1439 26.8514 14.6772 27.318 14.1022 27.318L14.1028 27.3191Z" fill="black"/>
+                  <path d="M24.5118 9.79785H4.80097C4.22543 9.79785 3.75928 9.33118 3.75928 8.75617C3.75928 8.18115 4.22595 7.71448 4.80097 7.71448H24.5118C25.0873 7.71448 25.5535 8.18115 25.5535 8.75617C25.5535 9.33118 25.0868 9.79785 24.5118 9.79785Z" fill="black"/>
+                  <path d="M14.6564 18.5583C11.6667 18.5583 9.23438 16.126 9.23438 13.1364C9.23438 12.5608 9.70105 12.0947 10.2761 12.0947C10.8511 12.0947 11.3178 12.5613 11.3178 13.1364C11.3178 14.977 12.8152 16.4744 14.6558 16.4744C16.4965 16.4744 17.9939 14.977 17.9939 13.1364C17.9939 12.5608 18.4606 12.0947 19.0356 12.0947C19.6106 12.0947 20.0773 12.5613 20.0773 13.1364C20.0773 16.126 17.645 18.5583 14.6553 18.5583H14.6564Z" fill="black"/>
+                  <path d="M21.0838 26.511C18.7556 26.511 16.8613 24.6167 16.8613 22.2885C16.8613 19.9604 18.7556 18.066 21.0838 18.066C23.412 18.066 25.3063 19.9604 25.3063 22.2885C25.3063 24.6167 23.412 26.511 21.0838 26.511ZM21.0838 20.1499C19.9046 20.1499 18.9452 21.1093 18.9452 22.2885C18.9452 23.4677 19.9046 24.4271 21.0838 24.4271C22.263 24.4271 23.2224 23.4677 23.2224 22.2885C23.2224 21.1093 22.263 20.1499 21.0838 20.1499Z" fill="black"/>
+                  <path d="M26.1084 28.3344C25.8417 28.3344 25.5751 28.2329 25.3719 28.0292L22.6938 25.351C22.287 24.9442 22.287 24.2843 22.6938 23.8776C23.1005 23.4708 23.7604 23.4708 24.1672 23.8776L26.8454 26.5557C27.2522 26.9625 27.2522 27.6224 26.8454 28.0292C26.6418 28.2329 26.3751 28.3344 26.1084 28.3344Z" fill="black"/>
+                </svg>
+                <div>{{i18n.get("product.label.details")}}</div>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <details name='specification' open>
+              <summary class='theme-prod-content-summary'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                  <path d="M20.83 27.891H8.47768C6.55993 27.891 5 26.2972 5 24.3388V6.44315C5 4.48425 6.55993 2.89099 8.47768 2.89099H16.631C17.9701 2.89099 19.28 3.44829 20.2243 4.42019L22.8332 7.10514C23.7843 8.08433 24.3082 9.38383 24.3082 10.7651V24.3388C24.3082 26.2977 22.7483 27.891 20.8305 27.891H20.83ZM8.47716 4.74259C7.58078 4.74259 6.85108 5.50563 6.85108 6.44315V24.3388C6.85108 25.2764 7.58026 26.0394 8.47716 26.0394H20.8295C21.7259 26.0394 22.4556 25.2764 22.4556 24.3388V10.7651C22.4556 9.88176 22.1087 9.0182 21.504 8.39579L18.8951 5.71084C18.2888 5.08687 17.4841 4.74259 16.6299 4.74259H8.47664H8.47716Z" fill="black"/>
+                  <path d="M22.8765 11.941H18.4514C16.6581 11.941 15.1992 10.4821 15.1992 8.68885V4.94345C15.1992 4.43199 15.6138 4.0174 16.1253 4.0174C16.6368 4.0174 17.0513 4.43199 17.0513 4.94345V8.68885C17.0513 9.46074 17.6795 10.0889 18.4514 10.0889H22.8765C23.3879 10.0889 23.8025 10.5035 23.8025 11.0149C23.8025 11.5264 23.3879 11.941 22.8765 11.941Z" fill="black"/>
+                  <path d="M18.8199 18.0662H10.8338C10.3223 18.0662 9.90771 17.6516 9.90771 17.1401C9.90771 16.6286 10.3223 16.2141 10.8338 16.2141H18.8199C19.3314 16.2141 19.7459 16.6286 19.7459 17.1401C19.7459 17.6516 19.3314 18.0662 18.8199 18.0662Z" fill="black"/>
+                  <path d="M16.4537 22.2132H10.8338C10.3223 22.2132 9.90771 21.7986 9.90771 21.2871C9.90771 20.7757 10.3223 20.3611 10.8338 20.3611H16.4537C16.9652 20.3611 17.3797 20.7757 17.3797 21.2871C17.3797 21.7986 16.9652 22.2132 16.4537 22.2132Z" fill="black"/>
+                </svg>
+                <div>{{i18n.get("product.label.specifications")}}</div>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>
+                {% for specification_group in product.specification_group %}
+                <ul class='theme-spec-group'>
+                  {% for attributes in specification_group.attributes %}
+                    <li class='theme-spec'>
+                      <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                      <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endfor %}
+              </div>
+            </details>
+          {%endif%}
+
+          {% if product.is_product_review_enabled %}
+            <details name='ratings-reviews'>
+              <summary class='theme-prod-content-summary'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="31" viewBox="0 0 30 31" fill="none">
+                  <path d="M12.0391 25.0092H5.48073C3.83698 25.0092 2.5 23.6722 2.5 22.0285V7.89099C2.5 7.68318 2.56719 7.48058 2.69219 7.31443L5.72187 3.27537C5.90312 3.0337 6.18802 2.89099 6.49062 2.89099H18.6089C18.9115 2.89099 19.1958 3.03318 19.3776 3.27537L22.4068 7.31443C22.5313 7.48058 22.599 7.68318 22.599 7.89099V14.3103C22.599 14.841 22.1688 15.2712 21.638 15.2712C21.1073 15.2712 20.6771 14.841 20.6771 14.3103V8.21078L18.1281 4.81235H6.97031L4.42083 8.21078V22.028C4.42083 22.6118 4.89583 23.0868 5.47969 23.0868H12.038C12.5688 23.0868 12.999 23.517 12.999 24.0478C12.999 24.5785 12.5688 25.0087 12.038 25.0087L12.0391 25.0092Z" fill="black"/>
+                  <path d="M21.6385 8.85186H3.46143C2.9307 8.85186 2.50049 8.42166 2.50049 7.89093C2.50049 7.3602 2.9307 6.92999 3.46143 6.92999H21.6385C22.1692 6.92999 22.5994 7.3602 22.5994 7.89093C22.5994 8.42166 22.1692 8.85186 21.6385 8.85186Z" fill="black"/>
+                  <path d="M12.5498 16.9305C9.79251 16.9305 7.5498 14.6873 7.5498 11.9305C7.5498 11.3998 7.98001 10.9696 8.51074 10.9696C9.04147 10.9696 9.47168 11.3998 9.47168 11.9305C9.47168 13.6279 10.8529 15.0092 12.5503 15.0092C14.2477 15.0092 15.629 13.6279 15.629 11.9305C15.629 11.3998 16.0592 10.9696 16.5899 10.9696C17.1206 10.9696 17.5508 11.3998 17.5508 11.9305C17.5508 14.6878 15.3076 16.9305 12.5508 16.9305H12.5498Z" fill="black"/>
+                  <path d="M23.298 27.891C23.0496 27.891 22.8001 27.8275 22.5761 27.6983L20.785 26.6681L18.9938 27.6983C18.499 27.9827 17.8818 27.9499 17.4199 27.6145C16.9584 27.2791 16.736 26.702 16.8537 26.1437L17.2803 24.1218L15.7469 22.7369C15.3235 22.3546 15.1641 21.7567 15.3402 21.2145C15.5162 20.6718 15.9969 20.2822 16.5641 20.2218L18.6188 20.0025L19.462 18.1166C19.6949 17.5957 20.2141 17.2593 20.7844 17.2593C21.3548 17.2593 21.874 17.5957 22.1068 18.1166L22.9501 20.0025L25.0048 20.2218C25.5719 20.2822 26.0527 20.6718 26.2287 21.2145C26.4048 21.7572 26.2454 22.3546 25.8219 22.7369L24.2886 24.1218L24.7152 26.1437C24.8329 26.702 24.6105 27.2791 24.149 27.6145C23.8964 27.7978 23.5975 27.8905 23.2975 27.891H23.298ZM20.7855 24.5989C20.9511 24.5989 21.1162 24.6416 21.2647 24.727L22.6178 25.5051L22.2959 23.978C22.2251 23.6431 22.3381 23.2963 22.5917 23.0666L23.7501 22.0202L22.198 21.8546C21.8579 21.8181 21.5626 21.6036 21.423 21.2916L20.786 19.8666L20.149 21.2916C20.0094 21.6041 19.7141 21.8187 19.374 21.8546L17.8219 22.0202L18.9803 23.0666C19.2344 23.2957 19.3469 23.6431 19.2766 23.978L18.9548 25.5051L20.3074 24.727C20.4558 24.6416 20.6209 24.5989 20.7865 24.5989H20.7855ZM20.3532 18.9009C20.3532 18.9009 20.3532 18.9015 20.3532 18.902V18.9009Z" fill="black"/>
+                </svg>
+                <div>{{i18n.get("product.label.reviews")}}</div>
+                <svg class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details' class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox">
+              </div>
+            </details>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var shareLink = document.querySelector(".theme-social-share");
+      function sharePageLink() {
+        var currentPageUrl = window.location.href;
+        if (navigator.share) {
+          navigator.share({
+            url: currentPageUrl
+          }).then(() => {
+          }).catch((error) => {
+          });
+        }
+      }
+      if(shareLink){
+        shareLink.addEventListener("touchstart", sharePageLink);
+      }
+    });
+  </script>
+</div>

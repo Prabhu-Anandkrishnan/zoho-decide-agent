@@ -1,0 +1,232 @@
+{% extends "_theme" %}
+{% block header_area %}
+
+  {% include '_header' %}
+
+{% endblock %}
+
+{% block content_area %}
+
+{% comment %} HEADER STYLE-06 CODE COMES HERE WHEN THERE IS HEADER STYLE-06 AND SIDEBAR ENABLED {% endcomment %}
+
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+  <div class="theme-vertical-navigation-sidebar-container">
+{% endif %}
+
+{% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && (page.is_portal_enabled || page.is_multi_currency_enabled || page.is_contact_information_enabled || page.is_menu_enabled || page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || page.is_logo_enabled || page.is_title_enabled || page.is_caption_enabled || page.is_delivery_location_enabled) %}
+
+<div class="theme-vertical-navigation-container {% if page.is_multi_currency_enabled %}theme-currency-enable-vertical{% endif %} {% if page.is_sidebar_enabled %} theme-veritical-nav-with-sidebar {% endif %}" data-theme-vertical-menu="zptheme-vertical-menu">
+  <div data-megamenu-content-container class="theme-header {% if page.template_vars.header_background == "dark" %}zpdark-header-portion theme-dark-part-applied{% endif %} {% if page.template_vars.header_background == "dark" && page.is_sidebar_enabled %}zpdark-section{% endif %}" data-banner-base-header="theme-banner-base-header">
+    <div class="zpcontainer">
+      {% if portal_position == "01" || page.is_multi_currency_enabled || page.is_delivery_location_enabled %}
+        <div class="theme-header-topbar theme-vertical-navigation-portal {% if page.template_vars.topbar_background == "dark" %}zpdark-header-portion theme-dark-part-applied{% endif %}" data-banner-base-header="theme-banner-base-header">
+          {% if portal_position == "01" %}
+          <div data-theme-portal-non-responsive="zptheme-portal-non-responsive">
+            {% include '_member-portal' %}
+          </div>
+          {% endif %}
+
+          {% if page.is_multi_currency_enabled %}
+          <div data-theme-currency-placeholder-non-res class="theme-currency-container-style-06-non-res">
+            {% include '_store-currency-target' %}
+          </div>
+          {% endif %}
+
+          {% if page.is_delivery_location_enabled %}
+            {% include '_store-select-location' %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% include '_branding' %}
+
+      {% if !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || portal_position == "02" %}
+        <div class="theme-navigation-and-icons theme-vertical-navigation-search-cart-container">
+          <div data-search-cart-position-non-responsive="zptheme-search-cart-position-non-responsive" class="theme-search-cart-non-res">
+            {% include '_search-store-cart-count' %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if page.is_menu_enabled %}
+        <div class="theme-navigation-and-icons">
+          <div class="theme-menu-area" data-zp-nonresponsive-container="mymenu1">
+            <div class="theme-menu {% if template_vars.navigation_menu_icon_position == "02" %} theme-menu-icon-top{% endif %} {% if template_vars.sub_menu_icon_position == "02"%} theme-submenu-icon-top{% endif %}" data-nav-menu-icon-width={{template_vars.size_nav_menu_icon_width | remove("px") }} data-nav-menu-icon-height={{template_vars.size_nav_menu_icon_height | remove("px") }} data-sub-menu-icon-height={{template_vars.size_sub_menu_icon_height | remove("px") }} data-sub-menu-icon-width={{template_vars.size_sub_menu_icon_width | remove("px") }} data-mega-menu-icon-width={{template_vars.size_mega_menu_icon_width | remove("px") }} data-mega-menu-icon-height={{template_vars.size_mega_menu_icon_height | remove("px") }} data-non-res-menu='zptheme-menu-non-res' data-zp-theme-menu="id: mymenu1 ;active: theme-menu-selected; maxitem: {{page.template_vars.maxmenuitem}};position: theme-sub-menu-position-change; orientation: vertical; submenu: theme-sub-menu; moretext: {{i18n.get('menu.more.text')}}; nonresponsive-icon-el: theme-non-responsive-menu; responsive-icon-el: theme-responsive-menu; burger-close-icon: theme-close-icon; animate-open: theme-toggle-animate; animate-close: theme-toggle-animate-end;open-icon: theme-submenu-down-arrow; close-icon: theme-submenu-up-arrow; root-icon: theme-submenu-down-arrow; subtree-icon: theme-submenu-right-arrow;">
+              {{navi(menu, template_vars)}}
+              {% if page.template_vars.mobile_header_style == "02" && page.is_portal_enabled %}
+                <div data-theme-portal-responsive="zptheme-portal-responsive" class="theme-portal-style"></div>
+              {% endif %}
+              <div data-theme-currency-placeholder-res class="theme-currency-res">
+              </div>
+              {% if page.is_delivery_location_enabled %}
+                <div class="theme-delivery-location-mobile-container">
+                {% include '_store-select-location' %}
+                </div>
+              {% endif %}
+              <div class="theme-close-mobile-currency" data-theme-currency-open-top>
+                <div class="theme-currency-open-label">
+                  {{i18n.get("currency.label")}}
+                </div>
+                <div onclick="closeCurrencyMobile()" class="theme-currency-close-icon-container" data-theme-currency-hide-mobile>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="theme-sidebar-area"> {% comment %} TO GIVE BOTTOM SPACE TO CONTACT INFO - IN PAGE FACE WE HAVE SIDEBAR CONTENT {% endcomment %}
+      </div>
+    </div>
+
+    {% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.is_contact_information_enabled %}
+      <div class="zpcontainer theme-vertical-navigation-contact-social-container">
+        <div class="theme-vertical-navigation-contact-social">
+          <div class="theme-header-topbar">
+            {% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled %}
+              {% include '_social-links' %}
+            {% endif %}
+            {% if page.is_contact_information_enabled %}
+            <div data-topbarinfo-position="zptheme-topbarinfo-position">
+              {% include '_contacts' %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+  <div class="theme-vertical-header-sidebar-banner-content-container">
+{% endif %}
+
+<div class="theme-content-container zpcontent-for-header-{{page.template_vars.header_style}}">
+  <main class="theme-content-area-inner" id="main-content" role="main">
+    {% comment %} WISHLIST CONTAINER STARTS HERE {% endcomment %}
+    <div class="zpcontainer" style="min-height: 60vh;margin-block-end: 60px;">
+      <div class="wishlist-filter-container" data-zs-filter-container>
+        <div class="wishlist-header" data-zs-wishlist-header>{{i18n.get("wishlist.title")}}</div>
+        <div class="theme-search-box" data-zs-wishlist-search>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="text" name="search_wishlist" class="rounded-corner-input"
+                  placeholder="{{i18n.get('wishlist.search')}}" 
+                  aria-label="{{i18n.get('wishlist.search')}}"
+                  data-search-wishlist-input="zptheme-search-input" 
+                  data-zs-search-wishlist-input 
+                  style="padding-right: 40px;"/>
+            <svg class="wishlist-search-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M8.37941 13.7587C5.41321 13.7587 3 11.3455 3 8.37929C3 5.41308 5.41321 3.00012 8.37941 3.00012C11.3456 3.00012 13.7588 5.41333 13.7588 8.37954C13.7588 11.3457 11.3456 13.759 8.37941 13.759V13.7587ZM8.37941 3.82911C5.87045 3.82911 3.82924 5.87033 3.82924 8.37929C3.82924 10.8882 5.87045 12.9295 8.37941 12.9295C10.8884 12.9295 12.9296 10.8882 12.9296 8.37929C12.9296 5.87033 10.8884 3.82911 8.37941 3.82911Z" fill="#808080"/>
+              <path d="M14.5851 15.0001C14.4791 15.0001 14.3729 14.9596 14.2922 14.8786L11.5924 12.1789C11.4304 12.0169 11.4304 11.7547 11.5924 11.5927C11.7544 11.4307 12.0167 11.4307 12.1787 11.5927L14.8784 14.2924C15.0404 14.4544 15.0404 14.7166 14.8784 14.8786C14.7974 14.9596 14.6914 15.0001 14.5854 15.0001H14.5851Z" fill="#808080"/>
+            </svg>
+            <svg onclick="clearSearch()" onkeydown="clearSearch()" id="resetWishlistSearch" aria-label="{{i18n.get("common.resetsearch")}}" role="button" tabindex="0" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"
+                style="position: absolute; right: 8px; cursor: pointer; height: 20px; width: 20px; display:none">
+              <rect width="32" height="32" rx="16" fill="white"/>
+              <path d="M23.6456 8.36653C23.5333 8.25402 23.4 8.16477 23.2532 8.10387C23.1064 8.04297 22.949 8.01162 22.79 8.01162C22.6311 8.01162 22.4737 8.04297 22.3269 8.10387C22.1801 8.16477 22.0467 8.25402 21.9344 8.36653L16 14.2888L10.0656 8.35439C9.9532 8.24204 9.81981 8.15291 9.67301 8.0921C9.52621 8.0313 9.36887 8 9.20997 8C9.05108 8 8.89374 8.0313 8.74694 8.0921C8.60014 8.15291 8.46675 8.24204 8.35439 8.35439C8.24204 8.46675 8.15291 8.60014 8.0921 8.74694C8.0313 8.89374 8 9.05108 8 9.20997C8 9.36887 8.0313 9.52621 8.0921 9.67301C8.15291 9.81981 8.24204 9.9532 8.35439 10.0656L14.2888 16L8.35439 21.9344C8.24204 22.0468 8.15291 22.1802 8.0921 22.327C8.0313 22.4738 8 22.6311 8 22.79C8 22.9489 8.0313 23.1063 8.0921 23.2531C8.15291 23.3999 8.24204 23.5333 8.35439 23.6456C8.46675 23.758 8.60014 23.8471 8.74694 23.9079C8.89374 23.9687 9.05108 24 9.20997 24C9.36887 24 9.52621 23.9687 9.67301 23.9079C9.81981 23.8471 9.9532 23.758 10.0656 23.6456L16 17.7112L21.9344 23.6456C22.0468 23.758 22.1802 23.8471 22.327 23.9079C22.4738 23.9687 22.6311 24 22.79 24C22.9489 24 23.1063 23.9687 23.2531 23.9079C23.3999 23.8471 23.5333 23.758 23.6456 23.6456C23.758 23.5333 23.8471 23.3999 23.9079 23.2531C23.9687 23.1063 24 22.9489 24 22.79C24 22.6311 23.9687 22.4738 23.9079 22.327C23.8471 22.1802 23.758 22.0468 23.6456 21.9344L17.7112 16L23.6456 10.0656C24.1068 9.60439 24.1068 8.82769 23.6456 8.36653Z" fill="#808080"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="removed-alert-container" data-zs-remove-alert-container style="display: none">
+          <div>{{i18n.get('wishlist.removedalert')}}</div>
+          <button style="cursor: pointer;display: flex;align-items: center;background:#f9f6f6" onclick="hideLinkAlert()" aria-label={{i18n.get('ui.common.close')}}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
+            <path d="M19.3419 7.128C19.2507 7.0366 19.1424 6.96407 19.0231 6.91459C18.9038 6.86511 18.7759 6.83964 18.6468 6.83964C18.5176 6.83964 18.3898 6.86511 18.2705 6.91459C18.1512 6.96407 18.0428 7.0366 17.9516 7.128L13.1299 11.9399L8.30814 7.11814C8.21685 7.02685 8.10848 6.95444 7.9892 6.90503C7.86993 6.85563 7.74209 6.8302 7.61299 6.8302C7.48388 6.8302 7.35604 6.85563 7.23677 6.90503C7.11749 6.95444 7.00912 7.02685 6.91783 7.11814C6.82654 7.20943 6.75412 7.31781 6.70472 7.43709C6.65531 7.55636 6.62988 7.6842 6.62988 7.8133C6.62988 7.94241 6.65531 8.07024 6.70472 8.18952C6.75412 8.3088 6.82654 8.41717 6.91783 8.50846L11.7396 13.3302L6.91783 18.1519C6.82654 18.2432 6.75412 18.3516 6.70472 18.4709C6.65531 18.5902 6.62988 18.718 6.62988 18.8471C6.62988 18.9762 6.65531 19.104 6.70472 19.2233C6.75412 19.3426 6.82654 19.451 6.91783 19.5423C7.00912 19.6335 7.11749 19.706 7.23677 19.7554C7.35604 19.8048 7.48388 19.8302 7.61299 19.8302C7.74209 19.8302 7.86993 19.8048 7.9892 19.7554C8.10848 19.706 8.21685 19.6335 8.30814 19.5423L13.1299 14.7205L17.9516 19.5423C18.0429 19.6335 18.1513 19.706 18.2706 19.7554C18.3898 19.8048 18.5177 19.8302 18.6468 19.8302C18.7759 19.8302 18.9037 19.8048 19.023 19.7554C19.1423 19.706 19.2506 19.6335 19.3419 19.5423C19.4332 19.451 19.5056 19.3426 19.555 19.2233C19.6045 19.104 19.6299 18.9762 19.6299 18.8471C19.6299 18.718 19.6045 18.5902 19.555 18.4709C19.5056 18.3516 19.4332 18.2432 19.3419 18.1519L14.5202 13.3302L19.3419 8.50846C19.7166 8.13377 19.7166 7.5027 19.3419 7.128Z" fill="#9E9E9E"/>
+            </svg>
+          </button>
+        </div>
+      <div class="zprow">
+
+        {% for variant in wishlist[0].variants %}
+          <div class="zpcol-md-3 zpcol-sm-12" data-zs-variant-wishlist data-zs-variant-id={{variant.variant_id}} data-zs-product-id="{{variant.variant_id}}">
+            <div class="wishlist-grid" data-zs-wishlist-grid>
+              <div class="wishlist-image">
+                {% assign url = cdn_prefix_url + variant.images[0].url  %}
+                {% if !variant.images[0].is_placeholder_image %}
+                  {% url = cdn_prefix_url + variant.images[0].url + '/400x400' + cdn_suffix_url %}
+                {% endif %}
+
+                  <picture>
+                    <img data-src="{{url}}" alt="{{variant.images[0].alternate_text}}" width="400" height="400"
+                      class="wishlist-image-container" 
+                      data-fallback="{{ variant.images[0].url }}{% if !variant.images[0].is_placeholder_image %}/400x400{%endif%}
+                      onerror="handleFallBackForImage(this)"/>
+                  </picture>
+                  <noscript>
+                    <picture>
+                      <img src="{{url}}" alt="{{variant.images[0].alternate_text}}" width="400" height="400"
+                        data-fallback="{{ variant.images[0].url }}{% if !variant.images[0].is_placeholder_image %}/400x400{%endif%}
+                        onerror="handleFallBackForImage(this)"/>
+                    </picture>
+                  </noscript>
+              </div>
+              <div class="variant-wishlist">
+                <div class="theme-product-name {% if page.template_vars.product_list_style == '08' %}theme-product-name-wishlist{% endif %}" data-zs-variant-name>
+                  <a href="{{ variant.url }}">{{ variant.name }}</a>
+                   {% if page.template_vars.product_list_style == '08' && variant.is_product_review_enabled %}
+                     <div class="theme-prod-box-content theme-rating" data-zs-review-id="{{ variant.review_id }}" data-zs-review-type="average-rating"></div>
+                    {% endif %}
+                </div>
+                {% if variant.is_product_review_enabled %}
+                  <div class="theme-prod-box-content theme-rating" data-zs-review-id="{{ variant.review_id }}" data-zs-review-type="star-rating"></div>
+                {% endif %}
+                {% if !variant.hide_price %}
+                <div class="variant-price" data-zs-pricings  data-zs-variant-id="{{ variant.variant_id }}">
+                  <span data-zs-selling-price={{variant.rate}} data-zs-currency-code="{{currency.code}}">{{variant.rate | currency(currency)}}</span>
+                  {%if variant.label_price && (variant.label_price > variant.rate) %}
+                    <span class="variant-old-price" data-zs-label-price={{variant.label_price}} data-zs-currency-code="{{currency.code}}">{{variant.label_price | currency(currency)}}</span>
+                  {% endif %}
+                </div>
+                {% endif %}
+                {% if !variant.hide_add_to_cart %}
+                <div class="variant-addcart-container">
+                
+                  <div class="zpbutton-container zpbutton-align-center wishlist-btn">
+                    {% if variant.is_out_of_stock == true %}
+                      <a href="{{variant.url}}" class="theme-button">
+                        <span>{{i18n.get("product.message.out_of_stock")}}</span>
+                      </a>
+                    {% else %}
+                      <a href="javascript:;" data-zs-add-to-cart data-zs-product-variant-id="{{ variant.variant_id }}"  class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-md">
+                        <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("product.action.add_to_cart")}}</span>
+                        <span data-theme-cart-button-loading="theme-cart-button-loading" class="theme-cart-loading" style="display: none;">. . .</span>
+                      </a>
+                    {% endif %}
+
+                  </div>
+                  <button type="button" class="wishlist-rm-icon"  data-zs-delete-wishlist data-zs-product-variant-id="{{variant.variant_id}}" data-zs-variant-url="{{variant.url}}" data-zs-variant-name="{{variant.name}}" onclick='deleteVariantInWishList(this)' aria-label={{i18n.get("wishlist.delete")}}>
+                   {% if page.template_vars.product_list_style == '08' %}
+                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                       <path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.6C6 0.268629 6.26863 0 6.6 0H11.4C11.7314 0 12 0.268629 12 0.6C12 0.931371 11.7314 1.2 11.4 1.2H6.6C6.26863 1.2 6 0.931371 6 0.6Z" fill="#2C2828"/>
+                       <path fill-rule="evenodd" clip-rule="evenodd" d="M15.4022 4.2L2.59967 4.2L4.63044 17.4L13.3714 17.4L15.4022 4.2ZM2.59967 3C1.86421 3 1.30179 3.65556 1.41363 4.38247L3.44439 17.5825C3.53446 18.1679 4.03816 18.6 4.63044 18.6H13.3714C13.9637 18.6 14.4674 18.1679 14.5575 17.5825L16.5883 4.38247C16.7001 3.65556 16.1377 3 15.4022 3H2.59967Z" fill="#2C2828"/>
+                       <path fill-rule="evenodd" clip-rule="evenodd" d="M5.91403 6.51353C6.24194 6.46571 6.54652 6.69277 6.59433 7.02067L7.6332 14.1453C7.68101 14.4732 7.45395 14.7778 7.12605 14.8256C6.79815 14.8734 6.49357 14.6464 6.44576 14.3185L5.40689 7.19382C5.35907 6.86592 5.58613 6.56134 5.91403 6.51353Z" fill="#2C2828"/>
+                       <path fill-rule="evenodd" clip-rule="evenodd" d="M11.9258 6.51353C11.5979 6.46571 11.2933 6.69277 11.2455 7.02067L10.2066 14.1453C10.1588 14.4732 10.3859 14.7778 10.7138 14.8256C11.0417 14.8734 11.3463 14.6464 11.3941 14.3185L12.433 7.19382C12.4808 6.86592 12.2537 6.56134 11.9258 6.51353Z" fill="#2C2828"/>
+                       <path d="M0.685583 3.00019L17.3144 3.0002C17.6932 3.0002 18 3.26871 18 3.6002C18 3.93168 17.6932 4.2002 17.3144 4.2002L0.685583 4.20019C0.306818 4.20019 2.34744e-08 3.93168 5.24536e-08 3.60019C8.14328e-08 3.26871 0.306818 3.00019 0.685583 3.00019Z" fill="#2C2828"/>
+                     </svg>
+                    {% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" style="display:flex; align-items:center;margin:3px;">
+                        <rect width="32" height="32" />
+                        <path
+                          d="M20 13V23H12V13H20ZM18.5 7H13.5L12.5 8H9V10H23V8H19.5L18.5 7ZM22 11H10V23C10 24.1 10.9 25 12 25H20C21.1 25 22 24.1 22 23V11Z"
+                          fill="#999999" />
+                      </svg>
+                    {% endif %}
+                  </button>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+        <div data-zs-no-wishlist style="display: {% if wishlist[0].variants | size == 0 %} block {% else %} none {% endif %};" class="zpcol-md-12 theme-no-products-error">
+          {{i18n.get("wishlist.emptymsg")}}
+        </div>
+      </div>
+    </div>
+    {% comment %} WISHLIST CONTAINER ENDS HERE {% endcomment %}
+  </main>
+</div>
+{% endblock %}

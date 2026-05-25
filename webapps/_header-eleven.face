@@ -1,0 +1,201 @@
+<div {{ header_block }} data-headercontainer="zptheme-data-headercontainer" data-header="{% if page.template_vars.header_effect == 'header-animated' %}zptheme-data-header{% endif %}{% if page.template_vars.header_effect == 'header-transparent-animated' %}zptheme-data-header-transparent{% endif %}{% if page.template_vars.header_effect == 'none' %}none{% endif %}" data-zs-mobile-headerstyle="{{ page.template_vars.mobile_header_style }}" class="zpheader-style-{{ page.template_vars.header_style }} {% if !cart && !product && !collection && !search && !wishlist %}theme-header-fixed theme-mobile-header-fixed{% endif %}{% if page.template_vars.is_site_full_stretch %}theme-pages-full-stretch{% endif %} theme-mobile-header-style-{{ page.template_vars.mobile_header_style }}">
+  {% comment %} THEME TOPBAR STARTS HERE {% endcomment %}
+
+  {% if page.is_contact_information_enabled || page.is_portal_enabled || page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || page.is_delivery_location_enabled %}
+  <div class="theme-header-topbar {% if portal_position == "02" && !page.is_contact_information_enabled && !page.is_social_icon_enabled && !page.is_multi_currency_enabled && !LANGUAGE_LIST_ENABLED && !page.is_delivery_location_enabled %}theme-topbar-hide-non-res{% endif %} {% if !page.is_portal_enabled %}theme-topbar-header-11{% endif %} {% if !page.is_portal_enabled %}theme-hide-res-topbar-checkout{% endif %} {% if !page.is_contact_information_enabled && !page.is_portal_enabled && !page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled && page.is_multi_currency_enabled && !LANGUAGE_LIST_ENABLED %}theme-hide-currency-checkout{% endif %} {% if !page.is_contact_information_enabled && !page.is_social_icon_enabled && !page.is_multi_currency_enabled || !page.is_contact_information_enabled && !page.is_multi_currency_enabled && !LANGUAGE_LIST_ENABLED && page.is_social_icon_enabled && page.template_vars.is_social_icon_floater_enabled %}theme-topbar-in-none-responsive-header-03{% endif %} {% if !page.is_portal_enabled && !page.is_search_enabled && !page.show_cart_icon %} theme-checkout-topbar {% endif %} {% if page.template_vars.topbar_background == "dark" %}zpdark-header-portion{% endif %}" data-dark-part-applied="{% if page.template_vars.topbar_background == "dark" %}true{% else %}false{% endif %}" data-theme-topbar="zptheme-topbar">
+    <div class="zpcontainer">
+      {% if page.is_contact_information_enabled %}
+      <div data-topbarinfo-position="zptheme-topbarinfo-position">
+        {% include '_contacts' %}
+      </div>
+      {% endif %}
+      {% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled %}
+      {% include '_social-links' %}
+      {% endif %}
+      {% if page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}
+      {% include '_store-select-location' %}
+      {% endif %}
+      {% if portal_position == "01" %}
+      <div data-theme-portal-non-responsive="zptheme-portal-non-responsive" class="theme-portal-login">
+        {% include '_member-portal' %}
+      </div>
+      {% endif %}
+      {% if page.is_multi_currency_enabled %}
+      <div data-theme-currency-placeholder-non-res class="theme-currency-non-res {% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled %}theme-curency-option-left-space{% endif %}">
+        {% include '_store-currency-target' %}
+      </div>
+      {% endif %}
+      {% if LANGUAGE_LIST_ENABLED %}
+      <div class="theme-lang-container-non-res {% if page.is_portal_enabled && portal_position != '02' %}theme-lang-option-left-space{% endif %}" data-theme-lang-container-non-res>
+        {% include '_language-list' %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% comment %} THEME TOPBAR ENDS HERE {% endcomment %}
+
+  {% comment %} THEME MAIN HEADER STARTS HERE {% endcomment %}
+
+  <div class="theme-header {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}" data-dark-part-applied="{% if page.template_vars.header_background == "dark" %}true{% else %}false{% endif %}" data-banner-base-header="theme-banner-base-header">
+    {% if (page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || page.is_title_enabled || page.is_logo_enabled || page.is_caption_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || portal_position == "02" || page.is_social_icon_enabled %}
+    <div class="zpcontainer">
+      <div class="theme-search-menu-hamburger">
+        {% if page.template_vars.mobile_header_style == "01" && ((page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || (page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled)) %}
+        <div data-zs-responsive-menu-area class="theme-responsive-menu-area theme-navigation-and-icons theme-responsive-menu-area-style-03 zpcontainer {% if !page.is_title_enabled && !page.is_logo_enabled && !page.is_caption_enabled %}theme-only-menu-in-mobile{% endif %} theme-hide-burgericon-cart-mobile">
+          <div class="theme-responsive-menu-container" data-zp-burger-clickable-area="mymenu1">
+            <span class="theme-burger-icon" data-zp-theme-burger-icon="mymenu1"></span>
+          </div>
+          <div class="theme-responsive-menu theme-menu-area" data-zp-responsive-container="mymenu1"></div>
+        </div>
+        {% endif %}
+        <button type="button" class='theme-open-menu-hamburger' onclick="toggleMenu()" aria-label="{{i18n.get("portal.menu")}}">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
+            <path d="M1 1.27686H15.6126" stroke="#4A260C" stroke-width="0.828196" stroke-linecap="round"/>
+            <path d="M1 7.66992H15.6126" stroke="#4A260C" stroke-width="0.828196" stroke-linecap="round"/>
+            <path d="M1 14.9761H15.6126" stroke="#4A260C" stroke-width="0.828196" stroke-linecap="round"/>
+          </svg>
+        </button>
+
+        {% comment %} SEARCH STARTS {% endcomment %}
+        {% if !hide_search_in_cart_checkout %}
+        <div class="theme-search theme-search-and-mini-cart-group-item" data-zs-search-container>
+          <div class="theme-search-field-container" data-search="zptheme-search-container">
+            <form method="get" action="{{ page.search_url }}">
+              <input {% if page.template_vars.is_search_suggestion_enabled %}id="search-with-suggestion"{% endif %} type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+              {% if page.template_vars.header_style != "09"%}
+              <button type="submit" name="" aria-label="{{i18n.get("search.page.title")}}" class="theme-search-go" data-zs-search="{{page.primary_search}}">
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M3.79732 6.10101C5.23384 6.10101 6.39837 4.93648 6.39837 3.49996C6.39837 2.06343 5.23384 0.898903 3.79732 0.898903C2.3608 0.898903 1.19627 2.06343 1.19627 3.49996C1.19627 4.93648 2.3608 6.10101 3.79732 6.10101ZM3.79732 6.90665C5.67879 6.90665 7.20401 5.38142 7.20401 3.49996C7.20401 1.61849 5.67879 0.0932617 3.79732 0.0932617C1.91585 0.0932617 0.390625 1.61849 0.390625 3.49996C0.390625 5.38142 1.91585 6.90665 3.79732 6.90665Z" fill="#4A260C"/>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.58994 9.09302L5.60027 6.10335L6.09229 5.61133L9.08196 8.601L8.58994 9.09302Z" fill="#4A260C"/>
+                </svg>
+              </button>
+              {% endif %}
+              <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+                <span></span>
+              </div>
+            </form>
+            <div class="theme-search-hide-overlay" data-theme-search-overlay="theme-search-overlay" style="display:none;">
+              <span class="theme-search-close" aria-label="{{i18n.get("product.label.close")}}" {% if page.template_vars.is_search_suggestion_enabled %} onclick="toggleSearchSuggestions(this)" role="button" tabindex="0" {% endif %}>
+                <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none" >
+                  <path d="M1.65625 12.4762L11.9762 2.15625M1.65625 2.15625L11.9762 12.4762" stroke="#303529" stroke-width="1.7906" stroke-linecap="square" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+            </div>
+          </div>
+          <button type="button" class="theme-search-icon" onclick="toggleSearch(this)" data-zs-search-icon aria-label="{{i18n.get("search.page.title")}}">
+            <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M3.79732 6.10101C5.23384 6.10101 6.39837 4.93648 6.39837 3.49996C6.39837 2.06343 5.23384 0.898903 3.79732 0.898903C2.3608 0.898903 1.19627 2.06343 1.19627 3.49996C1.19627 4.93648 2.3608 6.10101 3.79732 6.10101ZM3.79732 6.90665C5.67879 6.90665 7.20401 5.38142 7.20401 3.49996C7.20401 1.61849 5.67879 0.0932617 3.79732 0.0932617C1.91585 0.0932617 0.390625 1.61849 0.390625 3.49996C0.390625 5.38142 1.91585 6.90665 3.79732 6.90665Z" fill="#4A260C"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M8.58994 9.09302L5.60027 6.10335L6.09229 5.61133L9.08196 8.601L8.58994 9.09302Z" fill="#4A260C"/>
+            </svg>
+          </button>
+        </div>
+        {% endif %}
+        {% comment %} SEARCH ENDS {% endcomment %}
+      </div>
+      {% include '_branding' %}
+      {% if page.template_vars.mobile_header_style == "02" && !hide_carticon_in_cart_checkout %}
+      <div class="theme-navigation-and-icons theme-search-minicart-responsive theme-search-openstyle-cart">
+        <div class="theme-search-and-mini-cart-group">
+          {% comment %} MINI-CART START {% endcomment %}
+          {% include '_store-cart-count' %}
+          {% comment %} MINI-CART END {% endcomment %}
+        </div>
+      </div>
+      {% endif %}
+      {% if !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || portal_position == "02" %}
+      <div class="theme-navigation-and-icons theme-search-cart-non-res" data-search-cart-position-non-responsive="zptheme-search-cart-position-non-responsive">
+        <div class="theme-search-and-mini-cart-group {% if portal_position == "02" && !page.is_store_enabled && (page.template_vars.header_style == "01" || page.template_vars.header_style == "04" || page.template_vars.header_style == "05"  || page.template_vars.header_style == "08"  || page.template_vars.header_style == "09" || page.template_vars.header_style == "11") %}theme-portal-position-02{% endif %}" data-theme-search-cart-group="zptheme-search-cart-group">
+          {% comment %} WISHLIST STARTS {% endcomment %}
+
+          {% include '_wishlist' %}
+
+          {% comment %} WISHLIST ENDS {% endcomment %}
+
+          {% comment %} PORTAL STARTS {% endcomment %}
+
+          {% if portal_position == "02" %}
+          <div data-theme-portal-non-responsive="zptheme-portal-non-responsive" class="theme-nonresponsive-portal-position-two">
+            {% include '_member-portal' %}
+          </div>
+          {% endif %}
+
+          {% comment %} PORTAL ENDS {% endcomment %}
+
+          {% comment %} MINI-CART START {% endcomment %}
+
+          {% if !hide_carticon_in_cart_checkout %}
+          {% include '_store-cart-count' %}
+          {% endif %}
+
+          {% comment %} MINI-CART END {% endcomment %}
+
+          {% comment %} QUOTE START {% endcomment %}
+          {% if page.is_quotes_enabled_in_storefront %}
+            {% include '_store-quotes-count' %}
+          {% endif %}
+        {% comment %} QUOTE END {% endcomment %}
+
+        </div>
+
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  {% comment %} THEME MAIN HEADER ENDS HERE {% endcomment %}
+
+  <div data-megamenu-content-container class="theme-header {% if page.template_vars.navigation_background == "dark" %}zpdark-header-portion{% endif %} zpheader-style-navigation-11" data-dark-part-applied="{% if page.template_vars.navigation_background == "dark" %}true{% else %}false{% endif %}" data-banner-base-header="theme-banner-base-header">
+    {% if (page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || (!hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout) || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || page.template_vars.mobile_header_style == "02" && page.is_portal_enabled || page.is_social_icon_enabled %}
+    <div class="zpcontainer">
+      <div class="theme-navigation-and-icons">
+        {% if page.is_menu_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || page.is_social_icon_enabled || page.template_vars.mobile_header_style == "02" && page.is_portal_enabled %}
+        <div class="theme-menu-area" data-zp-nonresponsive-container="mymenu1">
+          <div class="theme-menu {% if template_vars.navigation_menu_icon_position == "02"%} theme-menu-icon-top{% endif %} {% if template_vars.sub_menu_icon_position == "02"%} theme-submenu-icon-top{% endif %}" data-nav-menu-icon-width={{template_vars.size_nav_menu_icon_width | remove("px") }} data-nav-menu-icon-height={{template_vars.size_nav_menu_icon_height | remove("px") }} data-sub-menu-icon-height={{template_vars.size_sub_menu_icon_height | remove("px") }} data-sub-menu-icon-width={{template_vars.size_sub_menu_icon_width | remove("px") }} data-mega-menu-icon-width={{template_vars.size_mega_menu_icon_width | remove("px") }} data-mega-menu-icon-height={{template_vars.size_mega_menu_icon_height | remove("px") }} data-non-res-menu='zptheme-menu-non-res' data-zp-theme-menu="id: mymenu1 ;active: theme-menu-selected; maxitem:5;position: theme-sub-menu-position-change; orientation: horizontal; submenu: theme-sub-menu; moretext: {{i18n.get('menu.more.text')}}; nonresponsive-icon-el: theme-non-responsive-menu; responsive-icon-el: theme-responsive-menu; burger-close-icon: theme-close-icon; animate-open: theme-toggle-animate; animate-close: theme-toggle-animate-end;open-icon: theme-submenu-down-arrow; close-icon: theme-submenu-up-arrow; root-icon: theme-submenu-down-arrow; subtree-icon: theme-submenu-right-arrow;">
+            {% if page.is_menu_enabled %}
+            {{navi(menu, template_vars)}}
+            {% endif %}
+            {% if page.template_vars.mobile_header_style == "01" && page.is_portal_enabled %}
+            <div class="theme-portal-style" data-theme-portal-responsive="zptheme-portal-responsive"></div>
+            {% endif %}
+            {% if page.is_multi_currency_enabled %}
+            <div data-theme-currency-placeholder-res class="theme-currency-res"></div>
+            <div class="theme-close-mobile-currency" data-theme-currency-open-top>
+              <div class="theme-currency-open-label">
+                {{i18n.get("currency.label")}}
+              </div>
+              <div onclick="closeCurrencyMobile()" class="theme-currency-close-icon-container" data-theme-currency-hide-mobile></div>
+            </div>
+            {% endif %}
+            {% if LANGUAGE_LIST_ENABLED %}
+            <div class="theme-lang-container-res" data-theme-lang-container-res></div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  {% comment %} THEME FLOATER SOCIAL ICON STARTS HERE {% endcomment %}
+
+  {% if page.template_vars.is_social_icon_floater_enabled && page.is_social_icon_enabled %}
+  <div class="zpsocialicon-floater">
+    {% include "_social-links" %}
+  </div>
+  {% endif %}
+
+  {% comment %} THEME FLOATER SOCIAL ICON END HERE {% endcomment %}
+
+  {% if page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}
+  <div class="theme-delivery-location-mobile-container">
+    {% include '_store-select-location' %}
+  </div>
+  {% endif %}
+  {% if page.template_vars.is_search_suggestion_enabled %}
+    {% include '_search-suggestions' %}
+  {% endif %}
+</div>

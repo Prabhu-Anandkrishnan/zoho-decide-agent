@@ -1,0 +1,139 @@
+{% extends '_theme' %}
+
+{% block header_area %}
+{% if page.template_vars.portal_style == '01' %}
+    <div class="theme-header {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}" data-portal-header>   
+        <button
+          type="button"
+          class="theme-responsive-goback theme-mobile-header-goback"
+          data-zs-mobile-header-responsive-goback
+          aria-label="Go back"
+          onclick="history.go(-1);">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+              fill="#3E4152"
+              fill-rule="evenodd"
+              d="M20.25 11.25H5.555l6.977-6.976a.748.748 0 000-1.056.749.749 0 00-1.056 0L3.262 11.43A.745.745 0 003 12a.745.745 0 00.262.57l8.214 8.212a.75.75 0 001.056 0 .748.748 0 000-1.056L5.555 12.75H20.25a.75.75 0 000-1.5"
+              ></path>
+          </svg>
+        </button>
+        {% if page.is_logo_enabled || page.is_title_enabled || page.is_caption_enabled %}
+          <div data-zs-branding class="theme-branding-info {% if page.template_vars.header_style == "02" && !page.is_search_enabled && !page.is_store_enabled %}theme-brand-style-02{% endif %}" data-theme-branding-info="zptheme-branding-info">
+            {% if page.is_logo_enabled %}
+            <div data-zs-logo-container class="theme-logo-parent {% if !page.template_vars.is_mobile_logo_enabled %}theme-disable-logo-mobile{% endif %}">
+              <a href="/">
+                <img data-zs-logo src="{% if page.logo.url %}{{ page.logo.url }}{% else %}{{ page.template_assets }}/images/logo.png{% endif %}" alt="{{page.site_title}}" style="height:{{page.logo.height}};width:{{page.logo.width}}" />
+              </a>
+            </div>
+            {% endif %}
+            {% if page.is_title_enabled || page.is_caption_enabled %}
+              {% if page.site_title || page.site_caption %}
+                <div class="theme-site-name-caption {% if page.template_vars.is_mobile_logo_enabled && page.template_vars.is_mobile_site_title_enabled && page.is_logo_enabled || page.template_vars.is_mobile_logo_enabled && page.template_vars.is_mobile_site_caption_enabled && page.is_logo_enabled %}theme-site-title-caption-space{% endif %}">
+                  {% if page.is_title_enabled && page.site_title%}
+                    <div data-zs-sitename class="theme-site-name {% if !page.template_vars.is_mobile_site_title_enabled %}theme-disable-sitename-mobile{% endif %}">
+                      {{page.site_title}}
+                    </div>
+                  {% endif %}
+                  {% if page.is_caption_enabled && page.site_caption %}
+                    <div data-zs-sitecaption class="theme-site-caption {% if !page.template_vars.is_mobile_site_caption_enabled %}theme-disable-sitecaption-mobile{% endif %}">
+                      {{page.site_caption}}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endif %}
+    </div>
+{% elif page.template_vars.portal_style == '02' %}
+{% include '_header' %}
+{% endif %}
+{% endblock %}
+
+
+
+{% block content_area %}
+
+{% assign Portal_page = {} %}
+{% assign Portal_page.SIGNUP = 0 %}
+{% assign Portal_page.SIGNIN = 1 %}
+{% assign Portal_page.FORGOTPASSWORD = 2 %}
+{% assign is_info_page = !page.is_portal_signup_enabled || !page.is_portal_user_allowed %}
+{% if page.portal_page_type == Portal_page.SIGNUP && is_info_page %}
+  {% if !page.is_portal_signup_enabled %}
+    <div id="zs_noSignupAllowed" id="main-content" role="main">
+      <div class="user-signup-container user-signup-disabled">
+        <div class="user-signup-error-header ">
+          <h2 class="user-signup-heading">{{i18n.get('portal.signupdisable.disabled')}}</h2>
+        </div>
+        <p class="user-signup-error-text" style="text-align:center">{{i18n.get('portal.signupdisable.disabledmsg')}}</p>
+        <p id="btn-cont" class="user-signup-error-header">
+          <a href="/"><button class="user-signup-back-button" type="button">{{i18n.get('portal.signupdisable.back')}}</button></a>
+        </p>
+      </div>
+    </div>
+  {% else %}
+    <div>
+      <div class="user-signup-container user-signup-disabled" id="main-content" role="main">
+        <div class="user-signup-error-header ">
+          <h2 class="user-signup-heading">{{i18n.get('portal.signup.contactadmin')}}</h2>
+        </div>
+        <p class="user-signup-error-text" style="text-align:center">{{i18n.get('portal.signup.contactadminmsg')}}</p>
+      </div>
+    </div>
+  {% endif %}
+{% else %}
+  <div class="theme-portal-form-container" id="main-content" role="main">
+    {{page.form_code}}
+    {% if page.portal_page_type == Portal_page.SIGNIN %}
+      <div class="theme-noaccount-signup">
+        {% if page.is_portal_signup_enabled %}
+          <span>{{ i18n.get('portal.signin.noaccount') }} <a href="/signup">{{ i18n.get('portal.signup') }}</a></span>
+        {% endif %}
+        <span><a href="/forgotpassword">{{ i18n.get('portal.forgotpassword') }}</a></span>
+      </div>
+    {% endif %}
+    {% if page.portal_page_type == Portal_page.FORGOTPASSWORD %}
+      <div class="theme-forgotpassword-back">
+        <a href="/signin">{{ i18n.get('portal.forgotpassword.backtosignin') }}</a>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+{% if page.portal_page_type == Portal_page.SIGNUP && page.template_vars.portal_style != '01' %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".signupcontainer li input").forEach(input => {
+      let label = input.closest(".user-signup-form-field-wrapper, .za-captcha-container").querySelector(".user-signup-field-mandatory");
+
+      function toggleLabel() {
+        if(label){
+          if (input.value.trim() !== "" || document.activeElement === input) {
+            label.classList.add("float-label");
+          } else {
+            label.classList.remove("float-label");
+          }
+        }
+      }
+
+      input.addEventListener("focus", toggleLabel);
+      input.addEventListener("blur", toggleLabel);
+      input.addEventListener("input", toggleLabel);
+      toggleLabel(); // Run initially in case there's prefilled text
+    });
+    {% if page.template_vars.portal_style == '03' || page.template_vars.portal_style == '04' %}
+      let signinElm = document.getElementById("signinElm");
+      if (signinElm) {
+        signinElm.addEventListener("click", function (event) {
+          event.preventDefault();
+          if (window.parent) {
+            window.parent.createPortalPopUp('/signin');
+          }
+        });
+      }
+    {% endif %}
+  });
+</script>
+{% endif %}
+
+{% endblock %}

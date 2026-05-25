@@ -1,0 +1,81 @@
+<div class="theme-quick-view-container">
+	<div class="theme-overlay" role="button" aria-label="{{i18n.get("product.label.close")}}" tabindex="0" onclick="closeProductQuickLook(this)">
+	</div>
+	<div class="theme-product-quick-view-inner" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+    <button onclick="closeProductQuickLook(this)" aria-label="Close Quick View" class="theme-quickview-close">
+			<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <path d="M29.4277 29.428L10.5716 10.5718" stroke="#150004" stroke-width="1.66667" stroke-linecap="round"/>
+        <path d="M29.4277 10.572L10.5716 29.4282" stroke="#150004" stroke-width="1.66667" stroke-linecap="round"/>
+      </svg>
+		</button>
+    <div class="zpcontainer ">
+      <div class="theme-product-detail-container" data-zs-product-primary-details>
+        <div class="theme-product-detail-column theme-product-detail-image-container">
+          {% include '_store-product-image-three' %}
+        </div>
+        <div class="theme-product-detail-column theme-product-detail-container">
+          <div class="theme-product-name">
+            <h1 data-zs-product-name>{{ product.name }}</h1>
+          </div>
+          {% if product.short_description %}
+            <div class="theme-product-short-description" data-zs-product-short-description>
+              {{ product.short_description }}
+            </div>
+          {% endif %}
+          {% if product.is_product_review_enabled %}
+            <div class="theme-rating-review-container">
+              <div class="theme-rating-review" data-comments-summary = "rating-only"></div>
+            </div>
+          {% endif %}
+          {% include '_store-product-pricing-five' %}
+          <div class="theme-product-coupons" style="width: 100%;">
+            {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+              <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+            {% endif %}
+          </div>
+          {% if product.has_variants %}
+          <div class="theme-product-varients-area">
+            {% include "_store-product-variants-eight" %}
+          </div>
+          {% else %}
+            <div class="theme-spacer"></div>
+          {% endif %}
+          {% include "_store-product-custom-field-two" %}
+          {% include "_store-product-quantity-add-cart-four" %}
+          {% if page.is_delivery_location_enabled %}
+            <div class="theme-product-details-delivery-location-row">
+              <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+              <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+              <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+              <div class="theme-product-delivery-location-deliverable-details">
+                {% for variant in product.variants %}
+                <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+                </span>
+                {% endfor %}
+                <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var shareLink = document.querySelector(".theme-social-share");
+        function sharePageLink() {
+          var currentPageUrl = window.location.href;
+          if (navigator.share) {
+            navigator.share({
+              url: currentPageUrl
+            }).then(() => {
+            }).catch((error) => {
+            });
+          }
+        }
+        if(shareLink){
+          shareLink.addEventListener("touchstart", sharePageLink);
+        }
+      });
+    </script>
+  </div>
+</div>

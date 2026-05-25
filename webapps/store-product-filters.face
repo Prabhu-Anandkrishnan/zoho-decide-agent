@@ -1,0 +1,1303 @@
+{% if page.template_vars.product_category_style == "01" || page.template_vars.product_category_style == "07" || page.template_vars.product_category_style == "09" ||  page.template_vars.product_category_style == "11" %}
+  {% if page.template_vars.product_category_style == "07" || page.template_vars.product_category_style == "09" ||  page.template_vars.product_category_style == "11" %} 
+    <div class='theme-filter-heading'>
+      <span>Filter By</span>
+      <div data-theme-product-filter-overlay="" class="theme-product-filter-mobile-overlay theme-mobile-filter-overlay-show">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none" {% if page.template_vars.product_category_style == "07" || page.template_vars.product_category_style == "09" %} onclick='toggleFilters()' {% endif %} class='theme-desktop-close-filters' aria-label="{{i18n.get("product.label.close")}}" type="button" tabindex='0'>
+          <path d="M18 8.20467L16.7914 6.99609L12 11.7875L7.20857 6.99609L6 8.20467L10.7914 12.9961L6 17.7875L7.20857 18.9961L12 14.2047L16.7914 18.9961L18 17.7875L13.2086 12.9961L18 8.20467Z" fill="black" />
+        </svg>
+      </div>
+    </div>
+  {% endif %}
+  {% for filter in filters.filter_set %}
+    {% if filter.has_filter_options %}
+      <fieldset data-zs-filter-option-container="{{ filter.name }}" data-zs-filter-option-container-id="{{ filter.id }}" data-zs-filter-option-type="{{ filter.type }}" data-zs-filter-option-default-value-to-show="{{ filter.value_to_show_by_default }}" class="theme-product-filter-box">
+        <legend data-zs-filter-option-name class="theme-product-filter-type">
+          <span>{{ filter.name }}</span>
+          <svg aria-hidden="true" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            width="4" height="4" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"
+            class="theme-filter-expand-icon {% if !filter.collapse_by_default %} theme-filter-expclose-default-hide {% endif %}">
+            <polygon points="256,413.4 0.6,158 40.2,118.4 256,334.2 471.8,118.4 511.4,158 " />
+          </svg>
+          <svg aria-hidden="true" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            width="4" height="4"
+            class="theme-filter-close-icon {% if filter.collapse_by_default %} theme-filter-expclose-default-hide {% endif %}"
+            viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+            <polygon points="256,118.4 511.4,373.8 471.8,413.4 256,197.6 40.2,413.4 0.6,373.8 " />
+          </svg>
+        </legend>
+
+        <div data-zs-filter-option-values-wrapper {% if filter.collapse_by_default %} style="display:none;" {% endif %}>
+          <a data-zs-filter-option-clear href="javascript:;" class="theme-product-clear-filter" style="display:none;">{{i18n.get("product_filters.clear_all.label")}}</a>
+
+          {% if filter.type == 1 %}
+            {% comment %} FILTER TYPE - CATEGORY STARTS {% endcomment %}
+              <div class="theme-product-filter-option-container">
+                <ul>
+                  {% for ancestor_category_data in filter.ancestors_category_filter %}
+                    <li>
+                      <span class="theme-product-filter-text">
+                        <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{ancestor_category_data.id}}">
+                          <svg aria-hidden="true" id="Layer_1" style="enable-background:new 0 0 50 50" version="1.1" viewBox="0 0 50 50"
+                            xml:space="preserve" xmlns="http://www.w3.org/2000/svg" class="theme-parentcategory-filter-icon">
+                            <path d="M37.561 47.293L15.267 25 37.561 2.707l-1.415-1.414L12.439 25l23.707 23.707z" id="Layer_1_1_" />
+                          </svg>
+                          {{ ancestor_category_data.name }}
+                        </button>
+                      </span>
+                    </li>
+                  {% endfor %}
+                  <li>
+                    {% assign category_filter = filter.category_filter %}
+                    {% if category_filter && category_filter.name %}
+                    <span class="theme-product-filter-text">
+                      <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{ category_filter.id }}">
+                        {{ category_filter.name }}
+                      </button>
+                    </span>
+                    {% if filter.show_product_count && category_filter.count > 0 %}
+                    <span class="theme-product-filter-count">{{ category_filter.count }}</span>
+                    {% endif %}
+                    {% endif %}
+                    <ul>
+                      {% assign available_filter_options = 0 %}
+                      {% for children_category_data in filter.children_category_filter %}
+                      {% assign available_filter_options = available_filter_options + 1 %}
+                      <li data-zs-filter-option-value-container {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                        <span class="theme-product-filter-text">
+                          <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{children_category_data.id}}">
+                            {{ children_category_data.name }}
+                          </button>
+                        </span>
+                        {% if filter.show_product_count && children_category_data.count > 0 %}
+                        <span class="theme-product-filter-count">{{ children_category_data.count }}</span>
+                        {% endif %}
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              {% if filter.children_category_filter | size > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - CATEGORY ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 2 %}
+            {% comment %} FILTER TYPE - PRICE STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for price_data in filter.price_filter %}
+                {% if price_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  {% assign from_price = price_data.from %}
+                  {% if price_data.to %}
+                    {% assign to_price = price_data.to %}
+                  {% else %}
+                    {% assign to_price = 0 %}
+                  {% endif %}
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{from_price}}_{{to_price}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{price_data.container_id}}" data-zs-filter-option-value-data="{{from_price}}_{{to_price}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                      <span class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)"  role="radio" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7"
+                          fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{from_price}}_{{to_price}}" data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                      <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min {% if from_price!=0 %} data-zs-selling-price="{{from_price}}" {% else %} data-zs-selling-price="{{to_price}}" {% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %}{{ to_price | currency(currency) }}{% else %}{{ from_price | currency(currency) }}{% endif %}</span>
+                      {% if from_price!=0 && to_price!=0 %} - {% endif %}
+                      <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max {% if from_price!=0 && to_price!=0 %} data-zs-selling-price="{{to_price}}" {% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %} & {{i18n.get("product_filters.and_below.label")}}{% elif to_price == 0 %} & {{i18n.get("product_filters.and_above.label")}}{% else %}{{ to_price | currency(currency) }}{% endif %}</span>
+                    </label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ price_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+
+              {% comment %} CUSTOM PRICE - INPUT RADIO STARTS {% endcomment %}
+                <div data-zs-filter-option-value-container data-zs-filter-option-price-custom-container class="theme-product-filter-option-container" style="display:none;">
+                  <div class="theme-product-filter-select-option">
+                    <input aria-hidden="true" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="custom_price" data-zs-filter-option-value-data="" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                    <span class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="radio" tabindex="0">
+                      <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                        <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                    {{i18n.get("product_filters.custom.label")}} :
+                    <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min data-zs-filter-option-price-custom-min-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                    <span data-zs-filter-option-price-custom-separator> - </span>
+                    <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max data-zs-filter-option-price-custom-max-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                  </div>
+                </div>
+              {% comment %} CUSTOM PRICE - INPUT RADIO ENDS {% endcomment %}
+
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;"></a>
+              {% endif %}
+
+              {% comment %} CUSTOM PRICE - INPUT BOX STARTS {% endcomment %}
+                {% assign min_price = category.products[0].variants[0].selling_price %}
+                {% assign max_price = category.products[0].variants[0].selling_price %}
+                {% assign category_products = category.products %}
+                {% for products in category_products %}
+                  {% for variants in products.variants %}
+                    {% if variants.selling_price < min_price %} {% assign min_price=variants.selling_price %} {% endif %} {% if variants.selling_price> max_price %}
+                      {% assign max_price = variants.selling_price %}
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+                <div class="theme-product-filter-price-minmax" {% if !filter.show_custom_box %}style="display:none;" {% endif %}>
+                  <input data-zs-filter-option-price-custom-min-box class="theme-product-filter-minmax-input theme-input-min" type="text" placeholder="{{i18n.get('product_filters.min.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                  <span>{{i18n.get("product_filters.to.label")}}</span>
+                  <input data-zs-filter-option-price-custom-max-box class="theme-product-filter-minmax-input theme-input-max" type="text" placeholder="{{i18n.get('product_filters.max.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                </div>
+                <button type="button" data-zs-filter-option-price-custom-btn class="zpbutton zpbutton-type-primary zpbutton-size-sm zpbutton-full-width zpbutton-style-none" {% if !filter.show_custom_box %}style="display:none;" {% endif %}>{{i18n.get("product_filters.apply.label")}}</button>
+                <div role="alert" data-zs-filter-option-price-custom-error-container class="" style="display:none; color:#FF4949; margin-top:5px;">{{i18n.get("product_filters.custom_price.error.message")}}</div>
+              {% comment %} CUSTOM PRICE - INPUT BOX ENDS {% endcomment %}
+            {% comment %} FILTER TYPE - PRICE ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 3 %}
+            {% comment %} FILTER TYPE - USER RATING STARTS {% endcomment %}
+              {% for rating_data in filter.rating_filter %}
+                {% if rating_data.count > 0 && rating_data.star > 0 && rating_data.star < 5 %} 
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container">
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" id="{{rating_data.star}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{rating_data.container_id}}" data-zs-filter-option-value-data="{{rating_data.star}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="user_rating" />
+                      <span aria-label="rating_data.star" class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0"></span>
+                    </div>
+                    <label for="{{rating_data.star}}" class="theme-product-filter-text theme-product-filter-rating {% if rating_data.star == 4 %}theme-product-filter-rating-four{% elif rating_data.star == 3 %}theme-product-filter-rating-three{% elif rating_data.star == 2 %}theme-product-filter-rating-two{% elif rating_data.star == 1 %}theme-product-filter-rating-one{% endif %}">
+                      <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                      </svg>
+                      <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                      </svg>
+                      <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                      </svg>
+                      <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                      </svg>
+                      <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                      </svg>
+                      <span>& up</span>
+                    </label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ rating_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% comment %} FILTER TYPE - USER RATING ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 4 %}
+            {% comment %} FILTER TYPE - COLOR STARTS {% endcomment %}
+              <div class="theme-product-filter-color-container">
+                {% for color_data in filter.color_filter %}
+                  {% if color_data.count > 0 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-color">
+                      <input id="{{color_data.id}}" tabindex="-1" aria-hidden="true" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{color_data.container_id}}" data-zs-filter-option-value-data="{{color_data.id}}" data-zs-filter-option-value-formatted="{{color_data.name}}_{{color_data.color_code}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{color_data.name}}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0" style="background:{{color_data.color_code}}"> </span>
+                      <label for="{{color_data.id}}" class="theme-product-filter-custom-color-name">{{color_data.name}}</label>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% comment %} FILTER TYPE - COLOR ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 5 %}
+            {% comment %} FILTER TYPE - ATTRIBUTE STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for attribute_data in filter.attribute_filter %}
+                {% if attribute_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input id="{{attribute_data.id}}" tabindex="-1" aria-hidden="true" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{attribute_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{attribute_data.id}}" data-zs-filter-option-value-formatted="{{attribute_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{ attribute_data.name }}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff" />
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{attribute_data.id}}" class="theme-product-filter-text">{{ attribute_data.name }}</label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ attribute_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - ATTRIBUTE ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 6 %}
+            {% comment %} FILTER TYPE - SPECIFICATION STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for specification_data in filter.specification_filter %}
+                {% if specification_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{specification_data.id}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{specification_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{specification_data.id}}" data-zs-filter-option-value-formatted="{{specification_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{ specification_data.name }}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{specification_data.id}}" class="theme-product-filter-text">{{ specification_data.name }}</label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ specification_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - SPECIFICATION ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 7 %}
+            {% comment %} FILTER TYPE - CUSTOM FEILD STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for custom_field_data in filter.custom_field_filter %}
+                {% if custom_field_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{custom_field_data.id}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}"  data-zs-filter-option-value-id="{{custom_field_data.container_id}}" data-zs-filter-option-value-data="{{custom_field_data.id}}" data-zs-filter-option-value-formatted="{{custom_field_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{ custom_field_data.name }}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7"
+                          fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{custom_field_data.id}}" class="theme-product-filter-text">{{ custom_field_data.name }}</label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ custom_field_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - CUSTOM FEILD ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 8 %}
+            {% comment %} FILTER TYPE - BRAND STARTS {% endcomment %}
+              <div data-zs-filter-option-search-brand-container class="theme-product-filter-search">
+                <input data-zs-filter-option-search-brand aria-label="{{i18n.get('product_filters.search.label')}}" type="text" placeholder="{{i18n.get('product_filters.search.label')}}" oninput="searchBrands(this)" />
+                <svg fill="none" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10.5" cy="10.5" r="7.5" />
+                  <path d="M21 21l-5.2-5.2" />
+                </svg>
+              </div>
+              <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+              {% assign available_filter_options = 0 %}
+              {% for brand_data in filter.brand_filter %}
+                {% if brand_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  <div data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ brand_data.name }}" class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}data-zs-filter-option-brand-hidden-search-matched style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{brand_data.id}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{brand_data.container_id}}" data-zs-filter-option-value-data="{{brand_data.id}}" data-zs-filter-option-value-formatted="{{brand_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{ brand_data.name }}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{brand_data.id}}" class="theme-product-filter-text">{{ brand_data.name }}</label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ brand_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - BRAND ENDS {% endcomment %}
+          {% endif %}
+
+          {% if filter.type == 9 %}
+            {% comment %} FILTER TYPE - TAG STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for tag_data in filter.tag_filter %}
+                {% if tag_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{tag_data.id}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{tag_data.container_id}}" data-zs-filter-option-value-data="{{tag_data.id}}" data-zs-filter-option-value-formatted="{{tag_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                      <span aria-checked="false" aria-label="{{ tag_data.name }}" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        <svg class="theme-check-svg" xmlns="http://www.w3.org/2000/svg" width="8" height="7" viewBox="0 0 8 7" fill="none">
+                          <path d="M1 3.8125L2.82609 6L7 1" stroke="#fff"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    <label for="{{tag_data.id}}" class="theme-product-filter-text">{{ tag_data.name }}</label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">{{ tag_data.count }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+              {% endif %}
+            {% comment %} FILTER TYPE - TAG ENDS {% endcomment %}
+          {% endif %}
+        </div>
+      </fieldset>
+    {% endif %}
+  {% endfor %}
+
+{% elif page.template_vars.product_category_style == "02" || page.template_vars.product_category_style == "06" || page.template_vars.product_category_style == "10" || page.template_vars.product_category_style == "13" %}  <div class='theme-filters-header theme-filters-header-mobile'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M14.3565 21.2333C14.2432 21.2333 14.1299 21.2075 14.0253 21.155L10.3216 19.3033C10.0707 19.1779 9.91197 18.9212 9.91197 18.6408V12.8567L2.67992 4.30461C2.49367 4.08461 2.45242 3.77628 2.57367 3.51461C2.69492 3.25295 2.95742 3.08545 3.24575 3.08545H21.764C22.0523 3.08545 22.3144 3.25295 22.4361 3.51461C22.5573 3.77628 22.5161 4.08461 22.3298 4.30461L15.0978 12.8567V20.4929C15.0978 20.7495 14.9649 20.9879 14.7465 21.1229C14.6278 21.1962 14.4924 21.2337 14.357 21.2337L14.3565 21.2333ZM11.3936 18.1829L13.6157 19.2941V12.5854C13.6157 12.4104 13.6778 12.2408 13.7907 12.1071L20.1673 4.56711H4.842L11.2186 12.1071C11.3316 12.2408 11.3936 12.4104 11.3936 12.5854V18.1833V18.1829Z" fill="black"/>
+    </svg>
+    <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+    <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay">
+      {% if page.template_vars.product_category_style == "10" %}
+        <svg onclick='closeMobileFilter()' class='theme-desktop-close-filters' aria-label="{{i18n.get("product.label.close")}}" type="button" tabindex='0' xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M1 1L11 11" stroke="#BB9D87" stroke-width="0.6"/>
+          <path d="M11 1L1 11" stroke="#BB9D87" stroke-width="0.6"/>
+        </svg>
+      {% else %}
+        <svg class='theme-close-mobile-filter' xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <path d="M27.0898 25.1016L21.9883 20L27.0898 14.8984C27.6406 14.3477 27.6406 13.4609 27.0898 12.9102C26.5391 12.3594 25.6523 12.3594 25.1016 12.9102L20 18.0117L14.8984 12.9102C14.3477 12.3594 13.4609 12.3594 12.9102 12.9102C12.3594 13.4609 12.3594 14.3477 12.9102 14.8984L18.0117 20L12.9102 25.1016C12.3594 25.6523 12.3594 26.5391 12.9102 27.0898C13.4609 27.6406 14.3477 27.6406 14.8984 27.0898L20 21.9883L25.1016 27.0898C25.6523 27.6406 26.5391 27.6406 27.0898 27.0898C27.6367 26.5391 27.6367 25.6484 27.0898 25.1016Z" fill="black"/>
+        </svg>
+      {% endif %}
+    </div>
+  </div>
+  <div class='theme-mobile-filters'>
+    {% for filter in filters.filter_set %}
+      {% if filter.has_filter_options%}
+        <fieldset data-zs-filter-option-container="{{ filter.name }}" data-zs-filter-option-container-id="{{ filter.id }}" data-zs-filter-option-type="{{ filter.type }}" data-zs-filter-option-default-value-to-show="{{ filter.value_to_show_by_default }}" class="theme-product-filter-box theme-filters-style-fashion">
+          <legend data-zs-filter-option-name class="theme-product-filter-type">
+            <span class="theme-filter-expand-icon {% if !filter.collapse_by_default %} theme-filter-expclose-default-hide {% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M7.78788 10L6 11.8201L16 22L26 11.8201L24.2121 10L16 18.3599L7.78788 10Z" fill="black"/>
+              </svg>
+            </span>
+            <span class="theme-filter-close-icon {% if filter.collapse_by_default %} theme-filter-expclose-default-hide {% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M7.78788 10L6 11.8201L16 22L26 11.8201L24.2121 10L16 18.3599L7.78788 10Z" fill="black"/>
+              </svg>
+            </span>
+            <span>{{ filter.name }}</span>
+          </legend>
+
+          <div data-zs-filter-option-values-wrapper {% if filter.collapse_by_default %} style="display:none;" {% endif %}>
+            <a data-zs-filter-option-clear href="javascript:;" class="theme-product-clear-filter" style="display:none;">
+              <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                <g id="Artboard-Copy-2" stroke="none" stroke-width="1" fill-rule="evenodd">
+                  <path d="M9.484 7.655l.07.058 1.589 1.589 1.59-1.589a.5.5 0 01.764.638l-.058.07-1.589 1.588 1.59 1.59a.5.5 0 01-.639.765l-.069-.058-1.59-1.59-1.588 1.59a.5.5 0 01-.765-.638l.057-.07 1.589-1.589L8.846 8.42a.5.5 0 01.638-.765zM7 8a.5.5 0 01.09.992L7 9H5a.5.5 0 01-.09-.992L5 8h2zm4-3a.5.5 0 01.09.992L11 6H3a.5.5 0 01-.09-.992L3 5h8zm1-3a.5.5 0 01.09.992L12 3H2a.5.5 0 01-.09-.992L2 2h10z" id="Combined-Shape" fill-rule="nonzero"/>
+                </g>
+              </svg>
+              {{i18n.get("product_filters.clear.label")}}
+            </a>
+
+            {% if filter.type == 1 %}
+              {% comment %} FILTER TYPE - CATEGORY STARTS {% endcomment %}
+                <div class="theme-product-filter-option-container">
+                    <ul>
+                      {% for ancestor_category_data in filter.ancestors_category_filter %}
+                      <li>
+                        <span class="theme-product-filter-text">
+                          <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{ancestor_category_data.id}}">
+                            {{ ancestor_category_data.name }}
+                          </button>
+                        </span>
+                      </li>
+                      {% endfor %}
+                      <li>
+                        {% assign category_filter = filter.category_filter %}
+                        {% if category_filter && category_filter.name %}
+
+                        <span class="theme-product-filter-text theme-parent-category">
+                          <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{category_filter.id}}">
+                            {{ category_filter.name }}
+                          </button>
+                        </span>
+                        {% if filter.show_product_count && category_filter.count > 0 %}
+
+                        <span class="theme-product-filter-count">({{ category_filter.count }})</span>
+                        {% endif %}
+                        {% endif %}
+                        <ul>
+                          {% assign available_filter_options = 0 %}
+                          {% for children_category_data in filter.children_category_filter %}
+                          {% assign available_filter_options = available_filter_options + 1 %}
+
+                          <li data-zs-filter-option-value-container {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                            <span class="theme-product-filter-text">
+                              <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{ children_category_data.id }}">
+                                {{ children_category_data.name }}
+                              </button>
+                            </span>
+                            {% if filter.show_product_count && children_category_data.count > 0 %}
+                              <span class="theme-product-filter-count">({{ children_category_data.count }})</span>
+                            {% endif %}
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    </ul>
+                </div>
+                {% if filter.children_category_filter | size > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - CATEGORY ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 2 %}
+              {% comment %} FILTER TYPE - PRICE STARTS {% endcomment %}
+              {% assign available_filter_options = 0 %}
+              {% for price_data in filter.price_filter %}
+                {% if price_data.count > 0 %}
+                  {% assign available_filter_options = available_filter_options + 1 %}
+                  {% assign from_price = price_data.from  %}
+                  {% if price_data.to %}
+                    {% assign to_price = price_data.to  %}
+                  {% else %}
+                    {% assign to_price = 0  %}
+                  {% endif %}
+
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                    <div class="theme-product-filter-select-option">
+                      <input aria-hidden="true" tabindex="-1" id="{{price_data.container_id}}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{price_data.container_id}}" data-zs-filter-option-value-data="{{from_price}}_{{to_price}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                      <span aria-checked="false" aria-label="{% if from_price == 0 %}{{ to_price | currency(currency) }}{% else %}{{ from_price | currency(currency) }}{% endif %}{% if from_price!=0 && to_price!=0 %} - {% endif %}{% if from_price == 0 %} & {{i18n.get("product_filters.and_below.label")}}{% elif to_price == 0 %} & {{i18n.get("product_filters.and_above.label")}}{% else %}{{ to_price | currency(currency) }}{% endif %}" class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                      {% if page.template_vars.product_category_style == "10" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                          <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                        </svg>
+                      {% else %}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                          <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                        </svg>
+                      {% endif %}
+                      </span>
+                    </div>
+                    <label for="{{price_data.container_id}}" data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                      <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min {% if from_price!=0 %} data-zs-selling-price="{{from_price}}" {% else %} data-zs-selling-price="{{to_price}}" {% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %}{{ to_price | currency(currency) }}{% else %}{{ from_price | currency(currency) }}{% endif %}</span>
+                      {% if from_price!=0 && to_price!=0 %} - {% endif %}
+                      <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max {% if from_price!=0 && to_price!=0 %} data-zs-selling-price="{{to_price}}"{% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %} & {{i18n.get("product_filters.and_below.label")}}{% elif to_price == 0 %} & {{i18n.get("product_filters.and_above.label")}}{% else %}{{ to_price | currency(currency) }}{% endif %}</span>
+                    </label>
+                    {% if filter.show_product_count %}
+                      <div class="theme-product-filter-count">({{ price_data.count }})</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+
+              {% comment %} CUSTOM PRICE - INPUT RADIO STARTS {% endcomment %}
+              <div data-zs-filter-option-value-container data-zs-filter-option-price-custom-container class="theme-product-filter-option-container" style="display:none;">
+                <div class="theme-product-filter-select-option">
+                  <input id="custom_price" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="custom_price" data-zs-filter-option-value-data="" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                  <span class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                    {% if page.template_vars.product_category_style == "10" %}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                        <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                      </svg>
+                    {% else %}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                        <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                      </svg>
+                    {% endif %}
+                  </span>
+                </div>
+                <label for="custom_price" data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                  {{i18n.get("product_filters.custom.label")}} :
+                  <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min data-zs-filter-option-price-custom-min-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                  <span data-zs-filter-option-price-custom-separator> - </span>
+                  <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max data-zs-filter-option-price-custom-max-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                </label>
+              </div>
+              {% comment %} CUSTOM PRICE - INPUT RADIO ENDS {% endcomment %}
+
+              {% if available_filter_options > filter.value_to_show_by_default %}
+                <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;"></a>
+              {% endif %}
+
+              {% comment %} CUSTOM PRICE - INPUT BOX STARTS {% endcomment %}
+              <div class="wrapper">
+                <div class="theme-minmax-container">
+                  <div class="theme-product-filter-price-minmax" {% if !filter.show_custom_box %}style="display:none;" {% endif
+                    %}>
+                    <input aria-label="{{i18n.get('product_filters.min.label')}}" data-zs-filter-option-price-custom-min-box class="theme-product-filter-minmax-input theme-input-min" type="text" placeholder="{{i18n.get('product_filters.min.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                    <span>{{i18n.get("product_filters.to.label")}}</span>
+                    <input aria-label="{{i18n.get('product_filters.max.label')}}" data-zs-filter-option-price-custom-max-box class="theme-product-filter-minmax-input theme-input-max" type="text" placeholder="{{i18n.get('product_filters.max.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                  </div>
+                </div>
+                <button type="button" data-zs-filter-option-price-custom-btn class="zpbutton zpbutton-type-secondary zpbutton-size-sm zpbutton-full-width zpbutton-style-none" {% if !filter.show_custom_box %}style="display:none;" {% endif %}>{{i18n.get("product_filters.apply.label")}}</button>
+              </div>
+              {% comment %} FILTER TYPE - PRICE ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 3 %}
+              {% comment %} FILTER TYPE - USER RATING STARTS {% endcomment %}
+                {% for rating_data in filter.rating_filter %}
+                  {% if rating_data.count > 0 && rating_data.star > 0 && rating_data.star < 5 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container">
+                      <div class="theme-product-filter-select-option">
+                        <input tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{rating_data.container_id}}" data-zs-filter-option-value-data="{{rating_data.star}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="user_rating" />
+                        <span aria-checked="false" class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0"></span>
+                      </div>
+                      <div class="theme-product-filter-text theme-product-filter-rating {% if rating_data.star == 4 %}theme-product-filter-rating-four{% elif rating_data.star == 3 %}theme-product-filter-rating-three{% elif rating_data.star == 2 %}theme-product-filter-rating-two{% elif rating_data.star == 1 %}theme-product-filter-rating-one{% endif %}">
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z"/>
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z"/>
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z"/>
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z"/>
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z"/>
+                        </svg>
+                        <span>& up</span>
+                      </div>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ rating_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% comment %} FILTER TYPE - USER RATING ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 4 %}
+              {% comment %} FILTER TYPE - COLOR STARTS {% endcomment %}
+                <div class="theme-product-filter-color-container">
+                  {% for color_data in filter.color_filter %}
+                  {% if color_data.count > 0 %}
+
+
+                  <div data-zs-filter-option-value-container class="theme-product-filter-option-container">
+                      <div class="theme-product-filter-select-option">
+                          <input id="{{color_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{color_data.container_id}}" data-zs-filter-option-value-data="{{color_data.id}}" data-zs-filter-option-value-formatted="{{color_data.name}}_{{color_data.color_code}}" class="theme-product-filter-check" type="checkbox" name="" />
+                          <span aria-checked="false" class="theme-product-filter-custom-check new-face" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                              {% if page.template_vars.product_category_style == "10" %}
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                  <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                                </svg>
+                              {% else %}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                                  <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                                </svg>
+                              {% endif %}
+                          </span>
+                      </div>
+                      <label for="{{color_data.container_id}}" class="theme-product-filter-text">{{ color_data.name }}</label>
+                      {% if filter.show_product_count %}
+
+                      <div class="theme-product-filter-count">({{ color_data.count }})</div>
+                      {% endif %}
+
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+              {% comment %} FILTER TYPE - COLOR ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 5 %}
+              {% comment %} FILTER TYPE - ATTRIBUTE STARTS {% endcomment %}
+                {% assign available_filter_options = 0 %}
+                {% for attribute_data in filter.attribute_filter %}
+                  {% if attribute_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{attribute_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{attribute_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{attribute_data.id}}" data-zs-filter-option-value-formatted="{{attribute_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          {% if page.template_vars.product_category_style == "10" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                            </svg>
+                          {% else %}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <label for="{{attribute_data.container_id}}" class="theme-product-filter-text">{{ attribute_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ attribute_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - ATTRIBUTE ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 6 %}
+              {% comment %} FILTER TYPE - SPECIFICATION STARTS {% endcomment %}
+                {% assign available_filter_options = 0 %}
+                {% for specification_data in filter.specification_filter %}
+                  {% if specification_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{specification_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{specification_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{specification_data.id}}" data-zs-filter-option-value-formatted="{{specification_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          {% if page.template_vars.product_category_style == "10" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                            </svg>
+                          {% else %}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <label for="{{specification_data.container_id}}" class="theme-product-filter-text">{{ specification_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ specification_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - SPECIFICATION ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 7 %}
+              {% comment %} FILTER TYPE - CUSTOM FEILD STARTS {% endcomment %}
+                {% assign available_filter_options = 0 %}
+                {% for custom_field_data in filter.custom_field_filter %}
+                  {% if custom_field_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{custom_field_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{custom_field_data.container_id}}" data-zs-filter-option-value-data="{{custom_field_data.id}}" data-zs-filter-option-value-formatted="{{custom_field_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          {% if page.template_vars.product_category_style == "10" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                            </svg>
+                          {% else %}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <label for="{{custom_field_data.container_id}}" class="theme-product-filter-text">{{ custom_field_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ custom_field_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - CUSTOM FEILD ENDS {% endcomment %}
+            {% endif %}
+            
+            {% if filter.type == 8 %}
+              {% comment %} FILTER TYPE - BRAND STARTS {% endcomment %}
+                <div data-zs-filter-option-search-brand-container class="theme-product-filter-search">
+                  <input data-zs-filter-option-search-brand  aria-label="{{i18n.get('product_filters.search.label')}} "type="text" placeholder="{{i18n.get('product_filters.search.label')}}" oninput="searchBrands(this)" />
+                  <svg fill="none" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10.5" cy="10.5" r="7.5"/>
+                    <path d="M21 21l-5.2-5.2"/>
+                  </svg>
+                </div>
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for brand_data in filter.brand_filter %}
+                  {% if brand_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ brand_data.name }}" class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}data-zs-filter-option-brand-hidden-search-matched style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{brand_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{brand_data.container_id}}" data-zs-filter-option-value-data="{{brand_data.id}}" data-zs-filter-option-value-formatted="{{brand_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          {% if page.template_vars.product_category_style == "10" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                            </svg>
+                          {% else %}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <div for="{{brand_data.container_id}}" class="theme-product-filter-text">{{ brand_data.name }}</div>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ brand_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - BRAND ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 9 %}
+              {% comment %} FILTER TYPE - TAG STARTS {% endcomment %}
+                {% assign available_filter_options = 0 %}
+                {% for tag_data in filter.tag_filter %}
+                  {% if tag_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{tag_data.container_id}}" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{tag_data.container_id}}" data-zs-filter-option-value-data="{{tag_data.id}}" data-zs-filter-option-value-formatted="{{tag_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          {% if page.template_vars.product_category_style == "10" %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M9.95133 0.243641C8.01484 1.55911 5.79831 3.50716 4.08202 6.34212C3.96412 6.5369 3.79737 6.91662 3.36909 7.63244C3.35262 7.6599 3.30609 7.72752 3.22402 7.7885C3.19368 7.81104 3.12085 7.86392 3.02375 7.88213C3.02375 7.88213 2.90065 7.90525 2.755 7.84398C1.79903 7.44142 0.407273 5.48239 0.407273 5.48239C0.155277 5.12578 0.0356364 4.94169 0.00673776 4.66773C-0.0262067 4.35505 0.0665579 3.9996 0.178396 3.57074C0.187354 3.53577 0.204115 3.4878 0.234748 3.3907C0.267981 3.28638 0.362769 2.99103 0.522289 2.62229C0.595114 2.4541 0.618233 2.4252 0.65898 2.40237C0.808097 2.31972 1.11962 2.61824 1.16384 2.66043C1.69933 3.17338 2.34319 4.53018 2.57843 5.04284C2.60559 5.08879 2.65241 5.12 2.70529 5.12664C2.78043 5.13589 2.83794 5.11075 2.86163 5.09746C2.94342 5.0518 2.97983 4.97319 2.98561 4.96221C3.08069 4.77264 4.91719 2.76736 6.39131 1.67499C7.08257 1.16262 8.18361 0.488413 9.80106 0.0144752C9.85973 -0.0126895 9.92735 -0.000552081 9.96636 0.0419289C10.0146 0.0948134 10.012 0.186422 9.95162 0.243352L9.95133 0.243641Z" fill="#603211"/>
+                            </svg>
+                          {% else %}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <label for="{{tag_data.container_id}}" class="theme-product-filter-text">{{ tag_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ tag_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - TAG ENDS {% endcomment %}
+            {% endif %}
+          </div>
+        </fieldset>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+{% elif page.template_vars.product_category_style == "03" || page.template_vars.product_category_style == "12" || page.template_vars.product_category_style == "14" %}
+  <div class='theme-filter-heading'>
+    <span>Filter By</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none"
+      onclick='toggleFilters()' class='theme-desktop-close-filters' aria-label="{{i18n.get("product.label.close")}}" type="button" tabindex='0'>
+      <path
+        d="M18 8.20467L16.7914 6.99609L12 11.7875L7.20857 6.99609L6 8.20467L10.7914 12.9961L6 17.7875L7.20857 18.9961L12 14.2047L16.7914 18.9961L18 17.7875L13.2086 12.9961L18 8.20467Z"
+        fill="black" />
+    </svg>
+    <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay">
+      <svg viewBox="0 0 512 513.5" xmlns="http://www.w3.org/2000/svg">
+        <path d="M115.5 92.5l140.5 140.5 140.5-140.5 23 23-140.5 140.5 140.5 140.5-23 23-140.5-140.5-140.5 140.5-23-23 140.5-140.5-140.5-140.5z" />
+      </svg>
+    </div>
+  </div>
+  {% for filter in filters.filter_set %}
+    {% if filter.has_filter_options %}
+        <fieldset data-zs-filter-option-container="{{ filter.name }}" data-zs-filter-option-container-id="{{ filter.id }}" data-zs-filter-option-type="{{ filter.type }}" data-zs-filter-option-default-value-to-show="{{ filter.value_to_show_by_default }}" class="theme-product-filter-box">
+          <legend class='theme-filter-name-search'>
+            <div data-zs-filter-option-name class="theme-product-filter-type {% if filter.collapse_by_default %}theme-filter-expand-toggle{% else %}theme-filter-close-toggle{% endif %}">
+              <svg class='theme-filter-collapse' role='button' aria-label='Collapse {{ filter.name }}' tabindex='0'
+                  xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                  <path d="M5 12.6061L5.91003 13.5L11 8.5L5.91003 3.5L5 4.39394L9.17995 8.5L5 12.6061Z" fill="black" />
+              </svg>
+              <span>{{ filter.name }}</span>
+            </div>
+            
+            {% if filter.type != 1 || filter.type != 2 %}
+              <div class="theme-filter-search-container" data-search-on-always>
+                <svg class='theme-search-filter theme-search-filter-open' role='button' aria-label='Search {{ filter.name }}' tabindex='0' onclick="showFilterSearch(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') showFilterSearch(this)" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                  <rect y="0.5" width="24" height="24" rx="12" fill="#FAFAFA" />
+                  <path d="M10.6936 15.3417C12.9845 15.3417 14.8417 13.4845 14.8417 11.1936C14.8417 8.9026 12.9845 7.04541 10.6936 7.04541C8.4026 7.04541 6.54541 8.9026 6.54541 11.1936C6.54541 13.4845 8.4026 15.3417 10.6936 15.3417Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M16.7272 17.2272L13.8989 14.3989" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div data-zs-filter-option-search-brand-container class="theme-product-filter-search">
+                  <input tabindex="-1" data-zs-filter-option-search-brand aria-label="{{i18n.get('product_filters.search.label')}}" type="text" placeholder="{{i18n.get('product_filters.search.label')}}" oninput="searchBrands(this)" />
+                  <svg fill="none" height="24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10.5" cy="10.5" r="7.5" />
+                    <path d="M21 21l-5.2-5.2" />
+                  </svg>
+                </div>
+                <svg class='theme-search-filter theme-search-filter-close' role='button' aria-label='Close {{ filter.name }} Search' tabindex='0' onclick="showFilterSearch(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') showFilterSearch(this)" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 7.70467L16.7914 6.49609L12 11.2875L7.20857 6.49609L6 7.70467L10.7914 12.4961L6 17.2875L7.20857 18.4961L12 13.7047L16.7914 18.4961L18 17.2875L13.2086 12.4961L18 7.70467Z" fill="black" />
+                </svg>
+              </div>
+            {% endif %}
+          </legend>
+          
+          <div data-zs-filter-option-values-wrapper {% if filter.collapse_by_default %} style="display:none;" {% endif %}>
+            <a data-zs-filter-option-clear href="javascript:;" class="theme-product-clear-filter" style="display:none;">
+              <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 16 16">
+                <g id="Layer_1-2" data-name="Layer_1">
+                  <g>
+                    <path d="M10.22,8.01h0,0s0,0,0,0ZM15.58.6c-.55-.6-1.35-.6-2.82-.6H3.22C1.76,0,.96,0,.41.6-.14,1.22-.04,2,.15,3.4c.07.51.19.81.5,1.18,1.02,1.22,2.45,2.79,4.41,4.26.03.03.06.07.08.1.02.04.03.09.03.13.14,1.9.33,3.83.56,5.73.06.47.36.88.78,1.07.16.07.31.1.48.1h.01c.23.01.47-.07.68-.21.17-.11.36-.23.57-.36.46-.28.98-.59,1.38-1l-.56-.56-.25-.25c-.31.31-.77.59-1.17.83-.23.15-.46.28-.7.41-.06-.02-.12-.1-.12-.18-.22-1.89-.41-3.8-.56-5.69-.02-.2-.08-.39-.17-.57-.1-.18-.22-.32-.38-.46-1.88-1.41-3.25-2.92-4.23-4.1-.17-.2-.22-.31-.26-.6-.12-1.05-.21-1.68,0-1.92.21-.23.88-.23,1.99-.23h9.53c1.11,0,1.78,0,1.99.23.22.22.13.86,0,1.92-.04.25-.08.37-.19.52l.8.79c.34-.41.44-.74.49-1.17.19-1.42.29-2.2-.27-2.81ZM10.22,8.01h0,0s0,0,0,0Z"/>
+                    <polygon points="14.17 10.38 15.29 11.5 14.5 12.29 14.5 12.29 14.17 11.95 13.38 11.17 13.38 11.17 12.59 10.38 12.25 10.71 11.8 11.17 11.01 11.95 10.67 12.29 10.48 12.1 9.88 11.5 10.22 11.17 10.65 10.73 10.65 10.73 11.01 10.38 11.46 9.92 11.8 9.59 11.46 9.25 11.01 8.8 11.01 8.8 10.22 8.01 10.22 8.01 10.21 8.01 9.88 7.68 9.88 7.67 10.67 6.89 11.1 7.31 11.89 8.1 12.25 8.46 12.59 8.8 12.59 8.8 13.38 8.01 13.38 8.01 14.17 7.22 14.5 6.89 14.5 6.89 15.29 7.67 14.17 8.8 14.17 8.8 13.38 9.59 13.38 9.59 13.71 9.92 14.17 10.38"/>
+                  </g>
+                </g>
+              </svg>
+              {{i18n.get("product_filters.clear.label")}}
+            </a>
+
+            {% if filter.type == 1 %}
+              {% comment %} FILTER TYPE - CATEGORY STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                <div class="theme-product-filter-option-container">
+                  <ul>
+                    {% for ancestor_category_data in filter.ancestors_category_filter %}
+                      <li data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ ancestor_category_data.name }}">
+                        <span class="theme-product-filter-text">
+                          <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{ancestor_category_data.id}}">
+                            <svg aria-hidden="true" id="Layer_1" style="enable-background:new 0 0 50 50" version="1.1" viewBox="0 0 50 50" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" class="theme-parentcategory-filter-icon">
+                              <path d="M37.561 47.293L15.267 25 37.561 2.707l-1.415-1.414L12.439 25l23.707 23.707z" id="Layer_1_1_" />
+                            </svg>
+                            {{ ancestor_category_data.name }}
+                          </button>
+                        </span>
+                      </li>
+                    {% endfor %}
+                    {% assign category_filter = filter.category_filter %}
+                    <li data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ category_filter.name }}">
+                      {% if category_filter && category_filter.name %}
+                        <span class="theme-product-filter-text">
+                          <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{category_filter.id}}">
+                            {{ category_filter.name }}
+                          </button>
+                        </span>
+                        {% if filter.show_product_count && category_filter.count > 0 %}
+                          <span class="theme-product-filter-count">({{ category_filter.count }})</span>
+                        {% endif %}
+                      {% endif %}
+                      <ul>
+                        {% assign available_filter_options = 0 %}
+                        {% for children_category_data in filter.children_category_filter %}
+                          {% assign available_filter_options = available_filter_options + 1 %}
+                          <li data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ children_category_data.name }}" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                            <span class="theme-product-filter-text">
+                              <button type="button" class="zpbutton-type-link" data-zs-filter-option-category data-href="/categories/{{children_category_data.id}}">
+                                {{ children_category_data.name }}
+                              </button>
+                            </span>
+                            {% if filter.show_product_count && children_category_data.count > 0 %}
+                              <span class="theme-product-filter-count">({{ children_category_data.count }})</span>
+                            {% endif %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                {% if filter.children_category_filter | size > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - CATEGORY ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 2 %}
+              <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+              {% comment %} FILTER TYPE - PRICE STARTS {% endcomment %}
+                {% assign available_filter_options = 0 %}
+                {% for price_data in filter.price_filter %}
+                  {% if price_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    {% assign from_price = price_data.from %}
+                    {% if !price_data.to %}
+                      {% assign to_price = 0 %}
+                    {% else %}
+                      {% assign to_price = price_data.to %}
+                    {% endif %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" data-zs-filter-option-brand-name="{{from_price}}_{{to_price}}" {% if available_filter_options> filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{price_data.container_id}}" tabindex="-1" aria-label="{{from_price}}_{{to_price}}" aria-hidden="true" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{price_data.container_id}}" data-zs-filter-option-value-data="{{from_price}}_{{to_price}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                        <span class="theme-product-filter-custom-radio theme-product-filter-custom-check" aria-checked="false" aria-label="{{from_price}}_{{to_price}}" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                        </span>
+                      </div>
+                      <label for="{{price_data.container_id}}" data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                        <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min {% if from_price!=0 %} data-zs-selling-price="{{from_price}}" {% else %} data-zs-selling-price="{{to_price}}" {% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %}{{ to_price | currency(currency) }}{% else %}{{ from_price | currency(currency) }}{% endif %}</span>
+                        {% if from_price!=0 && to_price!=0 %} - {% endif %}
+                        <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max {% if from_price!=0 && to_price!=0 %} data-zs-selling-price="{{to_price}}" {% endif %} data-zs-currency-code="{{currency.code}}">{% if from_price == 0 %} &
+                          {{i18n.get("product_filters.and_below.label")}}{% elif to_price == 0 %} &
+                          {{i18n.get("product_filters.and_above.label")}}{% else %}{{ to_price | currency(currency) }}{% endif %}</span>
+                        </label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ price_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+
+                {% comment %} CUSTOM PRICE - INPUT RADIO STARTS {% endcomment %}
+                  <div data-zs-filter-option-value-container data-zs-filter-option-price-custom-container class="theme-product-filter-option-container" style="display:none;">
+                    <div class="theme-product-filter-select-option">
+                      <input id="custom_price" tabindex="-1" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="custom_price" data-zs-filter-option-value-data="" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="price" />
+                      <span class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="radio" tabindex="0">
+                      </span>
+                    </div>
+                    <label for="custom_price" data-zs-filter-option-value-price-formatted class="theme-product-filter-text">
+                      {{i18n.get("product_filters.custom.label")}} :
+                      <span class="theme-product-filter-min-price" data-zs-filter-option-value-price-min data-zs-filter-option-price-custom-min-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                      <span data-zs-filter-option-price-custom-separator> - </span>
+                      <span class="theme-product-filter-max-price" data-zs-filter-option-value-price-max data-zs-filter-option-price-custom-max-elm data-zs-selling-price data-zs-currency-code="{{currency.code}}"></span>
+                    </label>
+                  </div>
+                {% comment %} CUSTOM PRICE - INPUT RADIO ENDS {% endcomment %}
+
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;"></a>
+                {% endif %}
+
+                {% comment %} CUSTOM PRICE - INPUT BOX STARTS {% endcomment %}
+                  <div class="theme-product-filter-price-minmax" {% if !filter.show_custom_box %}style="display:none;" {% endif %}>
+                    <input aria-label="{{i18n.get('product_filters.min.label')}}" data-zs-filter-option-price-custom-min-box class="theme-product-filter-minmax-input" type="text" placeholder="{{i18n.get('product_filters.min.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                    <span>{{i18n.get("product_filters.to.label")}}</span>
+                    <input aria-label="{{i18n.get('product_filters.max.label')}}" data-zs-filter-option-price-custom-max-box class="theme-product-filter-minmax-input" type="text" placeholder="{{i18n.get('product_filters.max.label')}}" name="" value="" onkeypress="return productQuantity(event);" />
+                  </div>
+                  <button type="button" data-zs-filter-option-price-custom-btn class="zpbutton zpbutton-type-primary zpbutton-size-sm zpbutton-full-width zpbutton-style-none" {% if !filter.show_custom_box %}style="display:none;" {% endif %}>{{i18n.get("product_filters.apply.label")}}</button>
+                  <div role="alert" data-zs-filter-option-price-custom-error-container class="" style="display:none; color:#FF4949; margin-top:5px;">
+                    {{i18n.get("product_filters.custom_price.error.message")}}
+                  </div>
+                {% comment %} CUSTOM PRICE - INPUT BOX ENDS {% endcomment %}
+              {% comment %} FILTER TYPE - PRICE ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 3 %}
+              {% comment %} FILTER TYPE - USER RATING STARTS {% endcomment %}
+              <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% for rating_data in filter.rating_filter %}
+                  {% if rating_data.count > 0 && rating_data.star > 0 && rating_data.star < 5 %} 
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" data-zs-filter-option-brand-name="{{ rating_data.name }}">
+                      <div class="theme-product-filter-select-option">
+                        <input data-zs-filter-option-value tabindex="-1" data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{rating_data.container_id}}" data-zs-filter-option-value-data="{{rating_data.star}}" data-zs-filter-option-value-formatted="" class="theme-product-filter-check" type="radio" name="user_rating" />
+                        <span aria-checked="false" class="theme-product-filter-custom-radio theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="theme-product-filter-text theme-product-filter-rating {% if rating_data.star == 4 %}theme-product-filter-rating-four{% elif rating_data.star == 3 %}theme-product-filter-rating-three{% elif rating_data.star == 2 %}theme-product-filter-rating-two{% elif rating_data.star == 1 %}theme-product-filter-rating-one{% endif %}">
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                        </svg>
+                        <svg height="512" id="Layer_1" style="enable-background:new 0 0 512 512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M448 208H301L256 64l-45 144H64l119.1 89.3L136 448l120-96 120 96-47.1-150.7z" />
+                        </svg>
+                        <span>& up</span>
+                      </div>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ rating_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              {% comment %} FILTER TYPE - USER RATING ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 4 %}
+              {% comment %} FILTER TYPE - COLOR STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                <div class="theme-product-filter-color-container">
+                  {% for color_data in filter.color_filter %}
+                    {% if color_data.count > 0 %}
+                      <div data-zs-filter-option-value-container class="theme-product-filter-option-container" data-zs-filter-option-brand-name="{{ color_data.name }}">
+                        <div class="theme-product-filter-select-option">
+                          <input id="{{color_data.container_id}}" tabindex="-1" aria-hidden="true" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{color_data.container_id}}" data-zs-filter-option-value-data="{{color_data.id}}" data-zs-filter-option-value-formatted="{{color_data.name}}_{{color_data.color_code}}" class="theme-product-filter-check" type="checkbox" name="" />
+                          <span aria-checked="false" aria-label="{{ color_data.name }}" class="theme-product-filter-custom-check new-face" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                              <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                            </svg>
+                          </span>
+                        </div>
+                        <label for="{{color_data.container_id}}" class="theme-product-filter-text">{{ color_data.name }}</label>
+                        {% if filter.show_product_count %}
+                          <div class="theme-product-filter-count">({{ color_data.count }})</div>
+                        {% endif %}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              {% comment %} FILTER TYPE - COLOR ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 5 %}
+              {% comment %} FILTER TYPE - ATTRIBUTE STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for attribute_data in filter.attribute_filter %}
+                  {% if attribute_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" data-zs-filter-option-brand-name="{{ attribute_data.name }}" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{attribute_data.container_id}}" tabindex="-1" aria-label="{{ attribute_data.name }}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{attribute_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{attribute_data.id}}" data-zs-filter-option-value-formatted="{{attribute_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <label for="{{attribute_data.container_id}}" class="theme-product-filter-text">{{ attribute_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ attribute_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - ATTRIBUTE ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 6 %}
+              {% comment %} FILTER TYPE - SPECIFICATION STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for specification_data in filter.specification_filter %}
+                  {% if specification_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container class="theme-product-filter-option-container" data-zs-filter-option-brand-name="{{ specification_data.name }}" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{specification_data.container_id}}" aria-label="{{ specification_data.name }}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{specification_data.container_id}}" data-zs-filter-option-group-id="{{filter.filter_option_group_id}}" data-zs-filter-option-value-data="{{specification_data.id}}" data-zs-filter-option-value-formatted="{{specification_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <label for="{{specification_data.container_id}}" class="theme-product-filter-text">{{ specification_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ specification_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - SPECIFICATION ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 7 %}
+              {% comment %} FILTER TYPE - CUSTOM FEILD STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for custom_field_data in filter.custom_field_filter %}
+                  {% if custom_field_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ custom_field_data.name }}" class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{custom_field_data.container_id}}" tabindex="-1" aria-label="{{ custom_field_data.name }}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{custom_field_data.container_id}}" data-zs-filter-option-value-data="{{custom_field_data.id}}" data-zs-filter-option-value-formatted="{{custom_field_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <label for="{{custom_field_data.container_id}}" class="theme-product-filter-text">{{ custom_field_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ custom_field_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - CUSTOM FEILD ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 8 %}
+              {% comment %} FILTER TYPE - BRAND STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for brand_data in filter.brand_filter %}
+                  {% if brand_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ brand_data.name }}" class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}data-zs-filter-option-brand-hidden-search-matched style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{brand_data.container_id}}" tabindex="-1" aria-label="{{ brand_data.name }}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{brand_data.container_id}}" data-zs-filter-option-value-data="{{brand_data.id}}" data-zs-filter-option-value-formatted="{{brand_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <label for="{{brand_data.container_id}}" class="theme-product-filter-text">{{ brand_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ brand_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - BRAND ENDS {% endcomment %}
+            {% endif %}
+
+            {% if filter.type == 9 %}
+              {% comment %} FILTER TYPE - TAG STARTS {% endcomment %}
+                <span data-zs-filter-option-search-brand-result style="display:none;">{{i18n.get("product_filters.search.empty.message")}}</span>
+                {% assign available_filter_options = 0 %}
+                {% for tag_data in filter.tag_filter %}
+                  {% if tag_data.count > 0 %}
+                    {% assign available_filter_options = available_filter_options + 1 %}
+                    <div data-zs-filter-option-value-container data-zs-filter-option-brand-name="{{ tag_data.name }}" class="theme-product-filter-option-container" {% if available_filter_options > filter.value_to_show_by_default %}style="display:none;"{% endif %}>
+                      <div class="theme-product-filter-select-option">
+                        <input id="{{tag_data.container_id}}" tabindex="-1" aria-label="{{ tag_data.name }}" data-zs-filter-option-value data-zs-filter-option-value-type="{{filter.type}}" data-zs-filter-option-value-id="{{tag_data.container_id}}" data-zs-filter-option-value-data="{{tag_data.id}}" data-zs-filter-option-value-formatted="{{tag_data.name}}" class="theme-product-filter-check" type="checkbox" name="" />
+                        <span aria-checked="false" class="theme-product-filter-custom-check" onkeydown="if(event.key === 'Enter' || event.key === ' ') toggleFilterValue(this)" role="checkbox" tabindex="0">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                            <path d="M3.8482 7.84786L0.200195 4.19986L1.1122 3.28786L3.8482 6.02385L9.7202 0.151855L10.6322 1.06386L3.8482 7.84786Z" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <label for="{{tag_data.container_id}}" class="theme-product-filter-text">{{ tag_data.name }}</label>
+                      {% if filter.show_product_count %}
+                        <div class="theme-product-filter-count">({{ tag_data.count }})</div>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+                {% if available_filter_options > filter.value_to_show_by_default %}
+                  <a data-zs-filter-option-showmore-btn href="javascript:;" class="theme-product-filter-show-more">{{i18n.get("product_filters.show_more.label")}}</a>
+                  <a data-zs-filter-option-showless-btn href="javascript:;" class="theme-product-filter-show-more" style="display:none;">{{i18n.get("product_filters.show_less.label")}}</a>
+                {% endif %}
+              {% comment %} FILTER TYPE - TAG ENDS {% endcomment %}
+            {% endif %}
+        </div>
+      </fieldset>
+    {% endif %}
+  {% endfor %}
+
+{% elif page.template_vars.product_category_style == '04' || page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' %}
+  <div class="theme-filter-slider-overlay">
+    <fieldset class="theme-filter-slider-container">
+      {% if page.template_vars.product_category_style == '08' %}
+        <legend class="theme-slider-filters-header">
+          <span>
+            Filters
+          </span>
+          <svg role="button" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none" onclick="openSlidingFilter()" aria-label="{{i18n.get("product.label.close")}}" class="theme-close-filter-icon" tabindex="0">
+            <path d="M18 8.20467L16.7914 6.99609L12 11.7875L7.20857 6.99609L6 8.20467L10.7914 12.9961L6 17.7875L7.20857 18.9961L12 14.2047L16.7914 18.9961L18 17.7875L13.2086 12.9961L18 8.20467Z" fill="black"></path>
+          </svg>
+        </legend>
+      {% else %}
+        <legend>
+        <svg role="button" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none" onclick="openSlidingFilter()" aria-label="{{i18n.get("product.label.close")}}" class="theme-close-filter-icon" tabindex="0">
+          <path d="M18 8.20467L16.7914 6.99609L12 11.7875L7.20857 6.99609L6 8.20467L10.7914 12.9961L6 17.7875L7.20857 18.9961L12 14.2047L16.7914 18.9961L18 17.7875L13.2086 12.9961L18 8.20467Z" fill="black"></path>
+        </svg>
+        </legend>
+      {% endif %}
+      {% include '_store-slider-filter' %}
+    </fieldset>
+  </div>
+  <div class="theme-category-filter-bar">
+      {% include '_store-slider-filter' %}
+      {% if page.template_vars.product_category_style == '04' %}
+      <div class="theme-filter-open-icon">
+          <svg role="button" xmlns="http://www.w3.org/2000/svg" width="19" height="14" aria-label="{{ i18n.get("product_filters.show_more.label") }}"  data-toggle-filters onclick="openSlidingFilter()" viewBox="0 0 19 14" fill="none">
+            <path d="M0 2H19" stroke="white" stroke-width="0.5"/>
+            <path d="M0 12H19" stroke="white" stroke-width="0.5"/>
+            <circle cx="14" cy="2" r="1.5" fill="white" stroke="white"/>
+            <circle cx="6" cy="12" r="1.5" fill="white" stroke="white"/>
+      </svg>
+      </div>
+      {% endif %}
+      {% if page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' %}
+        <div class="theme-filter-open-icon" tabindex="0" role="button" aria-label="{{ i18n.get("product_filters.show_more.label") }}"  data-toggle-filters onclick="openSlidingFilter()">
+          {% if page.template_vars.product_category_style == '05' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+              <path d="M2.66671 4.56349C2.66671 4.19016 2.66671 4.00349 2.74004 3.86083C2.80378 3.73549 2.90552 3.63352 3.03071 3.56949C3.17337 3.49683 3.36004 3.49683 3.73337 3.49683H12.2667C12.64 3.49683 12.8267 3.49683 12.9694 3.56949C13.0948 3.63341 13.1968 3.73539 13.2607 3.86083C13.3334 4.00349 13.3334 4.19016 13.3334 4.56349V5.05483C13.3334 5.21816 13.3334 5.29949 13.3147 5.37616C13.2984 5.44441 13.2714 5.50966 13.2347 5.56949C13.194 5.63616 13.136 5.69416 13.0214 5.80949L9.64604 9.18416C9.53071 9.29949 9.47271 9.35749 9.43204 9.42416C9.39515 9.4846 9.36848 9.54905 9.35204 9.61749C9.33337 9.69349 9.33337 9.77416 9.33337 9.93349V13.1042C9.33337 13.6755 9.33337 13.9615 9.21337 14.1335C9.16131 14.2079 9.0946 14.2709 9.01734 14.3185C8.94007 14.3662 8.85388 14.3976 8.76404 14.4108C8.55671 14.4415 8.30071 14.3142 7.79004 14.0582L7.25671 13.7915C7.04204 13.6848 6.93537 13.6315 6.85737 13.5515C6.78818 13.4808 6.73558 13.3957 6.70337 13.3022C6.66671 13.1968 6.66671 13.0768 6.66671 12.8375V9.93883C6.66671 9.77549 6.66671 9.69416 6.64804 9.61749C6.63172 9.54924 6.60472 9.48399 6.56804 9.42416C6.52804 9.35749 6.47004 9.30016 6.35671 9.18683L6.35404 9.18416L2.97871 5.80949C2.86404 5.69416 2.80671 5.63616 2.76537 5.56949C2.72849 5.50905 2.70182 5.4446 2.68537 5.37616C2.66671 5.30083 2.66671 5.21949 2.66671 5.06016V4.56349Z" stroke="#111111" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          {% endif %}
+          <span>{{ i18n.get("product_filters.show_more.label") }}</span>
+          {% if page.template_vars.product_category_style == '05' %}
+            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="4" height="4" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" class="theme-filter-expand-icon "><polygon points="256,413.4 0.6,158 40.2,118.4 256,334.2 471.8,118.4 511.4,158 "></polygon></svg>
+          {% endif %}
+          {% if page.template_vars.product_category_style == '08' %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="15" viewBox="0 0 24 15" fill="none">
+              <path d="M10.5 6H20.25M10.5 6C10.5 6.39782 10.342 6.77936 10.0607 7.06066C9.77936 7.34196 9.39782 7.5 9 7.5C8.60218 7.5 8.22064 7.34196 7.93934 7.06066C7.65804 6.77936 7.5 6.39782 7.5 6M10.5 6C10.5 5.60218 10.342 5.22064 10.0607 4.93934C9.77936 4.65804 9.39782 4.5 9 4.5C8.60218 4.5 8.22064 4.65804 7.93934 4.93934C7.65804 5.22064 7.5 5.60218 7.5 6M7.5 6H3.75M16.5 12H20.25M16.5 12C16.5 12.3978 16.342 12.7794 16.0607 13.0607C15.7794 13.342 15.3978 13.5 15 13.5C14.6022 13.5 14.2206 13.342 13.9393 13.0607C13.658 12.7794 13.5 12.3978 13.5 12M16.5 12C16.5 11.6022 16.342 11.2206 16.0607 10.9393C15.7794 10.658 15.3978 10.5 15 10.5C14.6022 10.5 14.2206 10.658 13.9393 10.9393C13.658 11.2206 13.5 11.6022 13.5 12M13.5 12H3.75" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>          
+          {% endif %}
+        </div>
+      {% endif %}
+  </div>
+  {% if page.template_vars.product_category_style == '04' %}
+  <button type="button" class="theme-mobile-filter-toggle-btn" data-toggle-filter-button onclick="openSlidingFilter()">{{ i18n.get("product_filters.refine_by.label") }}</button>
+  {% endif %}
+{% endif %}

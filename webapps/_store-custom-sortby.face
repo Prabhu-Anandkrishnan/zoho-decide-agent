@@ -1,0 +1,95 @@
+{% macro sortBy(type,category_style) %}
+  <div aria-hidden="true" class="theme-collection-sort-inner" style="display : none">
+    <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}} : </span>
+    <select data-sort-by-products>
+      {% for sort_by_option in type.sort_by_options %}
+        <option value="{{ sort_by_option.value }}" {% if sort_by_option.is_selected %} selected {% endif %}>{{ sort_by_option.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% if category_style == '07' %}
+    <div class="theme-custom-sort-overlay" data-custom-sort-overlay></div>
+  {% endif %}
+  <div class="theme-collection-sort-inner theme-custom-sort" aria-label="{{i18n.get("product.sort_by.label")}}" aria-haspopup="listbox" aria-controls="customSortListbox" aria-expanded="false" onclick="toggleCustomSort(this)" role="button" tabindex='0' onkeydown="handleKeyPressForClick(event, this)">
+    {% if page.template_vars.product_category_style == '02' %}
+      <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+          <path d="M5.08554 20.6714C4.67638 20.6714 4.34473 20.3398 4.34473 19.9306V14.0387C4.34473 13.6295 4.67638 13.2979 5.08554 13.2979C5.4947 13.2979 5.82636 13.6295 5.82636 14.0387V19.9306C5.82636 20.3398 5.4947 20.6714 5.08554 20.6714Z" fill="black"/>
+          <path d="M5.08554 11.4119C4.67638 11.4119 4.34473 11.0803 4.34473 10.6711V4.77915C4.34473 4.36999 4.67638 4.03833 5.08554 4.03833C5.4947 4.03833 5.82636 4.36999 5.82636 4.77915V10.6711C5.82636 11.0803 5.4947 11.4119 5.08554 11.4119Z" fill="black"/>
+          <path d="M11.8189 20.6713C11.4098 20.6713 11.0781 20.3397 11.0781 19.9305V12.3548C11.0781 11.9457 11.4098 11.614 11.8189 11.614C12.2281 11.614 12.5598 11.9457 12.5598 12.3548V19.9305C12.5598 20.3397 12.2281 20.6713 11.8189 20.6713Z" fill="black"/>
+          <path d="M11.8189 9.72863C11.4098 9.72863 11.0781 9.39696 11.0781 8.98781V4.77915C11.0781 4.36999 11.4098 4.03833 11.8189 4.03833C12.2281 4.03833 12.5598 4.36999 12.5598 4.77915V8.98781C12.5598 9.39696 12.2281 9.72863 11.8189 9.72863Z" fill="black"/>
+          <path d="M18.5533 20.6713C18.1442 20.6713 17.8125 20.3396 17.8125 19.9304V15.7218C17.8125 15.3126 18.1442 14.981 18.5533 14.981C18.9625 14.981 19.2941 15.3126 19.2941 15.7218V19.9304C19.2941 20.3396 18.9625 20.6713 18.5533 20.6713Z" fill="black"/>
+          <path d="M18.5533 13.0956C18.1442 13.0956 17.8125 12.764 17.8125 12.3548V4.77915C17.8125 4.36999 18.1442 4.03833 18.5533 4.03833C18.9625 4.03833 19.2941 4.36999 19.2941 4.77915V12.3548C19.2941 12.764 18.9625 13.0956 18.5533 13.0956Z" fill="black"/>
+          <path d="M7.61046 14.779H2.56015C2.15099 14.779 1.81934 14.4473 1.81934 14.0382C1.81934 13.629 2.15099 13.2974 2.56015 13.2974H7.61046C8.01962 13.2974 8.35128 13.629 8.35128 14.0382C8.35128 14.4473 8.01962 14.779 7.61046 14.779Z" fill="black"/>
+          <path d="M14.3444 9.7287H9.29404C8.88488 9.7287 8.55322 9.39704 8.55322 8.98788C8.55322 8.57873 8.88488 8.24707 9.29404 8.24707H14.3444C14.7535 8.24707 15.0852 8.57873 15.0852 8.98788C15.0852 9.39704 14.7535 9.7287 14.3444 9.7287Z" fill="black"/>
+          <path d="M21.0787 16.4626H16.0284C15.6193 16.4626 15.2876 16.1309 15.2876 15.7218C15.2876 15.3126 15.6193 14.981 16.0284 14.981H21.0787C21.4879 14.981 21.8195 15.3126 21.8195 15.7218C21.8195 16.1309 21.4879 16.4626 21.0787 16.4626Z" fill="black"/>
+      </svg>
+    {% endif %}
+    {% if category_style == '05' %}
+      <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_357_3393)">
+          <path d="M3.31554 6.65354H12.6844C12.8023 6.65354 12.9154 6.60671 12.9987 6.52336C13.0821 6.44001 13.1289 6.32697 13.1289 6.20909C13.1289 6.09122 13.0821 5.97817 12.9987 5.89482C12.9154 5.81147 12.8023 5.76465 12.6844 5.76465H3.31554C3.19767 5.76465 3.08462 5.81147 3.00127 5.89482C2.91792 5.97817 2.8711 6.09122 2.8711 6.20909C2.8711 6.32697 2.91792 6.44001 3.00127 6.52336C3.08462 6.60671 3.19767 6.65354 3.31554 6.65354Z" fill="#111111"></path>
+          <path d="M6.5911 9.32029H12.6844C12.8023 9.32029 12.9154 9.27346 12.9987 9.19011C13.0821 9.10676 13.1289 8.99371 13.1289 8.87584C13.1289 8.75797 13.0821 8.64492 12.9987 8.56157C12.9154 8.47822 12.8023 8.4314 12.6844 8.4314H6.5911C6.47322 8.4314 6.36018 8.47822 6.27683 8.56157C6.19348 8.64492 6.14665 8.75797 6.14665 8.87584C6.14665 8.99371 6.19348 9.10676 6.27683 9.19011C6.36018 9.27346 6.47322 9.32029 6.5911 9.32029Z" fill="#111111"></path>
+          <path d="M9.89332 11.9868H12.6844C12.8023 11.9868 12.9154 11.94 12.9987 11.8566C13.0821 11.7733 13.1289 11.6602 13.1289 11.5423C13.1289 11.4245 13.0821 11.3114 12.9987 11.2281C12.9154 11.1447 12.8023 11.0979 12.6844 11.0979H9.89332C9.77545 11.0979 9.6624 11.1447 9.57905 11.2281C9.4957 11.3114 9.44888 11.4245 9.44888 11.5423C9.44888 11.6602 9.4957 11.7733 9.57905 11.8566C9.6624 11.94 9.77545 11.9868 9.89332 11.9868Z" fill="#111111"></path>
+        </g>
+        <defs>
+          <clipPath id="clip0_357_3393">
+            <rect width="16" height="16" fill="white" transform="matrix(-1 0 0 1 16 0.875732)"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+    {% endif %}
+    {% if category_style == '10' %}
+      <div class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}</div>
+    {% else %}
+      <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}{% if category_style == '04' %} : {% endif %}</span>
+    {% endif %}
+    {% if category_style == '03' || category_style == '12' %}
+      <span class="theme-sort-colon">:</span>
+      <div class="theme-sort-select-container">
+    {% endif %}
+    {% if category_style == '07' %}
+      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 12 12" fill="none">
+       <path fill-rule="evenodd" clip-rule="evenodd" d="M5.14258 12L5.14258 0L7.14258 0L7.14258 12H5.14258Z" fill="black"/>
+       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.74846e-07 5.14307L12 5.14307L12 7.14307L0 7.14307L1.74846e-07 5.14307Z" fill="black"/>
+     </svg>
+    {% endif %}
+    <div class='theme-custom-select-value' data-custom-select-value>
+      {% for sort_by_option in type.sort_by_options %}
+        {% if sort_by_option.is_selected %}{{ sort_by_option.name }}{% endif %}
+      {% endfor %}
+      {% if category_style == '10' %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="8" viewBox="0 0 14 8" fill="none">
+          <path d="M1 1L7 7L13 1" stroke="black" stroke-width="0.857143"/>
+        </svg>
+      {% endif %}
+    </div>
+    <div class='theme-custom-select-option-container' id="customSortListbox" data-custom-select-option-container>
+      {% if category_style == '10' %}
+        <div role="button" tabindex='0' aria-label="{{i18n.get("product.label.close")}}" class="theme-close-sort-container" onclick="toggleCustomSort(this)" onkeydown="handleKeyPressForClick(event, this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1 1L11 11" stroke="#BB9D87" stroke-width="0.6"/>
+            <path d="M11 1L1 11" stroke="#BB9D87" stroke-width="0.6"/>
+          </svg>
+        </div>
+      {% endif %}
+      {% for sort_by_option in type.sort_by_options %}
+        {% if category_style == '07' || category_style == '09' || category_style == '13' %}
+          <div class="theme-custom-sort-option-conatiner" onclick='customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)' onkeydown='if(event.key === "Enter" || event.key === " ") customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)'>
+            <span class="theme-custom-sort-check" data-custom-check="{{ sort_by_option.value }}"></span>
+            <div role='option' tabindex='0' class='theme-custom-select-option' data-value-{{ sort_by_option.value }}>{{ sort_by_option.name }}</div>
+          </div>
+        {% else %}
+          <div role='option' tabindex='0' class='theme-custom-select-option' data-value-{{ sort_by_option.value }} onclick='customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)' onkeydown='if(event.key === "Enter" || event.key === " ") customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)'>{{ sort_by_option.name }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% if category_style != '10' %}
+      <svg class='theme-sort-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+        <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+      </svg>
+    {% endif %}
+    {% if category_style == '03' || category_style == '12' %}
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %}

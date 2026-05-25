@@ -1,0 +1,20 @@
+<div class="theme-search-suggestion-overlay" data-search-style="{{page.template_vars.search_style}}" data-search="zptheme-search-container">
+    <div class="theme-search-suggestion-container">
+        <div class="theme-live-search-bar">
+            <form method="get" action="{{ page.search_url }}">
+                <input id="search-with-suggestion" type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+                <button type="submit" name="" class="theme-search-go zpbutton zpbutton-type-primary" value="{{i18n.get("category.all.products")}}" data-zs-search="{{page.primary_search}}">{{i18n.get("category.all.products")}}</button>
+                <div class="theme-search-loader-dots" data-theme-search-loader-dots>
+                    <span></span>
+                </div>
+                <button type="button" name="{{i18n.get("product.label.close")}}" aria-label="{{i18n.get("product.label.close")}}" class="theme-close-live-search zpbutton zpbutton-type-primary" {% if page.template_vars.is_search_suggestion_enabled %}onclick="toggleSearchSuggestions(this)"{% endif %}>						
+                  	<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M10.9395 1L5.93945 6M5.93945 6L0.939453 11M5.93945 6L10.9395 11M5.93945 6L0.939453 1" stroke="#999999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+        <div id="search-suggestions" class="theme-search-suggestion-result {% if page.template_vars.search_style == "01" %}zpcontainer{% endif %}">
+      	</div>
+    </div>
+</div>

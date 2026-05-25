@@ -1,0 +1,94 @@
+<select style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+    {% for variant in product.variants %}
+    {% assign variant_options = variant.options %}
+    {% assign variant_option_identifiers = variant_options | map(attr="id") %}
+    {% assign variant_images = variant.images %}
+    {% assign variant_image_identifiers = variant_images | map(attr="id") %}
+    <option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}'></option>
+    {% endfor %}
+  </select>
+  <div class="theme-product-box-content">
+    <div class="theme-product-image-area" data-zs-image-container>
+      <div class="theme-product-ribbon-area">
+        {% if product.on_sale %}
+        <div class="theme-product-sale-ribbon" data-zs-sale>{{i18n.get("product.message.sale")}}</div>
+        {% endif %}
+        {% if product.is_out_of_stock == true %}
+        <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+        {% endif %}
+      </div>
+      {% include '_store-product-list-image-loader' %}
+      {% include '_store-product-list-image' %}
+    {% if product.has_variants && product.is_out_of_stock == false%}
+      <div class="theme-product-list-variants">
+        {% assign single_variant_size = product.attributes | size %}
+            {% assign product_variant =product.variants %}
+            <div class = "variant-based-images" style = "display : none">
+            {% for variant in product_variant %}
+            {% if variant.images[0].is_placeholder_image %}
+            <picture>
+                <img alt="{{ variant.images[0].alternate_text }}" id="{{variant.options[0].id}}"  width="600" height="600"
+                src="{{cdn_prefix_url}}{{ variant.images[0].url }}{{cdn_suffix_url}}"
+                data-detail-image="theme-detail-image-{{variant.variant_id}}" data-lightbox-detailImage
+                data-fallback="{{ product.images[0].url }}"
+                onerror="handleFallBackForImage(this)"/>
+            </picture>
+            {% else %}
+            <picture>
+                 <img alt="{{ variant.images[0].alternate_text }}" id="{{variant.options[0].id}}" width="600" height="600"
+                 src="{{cdn_prefix_url}}{{ variant.images[0].url }}/600x600{{cdn_suffix_url}}"
+                 data-detail-image="theme-detail-image-{{variant.variant_id}}" data-lightbox-detailImage
+                 data-fallback="{{ product.images[0].url }}/600x600"
+                 onerror="handleFallBackForImage(this)"/>
+            </picture>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% for attribute in product.attributes %}
+        {% if attribute.type == 'Color'  && single_variant_size == 1 %}
+        <div class="theme-product-list-variant-option">
+          <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+          <div class="theme-product-color-variant-container">
+            <fieldset aria-label="Choose {{ attribute.name }}" class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+              <legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+                {% for coloroption in attribute.options %}
+                  <span class="theme-product-color">
+                    <label aria-label="{{ coloroption.value }}" data-theme-color-label  aria-checked="false" role="radio" tabindex="0"  for="option-id-{{ coloroption.id }}" style="background:{{coloroption.color_code}}" onclick="selectcolorVariantImage(this,'{{ attribute.name }}')">
+                      <input type="radio" name="{{ attribute.id }}" id="option-id-{{ coloroption.id }}" data-zs-attribute-option value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+                   </label>
+                  </span>
+                {% endfor %}
+            </fieldset>
+          </div>
+        </div>       
+        {% endif %}
+        {% endfor %}
+        <div role="alert" data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+      </div>
+    {%endif%}
+    
+    {{ wishlistView("list", product, page ) }}
+   
+    </div>
+    <div class="theme-product-details-area">
+      <div class="theme-product-name-rating-price">
+        <div class="theme-product-name" data-zs-product-name>
+          <a href="{{ product.url }}" title="{{product.name}}">{{ product.name }}</a>
+        </div>
+        <div class="theme-product-price">
+          {% include '_store-product-pricing-two' %}
+        </div>
+        {% if product.is_product_review_enabled %}
+        <div class="theme-rating" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "star-rating"></div>
+        {% endif %}
+        {% if page.is_delivery_location_enabled %}
+        <div class="theme-delivery-location-non-deliverable" data-zs-not-deliverable-message>
+          {{i18n.get("delivery_location_availability.product.not_deliverable.message")}}
+        </div>
+        {% endif %}
+        {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+        <div class="theme-prod-coupons-container" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,2318 @@
+@import "_base-function";
+
+
+// THEME VARIABLES
+
+// THEME COLOR PALETTE
+
+$base_vars : (
+
+color-primary :#4CB5AB,
+color-secondary : #00376E,
+color-default : #ffffff,
+color-light : #F4FAFA,
+color-border : #E7E7E7,
+color-text : #5981A9,
+darkbg-color-link : #F5F460,
+color-link:#4CB5AB,
+font-family-heading : unquote("'Noto Sans', sans-serif"),
+font-family-base : unquote("'Noto Sans', sans-serif")
+
+);
+
+@if variable-exists(user_base_vars) {
+$base_vars : map-merge($base_vars,$user_base_vars);
+}
+
+
+$default_vars: (
+
+// BASE RGB VARIABLES
+
+color-text-rgba : convertHexToRgb(map-get($base_vars, 'color-text')),
+color-primary-rgba : convertHexToRgb(map-get($base_vars, 'color-primary')),
+color-default-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+color-secondary-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+color-border-rgba : convertHexToRgb(map-get($base_vars, 'color-border')),
+color-light-rgba : convertHexToRgb(map-get($base_vars, 'color-light')),
+
+// THEME SECTION VARIABLES
+
+dark-secion-bg : map-get($base_vars,'color-primary'),
+light-secion-bg : map-get($base_vars,'color-light'),
+dark-footer-section-bg : map-get($base_vars,'color-secondary'),
+light-footer-section-bg : map-get($base_vars,'color-light'),
+default-footer-section-bg: map-get($base_vars,'color-default'),
+// THEME HEADER VARIABLES
+
+color-header-background : map-get($base_vars, 'color-default'),
+color-header-background-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+
+darkbg-color-header-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-header-background-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+
+color-header-overlap-background : transparent,
+
+  // TOPBAR VARIABLES
+
+color-topbar-background : map-get($base_vars, 'color-light'),
+color-topbar-background-rgba : convertHexToRgb(map-get($base_vars, 'color-light')),
+darkbg-color-topbar-background : map-get($base_vars, 'color-secondary'),
+color-topbar-text-and-icon : map-get($base_vars, 'color-secondary'),
+darkbg-color-topbar-text-and-icon : map-get($base_vars, 'color-default'),
+darkbg-color-topbar-text-and-icon-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+font-size-topbar : 13px,
+font-family-topbar : map-get($base_vars, 'font-family-base'),
+
+color-topbar-portal-login-register-text : map-get($base_vars, 'color-secondary'),
+darkbg-color-topbar-portal-login-register-text : map-get($base_vars, 'color-default'),
+darkbg-color-topbar-portal-login-register-text-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+font-transform-portal-login-register : uppercase,
+font-weight-portal-login-register : bold,
+
+color-topbar-overlap-background : transparent,
+
+  // THEME SITE INFO VARIABLES
+
+font-size-site-caption : 15px,
+font-family-site-caption : map-get($base_vars, 'font-family-base'),
+
+  // THEME NAVIGATION VARIABLES
+
+color-navigation-text-icon : map-get($base_vars, 'color-secondary'),
+darkbg-color-navigation-text-icon : map-get($base_vars, 'color-default'),
+darkbg-color-navigation-text-icon-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+darkbg-color-navigation-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-navigation-background-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+color-navigation-hover-active-arrow-background : map-get($base_vars, 'color-primary'),
+color-navigation-hover-active-text-arrow : map-get($base_vars, 'color-default'),
+
+// THEME CART VARIABLES
+
+color-cart-count-background : map-get($base_vars, 'color-primary'),
+color-cart-count-text : map-get($base_vars, 'color-default'),
+
+color-sliding-cart-background : #FFFFFF,
+color-sliding-cart-label-price : #B1AAAA,
+color-sliding-cart-discount : #E24040,
+color-sliding-cart-shipping-label : #939191,
+
+darkbg-color-cart-count-background : map-get($base_vars, 'color-default'),
+darkbg-color-cart-count-text : map-get($base_vars, 'color-primary'),
+
+// THEME WISHLIST VARIABLES
+color-wishlist-selected: #FF0000,
+color-wishlist-notselected: #FFFFFF,
+
+// THEME SUBMENU VARIABLES
+
+color-submenu-border-arrow : map-get($base_vars, 'color-primary'),
+
+font-size-submenu: 14px,
+
+// TYPOGRAPHY VARIABLES
+
+color-text:map-get($base_vars, 'color-text'),
+font-family-text:map-get($base_vars, 'font-family-base'),
+font-size-text:14px,
+font-transform-text:none,
+font-weight-text:normal,
+font-line-height-text : 1.8,
+font-letter-spacing-text : normal,
+darkbg-color-text:map-get($base_vars, 'color-default'),
+
+// HEADING
+
+color-heading-h1 : map-get($base_vars, 'color-secondary'),
+color-heading-h2 : map-get($base_vars, 'color-secondary'),
+color-heading-h3 : map-get($base_vars, 'color-secondary'),
+color-heading-h4 : map-get($base_vars, 'color-secondary'),
+color-heading-h5 : map-get($base_vars, 'color-secondary'),
+color-heading-h6 : map-get($base_vars, 'color-secondary'),
+
+font-family-heading-h1 : map-get($base_vars, 'font-family-heading'),
+font-family-heading-h2 : map-get($base_vars, 'font-family-heading'),
+font-family-heading-h3 : map-get($base_vars, 'font-family-heading'),
+font-family-heading-h4 : map-get($base_vars, 'font-family-heading'),
+font-family-heading-h5 : map-get($base_vars, 'font-family-heading'),
+font-family-heading-h6 : map-get($base_vars, 'font-family-heading'),
+
+font-size-heading-h1 : 36px,
+font-size-heading-h2 : 30px,
+font-size-heading-h3 : 24px,
+font-size-heading-h4 : 18px,
+font-size-heading-h5 : 16px,
+font-size-heading-h6 : 14px,
+
+font-weight-heading-h1 : normal,
+font-weight-heading-h2 : normal,
+font-weight-heading-h3 : normal,
+font-weight-heading-h4 : normal,
+font-weight-heading-h5 : normal,
+font-weight-heading-h6 : normal,
+
+font-transform-heading-h1 : none,
+font-transform-heading-h2 : none,
+font-transform-heading-h3 : none,
+font-transform-heading-h4 : none,
+font-transform-heading-h5 : none,
+font-transform-heading-h6 : none,
+
+font-line-height-heading-h1 : 1.8,
+font-line-height-heading-h2 : 1.8,
+font-line-height-heading-h3 : 1.8,
+font-line-height-heading-h4 : 1.8,
+font-line-height-heading-h5 : 1.8,
+font-line-height-heading-h6 : 1.8,
+
+font-letter-spacing-heading-h1 : normal,
+font-letter-spacing-heading-h2 : normal,
+font-letter-spacing-heading-h3 : normal,
+font-letter-spacing-heading-h4 : normal,
+font-letter-spacing-heading-h5 : normal,
+font-letter-spacing-heading-h6 : normal,
+
+// LINK
+
+color-link:map-get($base_vars, 'color-link'),
+color-link-hover:darken(map-get($base_vars, 'color-link'),10%),
+
+// BUTTON ELEMENT VARIABLES
+
+color-product-detail-price-style-03:map-get($base_vars, 'color-secondary'),
+
+color-product-detail-price-style-04:map-get($base_vars, 'color-secondary'),
+
+// DIVIDER ELEMENT VARIABLES
+
+color-divider-line : map-get($base_vars, 'color-border'),
+
+color-divider-icon : map-get($base_vars, 'color-primary'),
+color-divider-icon-style-bg-color :map-get($base_vars, 'color-primary'),
+color-divider-icon-style-color :map-get($base_vars, 'color-default'),
+color-divider-icon-style-border :map-get($base_vars, 'color-border'),
+
+color-divider-text :map-get($base_vars, 'color-primary'),
+font-family-divider-text : map-get($base_vars,'font-family-base'),
+font-size-divider-text : 14px,
+font-weight-divider-text : normal,
+font-transform-divider-text : none,
+font-line-height-divider-text : normal,
+font-letter-spacing-divider-text : normal,
+
+color-divider-text-style-bg-color :map-get($base_vars, 'color-primary'),
+color-divider-text-style-color :map-get($base_vars, 'color-default'),
+color-divider-text-style-border :map-get($base_vars, 'color-border'),
+
+// ICON ELEMENT VARIABLES
+
+color-icon : map-get($base_vars, 'color-primary'),
+color-icon-border :map-get($base_vars, 'color-border'),
+color-icon-fill-background : map-get($base_vars, 'color-primary'),
+color-icon-fill : map-get($base_vars, 'color-default'),
+
+// TAB ELEMENT VARIABLES
+
+color-tab-style-one-inactive-background : map-get($base_vars, 'color-default'),
+color-tab-style-one-active-background : map-get($base_vars, 'color-primary'),
+color-tab-style-one-active : map-get($base_vars, 'color-default'),
+color-tab-style-one-border : map-get($base_vars, 'color-border'),
+color-tab-style-one-content-background : map-get($base_vars, 'color-default'),
+
+color-tab-style-one : map-get($base_vars, 'color-secondary'),
+font-family-tab-style-one : map-get($base_vars,'font-family-base'),
+font-size-tab-style-one : 14px,
+font-weight-tab-style-one : normal,
+font-transform-tab-style-one : none,
+font-line-height-tab-style-one : 1.8,
+font-letter-spacing-tab-style-one : normal,
+
+
+color-tab-style-two-border : map-get($base_vars, 'color-primary'),
+color-tab-style-two-active-fill-text : map-get($base_vars, 'color-default'),
+color-tab-style-two-active : map-get($base_vars, 'color-primary'),
+color-tab-style-two-inactive-background : map-get($base_vars, 'color-default'),
+
+color-tab-style-two : map-get($base_vars, 'color-secondary'),
+font-family-tab-style-two : map-get($base_vars,'font-family-base'),
+font-size-tab-style-two : 14px,
+font-weight-tab-style-two : normal,
+font-transform-tab-style-two : none,
+font-line-height-tab-style-two : 1.8,
+font-letter-spacing-tab-style-two : normal,
+
+// CAROUSEL ELEMENT VARIABLES
+
+color-carousel-indicator-background : transparent,
+color-carousel-indicator-and-arrow-border : darken(map-get($base_vars, 'color-border'),15%),
+color-carousel-indicator-active-background : darken(map-get($base_vars, 'color-border'),15%),
+color-carousel-arrow :RGBA(convertHexToRgb(map-get($base_vars, 'color-text')),0.8),
+color-carousel-arrow-background : darken(map-get($base_vars, 'color-default'),8%),
+
+
+// ACCORDION ELEMENT VARIABLES
+
+color-accordion-style-one : map-get($base_vars, 'color-secondary'),
+font-family-accordion-style-one : map-get($base_vars,'font-family-base'),
+font-size-accordion-style-one : 14px,
+font-weight-accordion-style-one : normal,
+font-transform-accordion-style-one : none,
+font-line-height-accordion-style-one : 1.8,
+font-letter-spacing-accordion-style-one : normal,
+
+color-accordion-style-one-border : map-get($base_vars, 'color-border'),
+color-accordion-style-one-active-border : map-get($base_vars, 'color-primary'),
+color-accordion-style-one-background : map-get($base_vars, 'color-default'),
+color-accordion-style-one-content-background : map-get($base_vars, 'color-default'),
+
+color-accordion-style-one-active-background : map-get($base_vars, 'color-default'),
+color-accordion-style-one-active-text-color : map-get($base_vars, 'color-secondary'),
+
+color-accordion-style-two : map-get($base_vars, 'color-secondary'),
+font-family-accordion-style-two : map-get($base_vars,'font-family-base'),
+font-size-accordion-style-two : 14px,
+font-weight-accordion-style-two : normal,
+font-transform-accordion-style-two : none,
+font-line-height-accordion-style-two : 1.8,
+font-letter-spacing-accordion-style-two : normal,
+
+// TABLE ELEMENT VARIABLES
+
+color-table-border:map-get($base_vars,'color-border'),
+color-table-cell-border:map-get($base_vars,'color-border'),
+color-header-light-background:map-get($base_vars,'color-light'),
+color-header-light-background-text:map-get($base_vars,'color-secondary'),
+color-header-dark-background:map-get($base_vars,'color-secondary'),
+color-header-dark-background-text:map-get($base_vars,'color-default'),
+color-header-transparent-text:map-get($base_vars,'color-secondary'),
+color-table-header-border : map-get($base_vars,'color-border'),
+color-table-headerdark-border : lighten(map-get($base_vars,'color-secondary'),10%),
+
+color-table-text:map-get($base_vars,'color-text'),
+font-family-table-text : map-get($base_vars,'font-family-base'),
+font-size-table-text : 14px,
+font-weight-table-text : normal,
+font-transform-table-text : none,
+font-line-height-table-text:1.8,
+font-letter-spacing-table-text:normal,
+
+// FORM ELEMENT VARIABLES
+
+color-form-label : map-get($base_vars, 'color-text'),
+color-form-field : map-get($base_vars, 'color-text'),
+color-form-field-background : map-get($base_vars, 'color-default'),
+color-form-field-border : map-get($base_vars, 'color-border'),
+color-form-field-active-border : map-get($base_vars, 'color-text'),
+color-form-placeholder : RGBA(convertHexToRgb(map-get($base_vars, 'color-text')),0.5),
+
+// FORM ELEMENT MESSAGES
+
+color-form-error-message-text : #FF4949,
+color-form-warning-message-text : #FFC82C,
+color-form-success-message-text : #13CE66,
+color-form-info-message-text : #1FB6FF,
+
+color-form-error-message-text-rgba : convertHexToRgb(#FF4949),
+
+// IMAGE ELEMENT VARIABLES
+
+color-image-overlay-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-primary')),0.80),
+color-image-overlay-text : map-get($base_vars, 'color-default'),
+color-image-overlay-background-hv3 : RGBA(convertHexToRgb(map-get($base_vars, 'color-primary')),0.4),
+color-image-overlay-background-hv9 : map-get($base_vars, 'color-primary'),
+
+// DARK SECTION VARIABLES
+
+//DARK SECTION HEADING VARIABLES
+
+darkbg-color-heading-h1 : map-get($base_vars, 'color-default'),
+darkbg-color-heading-h2 : map-get($base_vars, 'color-default'),
+darkbg-color-heading-h3 : map-get($base_vars, 'color-default'),
+darkbg-color-heading-h4 : map-get($base_vars, 'color-default'),
+darkbg-color-heading-h5 : map-get($base_vars, 'color-default'),
+darkbg-color-heading-h6 : map-get($base_vars, 'color-default'),
+
+//DARK SECTION LINK VARIABLES
+
+darkbg-color-link:map-get($base_vars, 'darkbg-color-link'),
+darkbg-color-link-hover:darken(map-get($base_vars, 'darkbg-color-link'),10%),
+
+// DIVIDER ELEMENT VARIABLES
+
+darkbg-color-divider-line : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.7),
+
+darkbg-color-divider-icon : map-get($base_vars, 'color-default'),
+darkbg-color-divider-icon-style-bg-color :map-get($base_vars, 'color-default'),
+darkbg-color-divider-icon-style-color :map-get($base_vars, 'color-primary'),
+darkbg-color-divider-icon-style-border :RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.7),
+
+darkbg-color-divider-text :map-get($base_vars, 'color-default'),
+darkbg-color-divider-text-style-bg-color :map-get($base_vars, 'color-default'),
+darkbg-color-divider-text-style-color :map-get($base_vars, 'color-primary'),
+darkbg-color-divider-text-style-border :RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.7),
+
+// ICON ELEMENT VARIABLES
+
+darkbg-color-icon : map-get($base_vars, 'color-default'),
+darkbg-color-icon-border : map-get($base_vars, 'color-default'),
+darkbg-color-icon-fill-background : map-get($base_vars, 'color-default'),
+darkbg-color-icon-fill : map-get($base_vars, 'color-primary'),
+
+// TAB ELEMENT VARIABLES
+
+darkbg-color-tab-style-one-inactive-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.25),
+darkbg-color-tab-style-one : map-get($base_vars, 'color-default'),
+darkbg-color-tab-style-one-active-background : map-get($base_vars, 'color-default'),
+darkbg-color-tab-style-one-active : map-get($base_vars, 'color-secondary'),
+darkbg-color-tab-style-one-border : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.25),
+darkbg-color-tab-style-one-content-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.15),
+
+darkbg-color-tab-style-two : map-get($base_vars, 'color-default'),
+darkbg-color-tab-style-two-border : map-get($base_vars, 'color-default'),
+darkbg-color-tab-style-two-active-fill-text : map-get($base_vars, 'color-secondary'),
+darkbg-color-tab-style-two-active : map-get($base_vars, 'color-default'),
+darkbg-color-tab-style-two-inactive-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.25),
+
+// CAROUSEL ELEMENT VARIABLES
+
+darkbg-color-carousel-indicator-background : transparent,
+darkbg-color-carousel-indicator-and-arrow-border : lighten(map-get($base_vars, 'color-border'),15%),
+darkbg-color-carousel-indicator-active-background : map-get($base_vars, 'color-default'),
+darkbg-color-carousel-arrow : map-get($base_vars, 'color-default'),
+darkbg-color-carousel-arrow-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.3),
+
+// ACCORDION ELEMENT VARIABLES
+
+darkbg-color-accordion-style-one : map-get($base_vars, 'color-default'),
+darkbg-color-accordion-style-one-border : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.25),
+darkbg-color-accordion-style-one-active-border : map-get($base_vars, 'color-default'),
+darkbg-color-accordion-style-one-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.24),
+darkbg-color-accordion-style-one-content-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.24),
+
+darkbg-color-accordion-style-one-active-background : map-get($base_vars, 'color-default'),
+darkbg-color-accordion-style-one-active-text-color : map-get($base_vars, 'color-secondary'),
+
+darkbg-color-accordion-style-two : map-get($base_vars, 'color-default'),
+
+// TABLE ELEMENT VARIABLES
+
+darkbg-color-table-border:RGBA(convertHexToRgb(map-get($base_vars,'color-border')),0.6),
+darkbg-color-table-cell-border:RGBA(convertHexToRgb(map-get($base_vars,'color-border')),0.6),
+darkbg-color-header-light-background:map-get($base_vars,'color-light'),
+darkbg-color-header-light-background-text:map-get($base_vars,'color-secondary'),
+darkbg-color-header-dark-background:map-get($base_vars,'color-secondary'),
+darkbg-color-header-dark-background-text:map-get($base_vars,'color-default'),
+darkbg-color-header-transparent-text:map-get($base_vars,'color-default'),
+darkbg-color-table-text:map-get($base_vars,'color-default'),
+darkbg-color-table-header-border : RGBA(convertHexToRgb(map-get($base_vars, 'color-border')),0.6),
+darkbg-color-table-headerdark-border : lighten(map-get($base_vars,'color-secondary'),10%),
+
+// FORM ELEMENT VARIABLES
+
+darkbg-color-form-label : map-get($base_vars, 'color-default'),
+darkbg-color-form-field : map-get($base_vars, 'color-default'),
+darkbg-color-form-field-background : transparent,
+darkbg-color-form-field-border : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.5),
+darkbg-color-form-field-active-border : map-get($base_vars, 'color-default'),
+darkbg-color-form-placeholder : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.5),
+
+darkbg-color-form-error-message-text : map-get($base_vars, 'color-default'),
+darkbg-color-form-warning-message-text : map-get($base_vars, 'color-default'),
+darkbg-color-form-success-message-text : map-get($base_vars, 'color-default'),
+darkbg-color-form-info-message-text : map-get($base_vars, 'color-default'),
+
+// IMAGE ELEMENT VARIABLES
+
+darkbg-color-image-overlay-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-secondary')),0.50),
+darkbg-color-image-overlay-text : map-get($base_vars, 'color-default'),
+darkbg-color-image-overlay-background-hv3 : RGBA(convertHexToRgb(map-get($base_vars, 'color-secondary')),0.4),
+darkbg-color-image-overlay-background-hv9 : map-get($base_vars, 'color-secondary'),
+
+// BLOG PAGE VARIABLES
+
+color-blog-border: map-get($base_vars,'color-border'),
+color-blog-border-rgba: convertHexToRgb(map-get($base_vars,'color-border')),
+color-blog-tag-background-style-01 : #F3F6F7,
+color-blog-tag-background-border-style-01 : darken(#F3F6F7,4%),
+color-blog-tag-background-style-02 : #F3F6F7,
+color-blog-tag-background-border-style-02 : darken(#F3F6F7,4%),
+color-blog-tag-background:map-get($base_vars,'color-light'),
+color-blog-tag-background-border:darken(map-get($base_vars,'color-light'),4%),
+color-blog-tag-category-container-background:lighten(map-get($base_vars,'color-light'),25%),
+color-blog-tag-category-container-background-border : darken(map-get($base_vars,'color-light'),30%),
+color-blog-tag-category-container-background-style-04:map-get($base_vars,'color-light'),
+color-blog-tag-category-container-background-style-03:map-get($base_vars,'color-light'),
+color-blog-tag-category-container-background-border-style-03: lighten(map-get($base_vars,'color-light'),25%),
+color-blog-footer-content : darken(map-get($base_vars,'color-text'),10%),
+color-blog-rss-icon:#FA9A00,
+font-size-blog-author:16px,
+color-blog-rss-icon-path:map-get($base_vars,'color-default'),
+
+color-bloglist-h1:map-get($base_vars, 'color-secondary'),
+font-family-bloglist-h1:map-get($base_vars, 'font-family-heading'),
+font-size-bloglist-h1:16px,
+font-weight-bloglist-h1 : normal,
+font-transform-bloglist-h1 : none,
+font-line-height-bloglist-h1 : 1.8,
+font-letter-spacing-bloglist-h1 : normal,
+
+// FOOTER VARIABLES
+
+footer-color-heading-h1 : map-get($base_vars, 'color-default'),
+footer-color-heading-h2 : map-get($base_vars, 'color-default'),
+footer-color-heading-h3 : map-get($base_vars, 'color-default'),
+footer-color-heading-h4 : map-get($base_vars, 'color-default'),
+footer-color-heading-h5 : map-get($base_vars, 'color-default'),
+footer-color-heading-h6 : map-get($base_vars, 'color-default'),
+
+footer-color-text-icon : map-get($base_vars, 'color-text'),
+
+footer-color-border: map-get($base_vars, 'color-border'),
+
+footer-color-background: map-get($base_vars,'color-secondary'),
+
+// SIDEBAR VARIABLES
+
+sidebar-color-heading-h1 : map-get($base_vars, 'color-default'),
+sidebar-color-heading-h2 : map-get($base_vars, 'color-default'),
+sidebar-color-heading-h3 : map-get($base_vars, 'color-default'),
+sidebar-color-heading-h4 : map-get($base_vars, 'color-default'),
+sidebar-color-heading-h5 : map-get($base_vars, 'color-default'),
+sidebar-color-heading-h6 : map-get($base_vars, 'color-default'),
+
+sidebar-color-text-icon : map-get($base_vars, 'color-text'),
+
+sidebar-color-border: map-get($base_vars, 'color-border'),
+
+sidebar-color-background: darken(map-get($base_vars,'color-light'),5%),
+
+// ECOMMERCE VARIABLES
+
+color-breadcrumb-background:map-get($base_vars,'color-light'),
+color-breadcrumb-background-style-03 : transparent,
+color-breadcrumb-background-style-04 : transparent,
+color-breadcrumb-text:map-get($base_vars,'color-secondary'),
+color-breadcrumb-text-rgba:convertHexToRgb(map-get($base_vars,'color-secondary')),
+color-breadcrumb-border:map-get($base_vars,'color-border'),
+font-size-breadcrumb:14px,
+color-breadcrumb-hov-active-background:map-get($base_vars,'color-light'),
+color-breadcrumb-hov-active-text-icon:darken(map-get($base_vars,'color-primary'),5%),
+
+color-ribbon-sale-background:lighten(map-get($base_vars, 'color-primary'),5%),
+color-ribbon-new-background:lighten(map-get($base_vars, 'color-secondary'),10%),
+color-ribbon-text:map-get($base_vars, 'color-default'),
+color-ribbon-stock-info-background:map-get($base_vars,'color-default'),
+color-ribbon-stock-icon:map-get($base_vars,'color-primary'),
+
+color-ribbon-stock-border-style-02:map-get($base_vars,'color-primary'),
+
+color-product-box-info-price-text-style-02:map-get($base_vars,'color-default'),
+
+color-ribbon-stock-background-style-03:map-get($base_vars,'color-default'),
+
+color-ribbon-stock-background-style-04: #EB4D5E,
+
+color-ribbon-stock-text-style-03:#EB4D5E,
+
+color-available-status-text-style-02:map-get($base_vars,'color-default'),
+
+color-ribbon-stock-text-style-04: map-get($base_vars,'color-default'),
+
+color-product-box-info-price-text-border-style-03:map-get($base_vars,'color-primary'),
+color-product-box-info-price-text-border-hover-style-03 : darken(map-get($base_vars,'color-primary'),18%),
+color-product-addcart-loading-style-03 : map-get($base_vars,'color-default'),
+
+font-size-product-box-text-style-03:18px,
+
+color-nostock-background-style-04 : #E9C7D0,
+
+color-nostock-button-border-style-03:#EB4D5E,
+
+color-nostock-button-border-style-04:#EB4D5E,
+
+color-ribbon-stock-text-style-05: #EB4D5E,
+
+color-ribbon-stock-background-style-05: map-get($base_vars,'color-default'),
+
+color-nostock-button-border-style-05:#EB4D5E,
+
+color-not-available-status-background-style-02:#EB4D5E,
+
+color-available-status-background-style-02:#2ECC71,
+
+color-nostock-details-background-style-04:#EB4D5E,
+
+color-nostock-details-background-style-06:#EB4D5E,
+
+color-product-box-info-price-text-style-06:map-get($base_vars,'color-secondary'),
+
+color-product-box-info-border-style-06:map-get($base_vars,'color-border'),
+
+color-nostock-details-background-style-07 : #EB4D5E,
+
+color-stock-detail-text-style-04:map-get($base_vars,'color-default'),
+
+font-size-product-detail-old-price-style-04:20px,
+
+color-stock-details-text-style-06 : map-get($base_vars,'color-default'),
+
+color-stock-details-text-style-03 : map-get($base_vars,'color-light'),
+
+color-stock-details-background-style-03 : map-get($base_vars,'color-primary'),
+
+color-stock-details-background-style-06 : map-get($base_vars,'color-primary'),
+
+color-stock-details-text-style-07 : map-get($base_vars,'color-default'),
+
+color-stock-details-background-style-07 : map-get($base_vars,'color-primary'),
+
+color-product-price:map-get($base_vars,'color-secondary'),
+font-size-product-price:18px,
+font-size-product-price-sm:14px,
+color-product-old-price:map-get($base_vars,'color-secondary'),
+font-size-product-old-price:14px,
+font-size-product-old-price-sm:11px,
+color-product-name:map-get($base_vars, 'color-secondary'),
+font-size-product-name:16px,
+font-size-product-name-sm:12px,
+
+font-size-product-name-md-6:14px,
+font-size-product-price-md-6:14px,
+
+color-product-details-image-container-background:map-get($base_vars,'color-default'),
+color-product-details-entry-background:lighten(map-get($base_vars,'color-primary'),6%),
+color-product-calculated-details-entry-background:map-get($base_vars,'color-secondary'),
+color-product-calculated-details-entry-background-rgba:convertHexToRgb(map-get($base_vars,'color-secondary')),
+
+color-product-details-entry-background-style-04:map-get($base_vars,'color-default'),
+
+color-product-details-image-container-background-style-04:map-get($base_vars,'color-default'),
+
+color-product-details-entry-background-style-03:map-get($base_vars,'color-default'),
+
+color-product-calculated-details-entry-background-style-02:map-get($base_vars,'color-light'),
+
+color-product-details-tab:map-get($base_vars, 'color-secondary'),
+color-product-details-tab-background:map-get($base_vars, 'color-light'),
+color-product-details-tab-background-style-05:transparent,
+color-product-details-tab-content-background:map-get($base_vars, 'color-default'),
+color-product-details-tab-content-heading:map-get($base_vars, 'color-secondary'),
+font-size-product-details-tab-content-heading:18px,
+
+color-product-details-input-background:transparent,
+color-product-details-input-text:map-get($base_vars, 'color-default'),
+color-product-details-input-border:map-get($base_vars, 'color-default'),
+color-product-details-input-border-rgba:convertHexToRgb(map-get($base_vars, 'color-default')),
+
+color-product-details-input-text-style-03:map-get($base_vars, 'color-text'),
+
+color-product-details-input-text-style-06:map-get($base_vars, 'color-secondary'),
+
+color-details-stock-background: map-get($base_vars,'color-default'),
+color-details-stock-text: map-get($base_vars,'color-secondary'),
+color-details-nostock-text:#EB4D5E,
+
+color-non-returnable : map-get($base_vars,'color-default'),
+font-size-non-returnable : 13px,
+
+color-quantity-error : map-get($base_vars,'color-default'),
+
+color-list-rating-one : #cccccc,
+color-list-rating-active-one : darken(map-get($base_vars,'color-primary'),15%),
+
+color-list-rating-two : #cccccc,
+color-list-rating-active-two : map-get($base_vars,'color-primary'),
+
+color-list-rating-three : #cccccc,
+color-list-rating-active-three : map-get($base_vars,'color-default'),
+
+color-list-rating-four : #cccccc,
+color-list-rating-active-four : map-get($base_vars,'color-primary'),
+
+color-list-rating-five : #cccccc,
+color-list-rating-active-five : map-get($base_vars,'color-primary'),
+
+color-list-rating-six : #cccccc,
+color-list-rating-active-six : map-get($base_vars,'color-primary'),
+
+color-list-rating-seven : #cccccc,
+color-list-rating-active-seven : map-get($base_vars,'color-primary'),
+
+color-rating-product-06 : #ffc121,
+
+color-review-star-one:#eaeaea,
+color-review-star-one-rgba:convertHexToRgb(#eaeaea),
+color-review-star-active-one:#fcbb54,
+
+color-review-star-two:#E0E0E0,
+color-review-star-active-two:map-get($base_vars,'color-primary'),
+
+color-review-star-three:#E0E0E0,
+color-review-star-active-three:map-get($base_vars,'color-primary'),
+
+color-review-star-four:#E0E0E0,
+color-review-star-active-four:map-get($base_vars,'color-primary'),
+
+color-review-star-five:#E0E0E0,
+color-review-star-active-five:map-get($base_vars,'color-primary'),
+
+color-review-star-six:#E0E0E0,
+color-review-star-active-six:map-get($base_vars,'color-primary'),
+
+color-review-star-seven:#E0E0E0,
+color-review-star-active-seven:map-get($base_vars,'color-primary'),
+
+color-review-count-text:map-get($base_vars,'color-default'),
+color-write-review-text:map-get($base_vars,'color-default'),
+
+color-instock-info-style-03 : #3ace18,
+color-nostock-info-style-03 : #EB4D5E,
+
+color-nostock-info-style-05 : #EB4D5E,
+
+color-instock-info-style-05 : #3ace18,
+
+font-size-stock-info-style-05:16px,
+
+color-write-review-text-style-02 : map-get($base_vars,'color-secondary'),
+
+color-review-count-text-style-02 : map-get($base_vars,'color-secondary'),
+
+color-rating-count-style-03 : map-get($base_vars,'color-default'),
+
+color-review-count-text-style-03 : map-get($base_vars,'color-secondary'),
+
+color-review-count-text-style-04 : map-get($base_vars,'color-secondary'),
+
+color-review-count-text-style-05 : map-get($base_vars,'color-secondary'),
+
+color-review-count-text-style-06 : map-get($base_vars,'color-secondary'),
+
+font-size-rating-count-style-03 : 14px,
+
+font-size-rating-count-style-05 : 14px,
+
+color-rating-count-style-05 : map-get($base_vars,'color-secondary'),
+
+color-review-count-text-style-07 : map-get($base_vars,'color-secondary'),
+
+color-add-cart-button-background:map-get($base_vars,'color-default'),
+color-add-cart-button-text:map-get($base_vars, 'color-secondary'),
+color-add-cart-button-border:map-get($base_vars, 'color-default'),
+
+color-add-cart-button-active-background:map-get($base_vars, 'color-default'),
+color-add-cart-button-active-text:map-get($base_vars, 'color-secondary'),
+
+color-product-review-button-background:map-get($base_vars, 'color-primary'),
+color-product-review-button-text:map-get($base_vars, 'color-default'),
+
+color-product-review-button-text-style-07:map-get($base_vars, 'color-secondary'),
+
+color-category-and-filter-background:map-get($base_vars, 'color-default'),
+color-category-and-filter-text:map-get($base_vars, 'color-text'),
+color-category-list-hover-text:map-get($base_vars, 'color-primary'),
+
+color-product-box-info-background:map-get($base_vars,'color-primary'),
+color-product-box-info-background-rgba:convertHexToRgb(map-get($base_vars,'color-primary')),
+color-product-box-info-button-border:map-get($base_vars,'color-default'),
+color-product-box-info-button-text:map-get($base_vars,'color-default'),
+font-size-product-box-info-button:12px,
+color-product-box-info-button-hover-background:map-get($base_vars,'color-default'),
+color-product-box-info-button-hover-text:map-get($base_vars,'color-primary'),
+color-product-box-info-icon:map-get($base_vars,'color-default'),
+
+color-product-box-info-background-style-02:map-get($base_vars,'color-secondary'),
+color-product-box-info-background-style-02-rgba:convertHexToRgb(map-get($base_vars,'color-secondary')),
+
+color-product-box-info-background-style-03:map-get($base_vars,'color-default'),
+color-product-box-info-background-style-03-rgba:convertHexToRgb(map-get($base_vars,'color-default')),
+
+color-product-box-background-style-02:map-get($base_vars,'color-default'),
+
+color-nostock-button-background-style-02 : map-get($base_vars,'color-default'),
+
+color-nostock-button-text-style-02 :#EB4D5E,
+
+color-background-product-price-style-03:map-get($base_vars,'color-light'),
+
+color-background-recommended-products-04 : #FFF3F4,
+
+color-border-product-detail-container-04 : #E7B4C2,
+
+color-product-label-price-04 : #c1c1c1,
+
+color-product-label-price-06 : #999999,
+
+color-border-product-coupon-04 : #ecc5c5,
+
+color-product-coupontimer-04 : #FF1B1B,
+
+color-product-coupon-code-06 : #12b985,
+
+color-product-tags-04 : #138c00,
+
+color-background-tags-04 : #e7ffe3,
+
+color-background-sale-06 : #525252,
+
+color-border-tags-04 : #a9dda1,
+
+color-background-product-price-style-04:transparent,
+
+color-nostock-button-text-style-03:#EB4D5E,
+
+color-addcart-icon-style-03:map-get($base_vars,'color-primary'),
+
+color-addcart-icon-style-04:map-get($base_vars,'color-primary'),
+
+font-size-nostock-button-style-03:15px,
+
+font-size-nostock-button-style-04:15px,
+
+color-nostock-button-text-style-04:#EB4D5E,
+
+background-product-tab-06: #E9E5E5,
+background-product-content-06 : #FBFBFB,
+
+color-nostock-button-background-style-03:map-get($base_vars,'color-default'),
+
+color-nostock-button-background-product-06: #e57373,
+
+color-nostock-overlay-background-style-04:map-get($base_vars,'color-default'),
+color-nostock-overlay-background-style-04-rgba:convertHexToRgb(map-get($base_vars,'color-default')),
+
+color-nostock-button-background-style-04:map-get($base_vars,'color-default'),
+
+color-product-box-info-background-style-04:transparent,
+
+color-product-content-background : #fafafa,
+
+color-nostock-button-text-style-05:#EB4D5E,
+
+color-nostock-button-background-style-05:map-get($base_vars,'color-default'),
+
+color-quickview-container-background-style-01 : #ffffff,
+
+color-quickview-close-background-style-05:RGBA(convertHexToRgb(map-get($base_vars,'color-primary')),0.90),
+
+color-quickview-close-background-style-06:RGBA(convertHexToRgb(map-get($base_vars,'color-primary')),0.95),
+
+color-nostock-button-background-style-06 : map-get($base_vars,'color-default'),
+
+color-nostock-button-text-style-06 : #EB4D5E,
+
+color-nostock-button-border-style-06 : #EB4D5E,
+
+color-nostock-overlay-background-style-06 : map-get($base_vars,'color-default'),
+color-nostock-overlay-background-style-06-rgba : convertHexToRgb(map-get($base_vars,'color-default')),
+
+color-product-box-info-background-style-06:map-get($base_vars,'color-default'),
+
+font-size-ribbon-style-06 : 13px,
+
+color-product-box-info-background-style-07:map-get($base_vars,'color-default'),
+
+color-nostock-button-background-style-07 : map-get($base_vars,'color-default'),
+
+color-nostock-button-text-style-07 : #EB4D5E,
+
+color-nostock-button-border-style-07 : #EB4D5E,
+
+color-nostock-overlay-background-style-07 : map-get($base_vars,'color-default'),
+color-nostock-overlay-background-style-07-rgba : convertHexToRgb(map-get($base_vars,'color-default')),
+
+color-quickview-close-background:map-get($base_vars,'color-default'),
+color-quickview-close-icon:map-get($base_vars,'color-secondary'),
+
+color-selection-tick : #ffffff,
+color-section-tick-shadow:#000000,
+color-selection-border:#ffffff,
+color-selection-background:#ffffff,
+color-selection-text : map-get($base_vars,'color-secondary'),
+
+color-selection-tick-style-04 : transparent,
+color-selection-tick-style-03 : transparent,
+
+color-selection-tick-style-05 : transparent,
+
+color-selection-border-style-03:map-get($base_vars,'color-primary'),
+
+color-selection-border-style-04 : map-get($base_vars,'color-primary'),
+
+color-selection-border-style-05 : map-get($base_vars,'color-primary'),
+
+color-selection-border-style-06:map-get($base_vars,'color-primary'),
+
+color-selection-tick-style-06 : transparent,
+
+color-selection-border-style-07 : map-get($base_vars,'color-primary'),
+
+color-selection-tick-style-07 : transparent,
+
+color-product-coupons-claimed-progress: #dddddd,
+
+// PRODUCT DETAILS FONT SIZES
+
+font-size-details-product-name: 24px,
+font-size-details-product-price: 22px,
+font-size-details-product-label-price: 16px,
+font-size-details-product-label-texts: 100%,
+font-size-details-product-links-info: 100%,
+font-size-details-product-addcart: 100%,
+font-size-details-product-popupmessage: 100%,
+font-size-details-product-popupmessage-button: 100%,
+
+// CHECKOUT VARIABLES
+
+color-checkout-tab-background:map-get($base_vars,'color-light'),
+color-checkout-tab-background-selected:darken(map-get($base_vars,'color-light'),3%),
+color-checkout-change-login-notification-background:#FFFDF1,
+color-checkout-change-login-notification-border:#FEE1A4,
+color-order-confirmation-box-background:#FDFDFD,
+
+// STORE ERROR MESSAGE VARIABLE STARTS
+
+color-store-success-message-background:#1ABC9C,
+color-store-success-message-background-rgba:convertHexToRgb(#1ABC9C),
+color-store-success-message-text:map-get($base_vars,'color-default'),
+color-store-failure-message-background:#E74C3C,
+color-store-failure-message-background-rgba:convertHexToRgb(#E74C3C),
+color-store-failure-message-text:map-get($base_vars,'color-default'),
+
+color-store-success-message-background-style-02:#EFF5EA,
+color-store-success-message-text-style-02:map-get($base_vars,'color-secondary'),
+color-store-success-message-border-style-02:#1ABC9C,
+color-store-failure-message-background-style-02:#EFF5EA,
+color-store-failure-message-text-style-02:map-get($base_vars,'color-secondary'),
+color-store-failure-message-border-style-02:#E74C3C,
+
+color-store-success-message-background-style-03:#13CE66,
+color-store-success-message-text-style-03:map-get($base_vars,'color-default'),
+color-store-failure-message-background-style-03:#FF4949,
+color-store-failure-message-text-style-03:map-get($base_vars,'color-default'),
+
+color-store-success-message-background-style-04:#1ABC9C,
+color-store-success-message-text-style-04:map-get($base_vars,'color-default'),
+color-store-failure-message-background-style-04:#E74C3C,
+color-store-failure-message-text-style-04:map-get($base_vars,'color-default'),
+
+color-store-success-message-style-04:#13CE66,
+color-store-message-text-style-04:map-get($base_vars,'color-default'),
+color-store-failure-message-style-04:#FF4949,
+
+color-store-success-message-background-style-05:#EFF5EA,
+color-store-success-message-text-style-05:map-get($base_vars,'color-secondary'),
+color-store-success-message-border-style-05:#00B600,
+color-store-failure-message-background-style-05:#FEE6E6,
+color-store-failure-message-text-style-05:map-get($base_vars,'color-secondary'),
+color-store-failure-message-border-style-05:#FF4949,
+
+color-store-success-message-background-style-06:#EFF5EA,
+color-store-success-message-text-style-06:map-get($base_vars,'color-secondary'),
+color-store-success-message-border-style-06:#00B600,
+color-store-failure-message-background-style-06:#FFE3E3,
+color-store-failure-message-text-style-06:map-get($base_vars,'color-secondary'),
+color-store-failure-message-border-style-06:#FF4949,
+
+color-store-success-message-background-style-07:#EFF5EA,
+color-store-success-message-text-style-07:map-get($base_vars,'color-secondary'),
+color-store-success-message-border-style-07:#00B600,
+color-store-failure-message-background-style-07:#FFE3E3,
+color-store-failure-message-text-style-07:map-get($base_vars,'color-secondary'),
+color-store-failure-message-border-style-07:#FF4949,
+
+color-store-addcart-variant-error-background:map-get($base_vars,'color-default'),
+color-store-addcart-variant-error-text:#ff0000,
+
+color-store-addcart-variant-error-background-style-02:#FFF9EA,
+color-store-addcart-variant-error-text-style-02:#2B3449,
+color-store-addcart-variant-error-border-style-02:#F8DE83,
+
+color-store-addcart-variant-error-background-style-04:#FFF9EA,
+color-store-addcart-variant-error-background-border-style-04:darken(#FFF9EA,15%),
+color-store-addcart-variant-error-text-style-04:#2B3449,
+color-store-addcart-variant-common-error-text-style-04 : #FF4949,
+
+color-store-addcart-variant-error-background-style-06:#FFF9EA,
+color-store-addcart-variant-error-text-style-06:#2B3449,
+color-store-addcart-variant-error-border-style-06:#F8DE83,
+
+color-textvariant-border-style-04 : darken(map-get($base_vars,'color-border'),10%),
+
+color-textvariant-border-style-05 : darken(map-get($base_vars,'color-border'),10%),
+
+color-textvariant-border-style-07 : darken(map-get($base_vars,'color-border'),10%),
+
+color-store-addcart-variant-error-text-style-07:#2B3449,
+
+color-store-addcart-variant-error-border-style-05:#F8DE83,
+
+color-store-addcart-variant-error-border-style-07:#F8DE83,
+
+font-size-variant-label:15px,
+
+color-store-addcart-variant-error-background-style-03:#FFF9EA,
+color-store-addcart-variant-error-background-border-style-03:darken(#FFF9EA,15%),
+color-store-addcart-variant-error-text-style-03:#2B3449,
+
+color-store-addcart-variant-error-text-style-05:map-get($base_vars,'color-secondary'),
+
+color-store-addcart-variant-error-background-style-05:#FFF9EA,
+
+color-store-addcart-variant-error-background-style-07:#FFF9EA,
+
+// STORE CURRENCY OPTIONS
+
+font-size-currency-option : 13px,
+font-family-currency-option : map-get($base_vars, 'font-family-base'),
+font-weight-currency-option : normal,
+font-transform-currency-option : none,
+font-line-height-currency-option : 1.8,
+font-letter-spacing-currency-option : normal,
+color-currency-option : map-get($base_vars, 'color-secondary'),
+darkbg-color-currency-option : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.8),
+color-currency-hover-background : #eee,
+color-currency-shadow : #626262,
+color-currency-shadow-rgba : convertHexToRgb(#626262),
+color-currency-background : map-get($base_vars,'color-default'),
+color-currency-option-hover : map-get($base_vars,'color-primary'),
+color-currency-decorate-border : map-get($base_vars,'color-primary'),
+color-currency-option-border : map-get($base_vars,'color-border'),
+
+// NEW VARIABLES FOR ADVANCE VISUAL EDITOR
+
+  // SITE NAME
+
+color-site-name : map-get($base_vars, 'color-secondary'),
+darkbg-color-site-name : map-get($base_vars, 'color-default'),
+font-size-site-name : 24px,
+font-family-site-name : unquote("'Nunito',sans-serif"),
+font-transform-site-name : none,
+font-weight-site-name : normal,
+font-line-height-site-name : normal,
+font-letter-spacing-site-name : normal,
+
+  // SITE CAPTION
+
+color-site-caption : lighten(map-get($base_vars, 'color-text'),10%),
+darkbg-color-site-caption : map-get($base_vars, 'color-default'),
+font-transform-site-caption : none,
+font-weight-site-caption : normal,
+font-line-height-site-caption : normal,
+font-letter-spacing-site-caption : normal,
+
+  // SOCIAL ICON
+
+color-social-icon : map-get($base_vars, 'color-secondary'),
+size-social-icon : 13px,
+darkbg-color-social-icon : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.8),
+
+  // NAVIGATION
+
+color-navigation : map-get($base_vars, 'color-secondary'),
+darkbg-color-navigation : map-get($base_vars, 'color-default'),
+font-transform-navigation : none,
+font-weight-navigation : normal,
+font-size-navigation : 15px,
+font-family-navigation : map-get($base_vars, 'font-family-base'),
+font-line-height-navigation-one : 1,
+font-line-height-navigation-normal : normal,
+font-letter-spacing-navigation : normal,
+
+darkbg-color-hover-active-text-style-06-navigation : lighten(map-get($base_vars,'color-secondary'),40%),
+color-navigation-hover-active-arrow-text : map-get($base_vars, 'color-primary'),
+darkbg-color-navigation-hover-active-arrow-text: map-get($base_vars, 'color-default'),
+darkbg-color-navigation-hover-active-arrow-background : lighten(map-get($base_vars, 'color-secondary'),20%),
+darkbg-color-navigation-hover-active-text-arrow : map-get($base_vars, 'color-default'),
+color-navigation-hover-active-effect : map-get($base_vars, 'color-primary'),
+darkbg-color-navigation-hover-active-effect : map-get($base_vars, 'color-default'),
+color-hover-active-text-style-02-03-navigation : map-get($base_vars, 'color-secondary'),
+darkbg-color-hover-active-text-style-02-03-navigation : map-get($base_vars, 'color-default'),
+color-hover-active-text-style-06-navigation : map-get($base_vars, 'color-primary'),
+background-color-image-navigation-arrow : #c6cdd4,
+
+  // SEARCH AND CART ICON
+
+color-search-cart-icon : map-get($base_vars, 'color-secondary'),
+darkbg-color-search-cart-icon : map-get($base_vars, 'color-default'),
+
+darkbg-color-search-cart-icon-17-background : darken(map-get($base_vars, 'color-secondary'),10%),
+
+size-search-icon : 17px,
+size-cart-icon : 24px,
+
+
+  //  THEME SEARCH VARIABLES
+
+color-search-field : map-get($base_vars, 'color-text'),
+font-family-search-field : map-get($base_vars,'font-family-base'),
+font-size-search-field : 14px,
+font-weight-search-field : normal,
+font-transform-search-field : none,
+font-line-height-search-field : normal,
+font-letter-spacing-search-field : normal,
+color-search-field-background : map-get($base_vars, 'color-default'),
+color-search-field-border : map-get($base_vars, 'color-primary'),
+
+
+color-search-button :map-get($base_vars, 'color-default'),
+color-search-button-rgba :convertHexToRgb(map-get($base_vars, 'color-default')),
+font-size-search-button : 18px,
+font-family-search-button : map-get($base_vars, 'font-family-base'),
+font-weight-search-button : normal,
+font-transform-search-button : none,
+font-line-height-search-button : normal,
+font-letter-spacing-search-button : 1.42857143,
+color-search-button-background : map-get($base_vars, 'color-primary'),
+
+
+// SEVENTH HEADER SEARCH BOX VARIABLES
+
+border-radius-7th-header-style-search-field:0px,
+color-7th-header-search-field-text:map-get($base_vars, 'color-text'),
+color-7th-header-style-search-field-background:map-get($base_vars, 'color-default'),
+color-7th-header-style-search-field-border: map-get($base_vars, 'color-border'),
+color-7th-header-style-search-icon:map-get($base_vars, 'color-secondary'),
+size-header7-search-icon:18px,
+
+
+// SEVENTH HEADER CART ICON VARIABLES
+
+color-7th-header-style-cart-icon: map-get($base_vars, 'color-secondary'),
+color-7th-header-style-cart-divider-border: map-get($base_vars, 'color-secondary'),
+size-header7-cart-icon:18px,
+
+
+darkbg-color-7th-header-style-cart-icon: map-get($base_vars, 'color-default'),
+darkbg-color-7th-header-style-cart-divider-border : map-get($base_vars, 'color-default'),
+
+darkbg-color-7th-header-style-cart-icon-17-background : darken(map-get($base_vars, 'color-secondary'),10%),
+
+
+
+  // NAVIGATION BAR
+
+color-navigation-bar-background : map-get($base_vars, 'color-default'),
+color-navigation-bar-background-rgba : convertHexToRgb(map-get($base_vars, 'color-default')),
+
+color-navigation-bar-overlap-background : transparent,
+
+color-navigation-bar-style-05-background : map-get($base_vars, 'color-light'),
+color-navigation-bar-style-05-background-rgba : convertHexToRgb(map-get($base_vars, 'color-light')),
+darkbg-color-navigation-bar-style-05-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-navigation-bar-style-05-background-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+darkbg-color-navigation-bar-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-navigation-bar-background-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+
+  // SUB MENU
+
+color-submenu : map-get($base_vars, 'color-secondary'),
+color-submenu-hover-active-text : map-get($base_vars, 'color-primary'),
+color-submenu-background : map-get($base_vars, 'color-default'),
+color-mobile-burger-icon : map-get($base_vars, 'color-primary'),
+darkbg-color-mobile-burger-icon : map-get($base_vars, 'color-default'),
+
+color-submenu-hover-background : map-get($base_vars, 'color-default'),
+color-submenu-hover-background-05 : map-get($base_vars, 'color-light'),
+color-submenu-hover-background-06 : RGBA(convertHexToRgb(map-get($base_vars, 'color-primary')),0.1),
+color-submenu-border : RGBA(convertHexToRgb(map-get($base_vars, 'color-border')),0.4),
+font-family-submenu : map-get($base_vars,'font-family-base'),
+font-weight-submenu : normal,
+font-transform-submenu : none,
+font-line-height-submenu : normal,
+font-letter-spacing-submenu : normal,
+
+  // CONTACT INFO
+
+color-contact-info : map-get($base_vars, 'color-secondary'),
+color-contact-info-rgba : convertHexToRgb(map-get($base_vars, 'color-secondary')),
+font-size-contact-info : 13px,
+font-family-contact-info : map-get($base_vars, 'font-family-base'),
+font-transform-contact-info : none,
+font-weight-contact-info : normal,
+font-line-height-contact-info : 1.8,
+font-letter-spacing-contact-info : normal,
+
+darkbg-color-contact-info : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.8),
+
+  // MEMBER PORTAL
+
+color-portal: map-get($base_vars, 'color-secondary'),
+font-size-portal : 13px,
+font-family-portal : map-get($base_vars, 'font-family-base'),
+font-transform-portal : none,
+font-weight-portal : normal,
+font-line-height-portal : 1.8,
+font-letter-spacing-portal : normal,
+
+darkbg-color-portal : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.8),
+
+color-portal-icon : map-get($base_vars, 'color-secondary'),
+darkbg-color-portal-icon : map-get($base_vars, 'color-default'),
+
+// FORM ELEMENT
+
+color-form-heading : map-get($base_vars, 'color-secondary'),
+font-family-form-heading : map-get($base_vars, 'font-family-heading'),
+font-size-form-heading : 30px,
+font-transform-form-heading : none,
+font-weight-form-heading : normal,
+font-line-height-form-heading : 1.8,
+font-letter-spacing-form-heading : normal,
+
+font-family-form-label : map-get($base_vars, 'font-family-base'),
+font-size-form-label : 14px,
+font-transform-form-label : none,
+font-weight-form-label : normal,
+font-line-height-form-label : 1.8,
+font-letter-spacing-form-label : normal,
+
+font-family-form-field : map-get($base_vars, 'font-family-base'),
+font-size-form-field: 14px,
+font-transform-form-field : none,
+font-weight-form-field : normal,
+font-line-height-form-field : normal,
+font-letter-spacing-form-field : normal,
+
+font-family-form-error-message-text :map-get($base_vars, 'font-family-base'),
+font-size-form-error-message-text :14px,
+font-transform-form-error-message-text :none,
+font-weight-form-error-message-text :normal,
+
+font-family-form-warning-message-text :map-get($base_vars, 'font-family-base'),
+font-size-form-warning-message-text :14px,
+font-transform-form-warning-message-text :none,
+font-weight-form-warning-message-text :normal,
+
+font-family-form-success-message-text :map-get($base_vars, 'font-family-base'),
+font-size-form-success-message-text :14px,
+font-transform-form-success-message-text :none,
+font-weight-form-success-message-text :normal,
+
+font-family-form-info-message-text :map-get($base_vars, 'font-family-base'),
+font-size-form-info-message-text :14px,
+font-transform-form-info-message-text :none,
+font-weight-form-info-message-text :normal,
+
+darkbg-color-form-heading : map-get($base_vars, 'color-default'),
+
+  // BOX ELEMENT
+
+color-box-background : transparent,
+space-box-padding : 0px,
+size-box-border : 0px,
+style-box-border : solid,
+color-box-border : transparent,
+
+darkbg-color-box-background : transparent,
+darkbg-color-box-border : transparent,
+
+  // ICON ELEMENT ADVANCED
+
+color-icon-border-style : map-get($base_vars, 'color-primary'),
+darkbg-color-icon-border-style : map-get($base_vars, 'color-default'),
+
+  // ICON HEADING ADVANCE
+
+color-iconheading : map-get($base_vars, 'color-primary'),
+color-iconheading-border :map-get($base_vars, 'color-border'),
+color-iconheading-fill-background : map-get($base_vars, 'color-primary'),
+color-iconheading-fill : map-get($base_vars, 'color-default'),
+color-iconheading-border-style : map-get($base_vars, 'color-primary'),
+
+color-iconheading-h1 : map-get($base_vars, 'color-secondary'),
+color-iconheading-h2 : map-get($base_vars, 'color-secondary'),
+color-iconheading-h3 : map-get($base_vars, 'color-secondary'),
+color-iconheading-h4 : map-get($base_vars, 'color-secondary'),
+color-iconheading-h5 : map-get($base_vars, 'color-secondary'),
+color-iconheading-h6 : map-get($base_vars, 'color-secondary'),
+
+font-family-iconheading-h1 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheading-h2 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheading-h3 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheading-h4 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheading-h5 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheading-h6 : map-get($base_vars, 'font-family-heading'),
+
+font-size-iconheading-h1 : 36px,
+font-size-iconheading-h2 : 30px,
+font-size-iconheading-h3 : 24px,
+font-size-iconheading-h4 : 18px,
+font-size-iconheading-h5 : 16px,
+font-size-iconheading-h6 : 14px,
+
+font-weight-iconheading-h1 : normal,
+font-weight-iconheading-h2 : normal,
+font-weight-iconheading-h3 : normal,
+font-weight-iconheading-h4 : normal,
+font-weight-iconheading-h5 : normal,
+font-weight-iconheading-h6 : normal,
+
+font-transform-iconheading-h1 : none,
+font-transform-iconheading-h2 : none,
+font-transform-iconheading-h3 : none,
+font-transform-iconheading-h4 : none,
+font-transform-iconheading-h5 : none,
+font-transform-iconheading-h6 : none,
+
+font-line-height-iconheading-h1 : 1.8,
+font-line-height-iconheading-h2 : 1.8,
+font-line-height-iconheading-h3 : 1.8,
+font-line-height-iconheading-h4 : 1.8,
+font-line-height-iconheading-h5 : 1.8,
+font-line-height-iconheading-h6 : 1.8,
+
+font-letter-spacing-iconheading-h1 : normal,
+font-letter-spacing-iconheading-h2 : normal,
+font-letter-spacing-iconheading-h3 : normal,
+font-letter-spacing-iconheading-h4 : normal,
+font-letter-spacing-iconheading-h5 : normal,
+font-letter-spacing-iconheading-h6 : normal,
+
+darkbg-color-iconheading : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-border :map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-fill-background : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-fill : map-get($base_vars, 'color-primary'),
+darkbg-color-iconheading-border-style : map-get($base_vars, 'color-default'),
+
+darkbg-color-iconheading-h1 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-h2 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-h3 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-h4 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-h5 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheading-h6 : map-get($base_vars, 'color-default'),
+
+  // ICON HEADING TEXT ADVANCE
+
+color-iconheadingtext : map-get($base_vars, 'color-primary'),
+color-iconheadingtext-border :map-get($base_vars, 'color-border'),
+color-iconheadingtext-fill-background : map-get($base_vars, 'color-primary'),
+color-iconheadingtext-fill : map-get($base_vars, 'color-default'),
+color-iconheadingtext-border-style : map-get($base_vars, 'color-primary'),
+
+color-iconheadingtext-text : map-get($base_vars, 'color-text'),
+font-family-iconheadingtext-text : map-get($base_vars, 'font-family-base'),
+font-size-iconheadingtext-text : 14px,
+font-weight-iconheadingtext-text: normal,
+font-transform-iconheadingtext-text : none,
+font-line-height-iconheadingtext-text : 1.8,
+font-letter-spacing-iconheadingtext-text : normal,
+
+color-iconheadingtext-h1 : map-get($base_vars, 'color-secondary'),
+color-iconheadingtext-h2 : map-get($base_vars, 'color-secondary'),
+color-iconheadingtext-h3 : map-get($base_vars, 'color-secondary'),
+color-iconheadingtext-h4 : map-get($base_vars, 'color-secondary'),
+color-iconheadingtext-h5 : map-get($base_vars, 'color-secondary'),
+color-iconheadingtext-h6 : map-get($base_vars, 'color-secondary'),
+
+font-family-iconheadingtext-h1 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheadingtext-h2 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheadingtext-h3 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheadingtext-h4 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheadingtext-h5 : map-get($base_vars, 'font-family-heading'),
+font-family-iconheadingtext-h6 : map-get($base_vars, 'font-family-heading'),
+
+font-size-iconheadingtext-h1 : 36px,
+font-size-iconheadingtext-h2 : 30px,
+font-size-iconheadingtext-h3 : 24px,
+font-size-iconheadingtext-h4 : 18px,
+font-size-iconheadingtext-h5 : 16px,
+font-size-iconheadingtext-h6 : 14px,
+
+font-weight-iconheadingtext-h1 : normal,
+font-weight-iconheadingtext-h2 : normal,
+font-weight-iconheadingtext-h3 : normal,
+font-weight-iconheadingtext-h4 : normal,
+font-weight-iconheadingtext-h5 : normal,
+font-weight-iconheadingtext-h6 : normal,
+
+font-transform-iconheadingtext-h1 : none,
+font-transform-iconheadingtext-h2 : none,
+font-transform-iconheadingtext-h3 : none,
+font-transform-iconheadingtext-h4 : none,
+font-transform-iconheadingtext-h5 : none,
+font-transform-iconheadingtext-h6 : none,
+
+font-line-height-iconheadingtext-h1 : 1.8,
+font-line-height-iconheadingtext-h2 : 1.8,
+font-line-height-iconheadingtext-h3 : 1.8,
+font-line-height-iconheadingtext-h4 : 1.8,
+font-line-height-iconheadingtext-h5 : 1.8,
+font-line-height-iconheadingtext-h6 : 1.8,
+
+font-letter-spacing-iconheadingtext-h1 : normal,
+font-letter-spacing-iconheadingtext-h2 : normal,
+font-letter-spacing-iconheadingtext-h3 : normal,
+font-letter-spacing-iconheadingtext-h4 : normal,
+font-letter-spacing-iconheadingtext-h5 : normal,
+font-letter-spacing-iconheadingtext-h6 : normal,
+
+darkbg-color-iconheadingtext : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-border :map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-fill-background : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-fill : map-get($base_vars, 'color-primary'),
+darkbg-color-iconheadingtext-border-style : map-get($base_vars, 'color-default'),
+
+darkbg-color-iconheadingtext-text : map-get($base_vars, 'color-default'),
+darkbg-font-family-iconheadingtext-text : map-get($base_vars, 'font-family-base'),
+darkbg-font-size-iconheadingtext-text : 14px,
+darkbg-font-text-transform-iconheadingtext-text : none,
+darkbg-font-weight-iconheadingtext-text: normal,
+
+darkbg-color-iconheadingtext-h1 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-h2 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-h3 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-h4 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-h5 : map-get($base_vars, 'color-default'),
+darkbg-color-iconheadingtext-h6 : map-get($base_vars, 'color-default'),
+
+darkbg-font-family-iconheadingtext-h1 : map-get($base_vars, 'font-family-heading'),
+darkbg-font-family-iconheadingtext-h2 : map-get($base_vars, 'font-family-heading'),
+darkbg-font-family-iconheadingtext-h3 : map-get($base_vars, 'font-family-heading'),
+darkbg-font-family-iconheadingtext-h4 : map-get($base_vars, 'font-family-heading'),
+darkbg-font-family-iconheadingtext-h5 : map-get($base_vars, 'font-family-heading'),
+darkbg-font-family-iconheadingtext-h6 : map-get($base_vars, 'font-family-heading'),
+
+darkbg-font-size-iconheadingtext-h1 : 36px,
+darkbg-font-size-iconheadingtext-h2 : 30px,
+darkbg-font-size-iconheadingtext-h3 : 24px,
+darkbg-font-size-iconheadingtext-h4 : 18px,
+darkbg-font-size-iconheadingtext-h5 : 16px,
+darkbg-font-size-iconheadingtext-h6 : 14px,
+
+darkbg-font-weight-iconheadingtext-h1 : normal,
+darkbg-font-weight-iconheadingtext-h2 : normal,
+darkbg-font-weight-iconheadingtext-h3 : normal,
+darkbg-font-weight-iconheadingtext-h4 : normal,
+darkbg-font-weight-iconheadingtext-h5 : normal,
+darkbg-font-weight-iconheadingtext-h6 : normal,
+
+darkbg-font-transform-iconheadingtext-h1 : none,
+darkbg-font-transform-iconheadingtext-h2 : none,
+darkbg-font-transform-iconheadingtext-h3 : none,
+darkbg-font-transform-iconheadingtext-h4 : none,
+darkbg-font-transform-iconheadingtext-h5 : none,
+darkbg-font-transform-iconheadingtext-h6 : none,
+
+  // IMAGE TEXT ADVANCES
+
+color-imagetext-text : map-get($base_vars, 'color-text'),
+font-family-imagetext-text : map-get($base_vars, 'font-family-base'),
+font-size-imagetext-text : 14px,
+font-weight-imagetext-text: normal,
+font-transform-imagetext-text : none,
+font-line-height-imagetext-text : 1.8,
+font-letter-spacing-imagetext-text : normal,
+
+darkbg-color-imagetext-text : map-get($base_vars, 'color-default'),
+
+  // IMAGE HEADING TEXT ADVANCES
+
+color-imageheadingtext-text : map-get($base_vars, 'color-text'),
+font-family-imageheadingtext-text : map-get($base_vars, 'font-family-base'),
+font-size-imageheadingtext-text : 14px,
+font-transform-imageheadingtext-text : none,
+font-weight-imageheadingtext-text: normal,
+font-line-height-imageheadingtext-text : 1.8,
+font-letter-spacing-imageheadingtext-text : normal,
+
+darkbg-color-imageheadingtext-text : map-get($base_vars, 'color-default'),
+
+color-imageheadingtext-h1 : map-get($base_vars, 'color-secondary'),
+color-imageheadingtext-h2 : map-get($base_vars, 'color-secondary'),
+color-imageheadingtext-h3 : map-get($base_vars, 'color-secondary'),
+color-imageheadingtext-h4 : map-get($base_vars, 'color-secondary'),
+color-imageheadingtext-h5 : map-get($base_vars, 'color-secondary'),
+color-imageheadingtext-h6 : map-get($base_vars, 'color-secondary'),
+
+font-family-imageheadingtext-h1 : map-get($base_vars, 'font-family-heading'),
+font-family-imageheadingtext-h2 : map-get($base_vars, 'font-family-heading'),
+font-family-imageheadingtext-h3 : map-get($base_vars, 'font-family-heading'),
+font-family-imageheadingtext-h4 : map-get($base_vars, 'font-family-heading'),
+font-family-imageheadingtext-h5 : map-get($base_vars, 'font-family-heading'),
+font-family-imageheadingtext-h6 : map-get($base_vars, 'font-family-heading'),
+
+font-size-imageheadingtext-h1 : 36px,
+font-size-imageheadingtext-h2 : 30px,
+font-size-imageheadingtext-h3 : 24px,
+font-size-imageheadingtext-h4 : 18px,
+font-size-imageheadingtext-h5 : 16px,
+font-size-imageheadingtext-h6 : 14px,
+
+font-weight-imageheadingtext-h1 : normal,
+font-weight-imageheadingtext-h2 : normal,
+font-weight-imageheadingtext-h3 : normal,
+font-weight-imageheadingtext-h4 : normal,
+font-weight-imageheadingtext-h5 : normal,
+font-weight-imageheadingtext-h6 : normal,
+
+font-transform-imageheadingtext-h1 : none,
+font-transform-imageheadingtext-h2 : none,
+font-transform-imageheadingtext-h3 : none,
+font-transform-imageheadingtext-h4 : none,
+font-transform-imageheadingtext-h5 : none,
+font-transform-imageheadingtext-h6 : none,
+
+font-line-height-imageheadingtext-h1 : 1.8,
+font-line-height-imageheadingtext-h2 : 1.8,
+font-line-height-imageheadingtext-h3 : 1.8,
+font-line-height-imageheadingtext-h4 : 1.8,
+font-line-height-imageheadingtext-h5 : 1.8,
+font-line-height-imageheadingtext-h6 : 1.8,
+
+font-letter-spacing-imageheadingtext-h1 : normal,
+font-letter-spacing-imageheadingtext-h2 : normal,
+font-letter-spacing-imageheadingtext-h3 : normal,
+font-letter-spacing-imageheadingtext-h4 : normal,
+font-letter-spacing-imageheadingtext-h5 : normal,
+font-letter-spacing-imageheadingtext-h6 : normal,
+
+darkbg-color-imageheadingtext-h1 : map-get($base_vars, 'color-default'),
+darkbg-color-imageheadingtext-h2 : map-get($base_vars, 'color-default'),
+darkbg-color-imageheadingtext-h3 : map-get($base_vars, 'color-default'),
+darkbg-color-imageheadingtext-h4 : map-get($base_vars, 'color-default'),
+darkbg-color-imageheadingtext-h5 : map-get($base_vars, 'color-default'),
+darkbg-color-imageheadingtext-h6 : map-get($base_vars, 'color-default'),
+
+  // BUTTON ELEMENT ADVANCES
+
+color-button-default-primary-background : map-get($base_vars, 'color-primary'),
+color-button-primary: map-get($base_vars, 'color-default'),
+color-button-default-primary-border : transparent,
+size-button-default-primary-border : 0,
+style-button-default-primary-border : none,
+
+color-button-default-primary-hover-background : darken(map-get($base_vars, 'color-primary'),10%),
+color-button-default-primary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-button-default-primary-hover-border : transparent,
+
+color-button-outline-primary-background : transparent,
+color-button-outline-primary-text-and-icon : map-get($base_vars, 'color-primary'),
+color-button-outline-primary-border : map-get($base_vars, 'color-primary'),
+size-button-outline-primary-border : 1px,
+style-button-outline-primary-border : solid,
+
+color-button-outline-primary-hover-background : map-get($base_vars, 'color-primary'),
+color-button-outline-primary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-button-outline-primary-hover-border : map-get($base_vars, 'color-primary'),
+
+font-family-button-primary : map-get($base_vars,'font-family-base'),
+font-size-button-primary-md : 14px,
+font-size-button-primary-sm : 13px,
+font-size-button-primary-lg : 18px,
+font-transform-button-primary : none,
+font-weight-button-primary : normal,
+font-line-height-button-primary:1.42857143,
+font-letter-spacing-button-primary:normal,
+
+color-button-default-secondary-background : map-get($base_vars, 'color-secondary'),
+color-button-secondary : map-get($base_vars, 'color-default'),
+color-button-default-secondary-border : transparent,
+size-button-default-secondary-border : 0,
+style-button-default-secondary-border : none,
+
+color-button-default-secondary-hover-background : darken(map-get($base_vars, 'color-secondary'),10%),
+color-button-default-secondary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-button-default-secondary-hover-border : transparent,
+
+color-button-outline-secondary-background : transparent,
+color-button-outline-secondary-text-and-icon : map-get($base_vars, 'color-secondary'),
+color-button-outline-secondary-border : map-get($base_vars, 'color-secondary'),
+size-button-outline-secondary-border : 1px,
+style-button-outline-secondary-border : solid,
+
+color-button-outline-secondary-hover-background : darken(map-get($base_vars, 'color-secondary'),10%),
+color-button-outline-secondary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-button-outline-secondary-hover-border : map-get($base_vars, 'color-secondary'),
+
+font-family-button-secondary : map-get($base_vars,'font-family-base'),
+font-size-button-secondary-md : 14px,
+font-size-button-secondary-sm : 13px,
+font-size-button-secondary-lg : 18px,
+font-transform-button-secondary : none,
+font-weight-button-secondary : normal,
+font-line-height-button-secondary:1.42857143,
+font-letter-spacing-button-secondary:normal,
+
+color-button-link : map-get($base_vars,'color-primary'),
+font-family-button-link : map-get($base_vars,'font-family-base'),
+font-size-button-link-md : 14px,
+font-size-button-link-sm : 13px,
+font-size-button-link-lg : 18px,
+font-transform-button-link : none,
+font-weight-button-link : normal,
+font-line-height-button-link:1.42857143,
+font-letter-spacing-button-link:normal,
+
+color-button-hover-link : darken(map-get($base_vars,'color-primary'),10%),
+
+darkbg-color-button-default-primary-background : map-get($base_vars, 'color-default'),
+darkbg-color-button-primary : map-get($base_vars, 'color-primary'),
+darkbg-color-button-default-primary-border : transparent,
+
+darkbg-color-button-default-primary-hover-background : darken(map-get($base_vars, 'color-default'),10%),
+darkbg-color-button-default-primary-hover-text-and-icon : map-get($base_vars, 'color-primary'),
+darkbg-color-button-default-primary-hover-border : transparent,
+
+darkbg-color-button-outline-primary-background : transparent,
+darkbg-color-button-outline-primary-text-and-icon : map-get($base_vars, 'color-default'),
+darkbg-color-button-outline-primary-border : map-get($base_vars, 'color-default'),
+
+
+darkbg-color-button-outline-primary-hover-background : map-get($base_vars, 'color-default'),
+darkbg-color-button-outline-primary-hover-text-and-icon : map-get($base_vars, 'color-primary'),
+darkbg-color-button-outline-primary-hover-border : map-get($base_vars, 'color-default'),
+
+
+darkbg-color-button-default-secondary-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-button-secondary : map-get($base_vars, 'color-default'),
+darkbg-color-button-default-secondary-border : transparent,
+
+
+darkbg-color-button-default-secondary-hover-background : darken(map-get($base_vars, 'color-secondary'),10%),
+darkbg-color-button-default-secondary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+darkbg-color-button-default-secondary-hover-border : transparent,
+
+darkbg-color-button-outline-secondary-background : transparent,
+darkbg-color-button-outline-secondary-text-and-icon : map-get($base_vars, 'color-secondary'),
+darkbg-color-button-outline-secondary-border : map-get($base_vars, 'color-secondary'),
+
+
+darkbg-color-button-outline-secondary-hover-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-button-outline-secondary-hover-text-and-icon : map-get($base_vars, 'color-default'),
+darkbg-color-button-outline-secondary-hover-border : map-get($base_vars, 'color-secondary'),
+
+
+
+darkbg-color-button-link : map-get($base_vars,'color-default'),
+
+
+darkbg-color-button-hover-link : darken(map-get($base_vars,'color-default'),10%),
+
+  // FORM BUTTON
+
+color-form-button-submit-background : map-get($base_vars, 'color-primary'),
+color-form-button-submit-border : transparent,
+size-form-button-submit-border : 0,
+style-form-button-submit-border : none,
+
+color-form-button-submit-hover-background : darken(map-get($base_vars, 'color-primary'),10%),
+color-form-button-submit-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-form-button-submit-hover-border : transparent,
+
+color-form-button-submit : map-get($base_vars, 'color-default'),
+font-family-form-button-submit : map-get($base_vars,'font-family-base'),
+font-size-form-button-submit : 14px,
+font-transform-form-button-submit : none,
+font-weight-form-button-submit : normal,
+font-line-height-form-button-submit:  1.42857143,
+font-letter-spacing-form-button-submit: normal,
+
+color-form-button-reset-background : map-get($base_vars, 'color-secondary'),
+color-form-button-reset-border : transparent,
+size-form-button-reset-border : 0,
+style-form-button-reset-border : none,
+
+color-form-button-reset-hover-background : darken(map-get($base_vars, 'color-secondary'),10%),
+color-form-button-reset-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-form-button-reset-hover-border : transparent,
+
+color-form-button-reset : map-get($base_vars, 'color-default'),
+font-family-form-button-reset : map-get($base_vars,'font-family-base'),
+font-size-form-button-reset : 14px,
+font-transform-form-button-reset : none,
+font-weight-form-button-reset : normal,
+font-line-height-form-button-reset:  1.42857143,
+font-letter-spacing-form-button-reset: normal,
+
+darkbg-color-form-button-submit-background : map-get($base_vars, 'color-default'),
+darkbg-color-form-button-submit : map-get($base_vars, 'color-primary'),
+darkbg-color-form-button-submit-border : transparent,
+
+
+darkbg-color-form-button-submit-hover-background : darken(map-get($base_vars, 'color-default'),10%),
+darkbg-color-form-button-submit-hover-text-and-icon : map-get($base_vars, 'color-primary'),
+darkbg-color-form-button-submit-hover-border : transparent,
+
+darkbg-font-family-form-button-submit : map-get($base_vars,'font-family-base'),
+darkbg-font-transform-form-button-submit : none,
+darkbg-font-weight-form-button-submit : normal,
+
+darkbg-color-form-button-reset-background : map-get($base_vars, 'color-secondary'),
+darkbg-color-form-button-reset : map-get($base_vars, 'color-default'),
+darkbg-color-form-button-reset-border : transparent,
+
+darkbg-color-form-button-reset-hover-background : darken(map-get($base_vars, 'color-secondary'),10%),
+darkbg-color-form-button-reset-hover-text-and-icon : map-get($base_vars, 'color-default'),
+darkbg-color-form-button-reset-hover-border : transparent,
+
+darkbg-font-family-form-button-reset : map-get($base_vars,'font-family-base'),
+darkbg-font-transform-form-button-reset : none,
+darkbg-font-weight-form-button-reset : normal,
+
+  // CAROUSEL
+
+color-carousel-fill-style-arrow : map-get($base_vars, 'color-text'),
+darkbg-color-carousel-fill-style-arrow : map-get($base_vars, 'color-text'),
+
+  // CHECKOUT
+
+color-checkout-address-shipping-label-background : lighten(map-get($base_vars,'color-primary'),5%),
+
+// LOADER VARIABLES
+
+color-loader-overlay-background : RGBA(convertHexToRgb(map-get($base_vars,'color-default')),0.8),
+color-loader-text : map-get($base_vars,'color-text'),
+
+// SORTING VARIABLES
+
+font-size-sorting-select : 13px,
+
+// MEGAMENU VARIABLES
+
+font-size-megamenu-heading : 15px,
+font-family-megamenu-heading : map-get($base_vars, 'font-family-base'),
+font-weight-megamenu-heading : normal,
+font-transform-megamenu-heading : none,
+font-line-height-megamenu-heading-normal : normal,
+font-letter-spacing-megamenu-heading : normal,
+color-megamenu-heading : map-get($base_vars, 'color-secondary'),
+color-megamenu-heading-hover-active-text : map-get($base_vars, 'color-primary'),
+
+font-size-megamenu-text : 12px,
+font-family-megamenu-text : map-get($base_vars,'font-family-base'),
+font-weight-megamenu-text : normal,
+font-transform-megamenu-text : none,
+font-line-height-megamenu-text : normal,
+font-letter-spacing-megamenu-text : normal,
+color-megamenu-text : RGBA(convertHexToRgb(map-get($base_vars, 'color-secondary')),0.95),
+color-megamenu-text-hover-active-text : map-get($base_vars, 'color-primary'),
+color-megamenu-text-hover-active-arrow-text : map-get($base_vars, 'color-primary'),
+color-megamenu-background : map-get($base_vars, 'color-default'),
+color-megamenu-boxshadow : #e0e0e0,
+color-megamenu-background-odd : RGBA(convertHexToRgb(map-get($base_vars, 'color-primary')),0.12),
+color-megamenu-background-even : map-get($base_vars, 'color-light'),
+color-megamenu-divider : RGBA(convertHexToRgb(map-get($base_vars, 'color-border')),0.4),
+color-megamenu-backdrop-background : RGBA(convertHexToRgb(#fff),0.65),
+left-indent-megamenu-textcontent : 0px,
+
+//TAGS COLORS
+
+color-tags-overlay-background : lighten(map-get($base_vars, 'color-primary'), 15%),
+color-tags-overlay-background-others : map-get($base_vars, 'color-light'),
+color-tags-overlay-background-prodlayout-2 : darken(map-get($base_vars, 'color-light'), 10%),
+
+// MENU HIGHLIGHT PRIMARY
+color-highlight-primary : map-get($base_vars, 'color-default'),
+color-highlight-primary-hover-active-text : map-get($base_vars, 'color-default'),
+color-highlight-primary-background : map-get($base_vars, 'color-primary'),
+color-highlight-primary-hover-background : map-get($base_vars, 'color-primary'),
+size-menu-highlight-primary-border : 0,
+size-menu-highlight-primary-border-radius : 3px,
+style-menu-highlight-primary-border : none,
+color-highlight-primary-border : transparent,
+color-highlight-primary-hover-border : transparent,
+font-family-highlight-primary : map-get($base_vars,'font-family-base'),
+font-weight-highlight-primary : normal,
+font-transform-highlight-primary : none,
+font-line-height-highlight-primary : 1,
+font-letter-spacing-highlight-primary : normal,
+font-size-highlight-primary:15px,
+
+// MENU HIGHLIGHT SECONDARY
+color-highlight-secondary : map-get($base_vars, 'color-default'),
+color-highlight-secondary-hover-active-text : map-get($base_vars, 'color-default'),
+color-highlight-secondary-background : map-get($base_vars, 'color-secondary'),
+color-highlight-secondary-hover-background :  map-get($base_vars, 'color-secondary'),
+size-menu-highlight-secondary-border : 0,
+size-menu-highlight-secondary-border-radius : 3px,
+style-menu-highlight-secondary-border : solid,
+color-highlight-secondary-border : transparent,
+color-highlight-secondary-hover-border :  transparent,
+font-family-highlight-secondary : map-get($base_vars,'font-family-base'),
+font-weight-highlight-secondary : normal,
+font-transform-highlight-secondary : none,
+font-line-height-highlight-secondary : 1,
+font-letter-spacing-highlight-secondary : normal,
+font-size-highlight-secondary:15px,
+
+// DELIVERY LOCATION VARIABLE
+
+color-delivery-location-non-deliverable : #FF4949,
+color-delivery-location-unavailable: #1FB6FF,
+
+color-select-delivery-location: map-get($base_vars, 'color-secondary'),
+darkbg-color-select-delivery-location : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.8),
+
+color-delivery-location-loader: map-get($base_vars,'color-default'),
+color-delivery-location-loader-rgba: convertHexToRgb(map-get($base_vars, 'color-default')),
+
+// MOBILE HEADER
+darkbg-color-mobileheader-icon : map-get($base_vars,'color-default'),
+color-mobileheader-icon : #424242,
+color-mobileheader-refine-wrapper-background : #f7f7f7,
+color-mobileheader-slide-background : map-get($base_vars, 'color-default'),
+color-mobileheader-sortby-arrow : #000000,
+color-mobileheader-search-field-border : #efefef,
+color-mobileheader-search-field-background : map-get($base_vars, 'color-default'),
+darkbg-color-mobileheader-search-field-background : RGBA(convertHexToRgb(map-get($base_vars, 'color-default')),0.1),
+color-mobileheader-search-button-background : map-get($base_vars, 'color-primary'),
+color-mobileheader-search-icon : #424242,
+darkbg-color-mobileheader-search-icon : map-get($base_vars, 'color-default'),
+size-mobileheader-search-icon : 20px,
+color-mobileheader-search-field : map-get($base_vars, 'color-text'),
+darkbg-color-mobileheader-search-field : map-get($base_vars, 'color-default'),
+font-family-mobileheader-search-field : map-get($base_vars,'font-family-base'),
+font-size-mobileheader-search-field : 14px,
+font-weight-mobileheader-search-field : normal,
+font-transform-mobileheader-search-field : none,
+font-line-height-mobileheader-search-field : normal,
+font-letter-spacing-mobileheader-search-field : normal,
+color-messagepopup-portal-background : #f3f2f2,
+// SEARCH RESULT VARIABLE
+
+color-searchresult-pagination-border : map-get($base_vars, 'color-border'),
+color-searchresult-pagination-border-hover : darken(map-get($base_vars, 'color-border'), 10%),
+color-searchresult-pagination-background : map-get($base_vars, 'color-default'),
+
+  // HEADER SPACING
+  spacing-header-padding-top:32px,
+  spacing-header-padding-bottom:32px,
+  spacing-header-padding-left:24px,
+  spacing-header-padding-right:24px,
+
+  spacing-header-padding-top-06:20px,
+  spacing-header-padding-bottom-06:20px,
+
+  // TOP BAR SPACING
+
+  spacing-topbar-padding-top:13px,
+  spacing-topbar-padding-bottom:13px,
+
+  // NAVIGATION BAR SPACING
+  spacing-navbar-padding-top-05:20px,
+  spacing-navbar-padding-bottom-05:20px,
+
+  spacing-navbar-padding-top-07:10px,
+  spacing-navbar-padding-bottom-07:10px,
+
+  spacing-cart-search-padding-top-06:15px,
+  spacing-cart-search-padding-bottom-06:15px,
+
+  // MAIN MENU SPACING
+
+  spacing-menu-margin-left: 0px,
+  spacing-menu-margin-right: 25px,
+
+  spacing-menu-margin-top-06 : 25px,
+  spacing-menu-margin-bottom-06 : 0px,
+
+  spacing-menu-margin-left-02-03 : 30px,
+  spacing-menu-margin-right-02-03 : 30px,
+
+  spacing-menu-padding-top:8px,
+  spacing-menu-padding-bottom:8px,
+  spacing-menu-padding-left:16px,
+  spacing-menu-padding-right:16px,
+
+  spacing-menu-padding-left-06 : 30px,
+  spacing-menu-padding-right-06 : 30px,
+
+  spacing-menu-padding-top-02-03:20px,
+  spacing-menu-padding-bottom-02-03:20px,
+  spacing-menu-padding-left-02-03:0px,
+  spacing-menu-padding-right-02-03:0px,
+
+  // ICON SPACING
+
+  spacing-menu-icon:5px,
+  spacing-submenu-icon:5px,
+  spacing-megamenu-icon:5px,
+
+  // MAIN MENU BORDER RADIUS
+
+  size-main-menu-border-radius:3px,
+
+  // HIGHLIGHT MENU SPACING
+
+  spacing-menu-highlight-top-padding:10px,
+  spacing-menu-highlight-bottom-padding:10px,
+  spacing-menu-highlight-left-padding:20px,
+  spacing-menu-highlight-right-padding:20px,
+
+  // SUB MENU SPACING
+
+  spacing-main-submenu-padding-top:7px,
+
+  spacing-submenu-padding-top-01:14px,
+  spacing-submenu-padding-bottom-01:14px,
+  spacing-submenu-padding-left-01:20px,
+  spacing-submenu-padding-right-01:20px,
+
+  spacing-submenu-padding-top-02:10px,
+  spacing-submenu-padding-bottom-02:20px,
+  spacing-submenu-padding-left-02:20px,
+  spacing-submenu-padding-right-02:20px,
+
+  spacing-submenu-padding-top-03:10px,
+  spacing-submenu-padding-bottom-03:10px,
+  spacing-submenu-padding-left-03:20px,
+  spacing-submenu-padding-right-03:20px,
+
+  spacing-submenu-padding-top-04:10px,
+  spacing-submenu-padding-bottom-04:10px,
+  spacing-submenu-padding-left-04:20px,
+  spacing-submenu-padding-right-04:20px,
+
+  spacing-submenu-padding-top-05:8px,
+  spacing-submenu-padding-bottom-05:8px,
+  spacing-submenu-padding-left-05:10px,
+  spacing-submenu-padding-right-05:20px,
+
+  spacing-submenu-margin-top-05:5px,
+  spacing-submenu-margin-bottom-05:5px,
+  spacing-submenu-margin-left-05:5px,
+  spacing-submenu-margin-right-05:5px,
+
+  spacing-submenu-padding-top-06:8px,
+  spacing-submenu-padding-bottom-06:8px,
+  spacing-submenu-padding-left-06:10px,
+  spacing-submenu-padding-right-06:20px,
+
+  spacing-submenu-margin-top-06:5px,
+  spacing-submenu-margin-bottom-06:5px,
+  spacing-submenu-margin-left-06:10px,
+  spacing-submenu-margin-right-06:10px,
+
+  spacing-submenu-highlight-margin-top:5px,
+  spacing-submenu-highlight-margin-bottom:5px,
+  spacing-submenu-highlight-margin-left:5px,
+  spacing-submenu-highlight-margin-right:5px,
+
+  spacing-submenu-highlight-margin-left-06:10px,
+  spacing-submenu-highlight-margin-right-06:10px,
+
+ // SPACING IN SMALL DEVICES
+
+    // TOP BAR
+
+  spacing-topbar-padding-top-sm: 13px,
+  spacing-topbar-padding-bottom-sm: 13px,
+
+    // HEADER
+
+  spacing-header-padding-top-sm:20px,
+  spacing-header-padding-bottom-sm:20px,
+
+    // HEADER 07 SEARCH CART SPACE
+
+  spacing-header-search-cart-padding-top-sm:15px,
+  spacing-header-search-cart-padding-bottom-sm:15px,
+
+    // MENU SPACING
+
+    // MOBILE HEADER 01
+
+  spacing-main-menu-submenu-01-02-padding-top-sm:14px,
+  spacing-main-menu-submenu-01-02-padding-bottom-sm:14px,
+  spacing-main-menu-submenu-01-02-padding-left-sm:20px,
+  spacing-main-menu-submenu-01-02-padding-right-sm:48px,
+
+  spacing-submenu-submenu-01-02-indent-sm:20px,
+  spacing-submenu-submenu-01-02-padding-top-sm:14px,
+  spacing-submenu-submenu-01-02-padding-bottom-sm:14px,
+  spacing-submenu-submenu-01-02-padding-left-sm:20px,
+  spacing-submenu-submenu-01-02-padding-right-sm:48px,
+
+  spacing-megamenu-padding-top-sm:14px,
+  spacing-megamenu-padding-bottom-sm:14px,
+  spacing-megamenu-padding-left-sm:40px,
+  spacing-megamenu-padding-right-sm:48px,
+
+  spacing-main-menu-highlight-submenu-01-02-margin-top-sm:10px,
+  spacing-main-menu-highlight-submenu-01-02-margin-bottom-sm:10px,
+  spacing-main-menu-highlight-submenu-01-02-margin-left-sm:20px,
+  spacing-main-menu-highlight-submenu-01-02-margin-right-sm:5px,
+
+  spacing-submenu-highlight-submenu-01-02-margin-top-sm:5px,
+  spacing-submenu-highlight-submenu-01-02-margin-bottom-sm:5px,
+  spacing-submenu-highlight-submenu-01-02-margin-left-sm:20px,
+  spacing-submenu-highlight-submenu-01-02-margin-right-sm:5px,
+
+  spacing-megamenu-highlight-padding-top-sm:14px,
+  spacing-megamenu-highlight-padding-bottom-sm:14px,
+  spacing-megamenu-highlight-padding-left-sm:40px,
+  spacing-megamenu-highlight-padding-right-sm:5px,
+
+  spacing-currency-mobile-header-01-submenu-01-02-03-padding-top:15px,
+  spacing-currency-mobile-header-01-submenu-01-02-03-padding-bottom:15px,
+  spacing-currency-mobile-header-01-submenu-01-02-03-padding-left:20px,
+  spacing-currency-mobile-header-01-submenu-01-02-03-padding-right:20px,
+
+  spacing-social-contact-mobile-header-01-submenu-01-02-padding-top:18px,
+  spacing-social-contact-mobile-header-01-submenu-01-02-padding-bottom:18px,
+  spacing-social-contact-mobile-header-01-submenu-01-02-padding-left:22px,
+  spacing-social-contact-mobile-header-01-submenu-01-02-padding-right:20px,
+
+  spacing-main-menu-mobile-header-01-indent-submenu-03-04-sm:20px,
+  spacing-main-menu-mobile-header-01-submenu-03-04-margin-top:14px,
+  spacing-main-menu-mobile-header-01-submenu-03-04-margin-bottom:14px,
+  spacing-main-menu-mobile-header-01-submenu-03-04-padding-right:45px,
+
+  spacing-submenu-mobile-header-01-indent-submenu-03-04-sm:10px,
+  spacing-submenu-mobile-header-01-submenu-03-04-margin-top:14px,
+  spacing-submenu-mobile-header-01-submenu-03-04-margin-bottom:14px,
+  spacing-submenu-mobile-header-01-submenu-03-04-padding-right:48px,
+
+  spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-top-sm:14px,
+  spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-bottom-sm:14px,
+
+  spacing-main-menu-highlight-mobile-header-01-submenu-03-04-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-03-04-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-03-04-padding-left-sm:20px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-03-04-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-01-submenu-03-04-margin-top-sm:5px,
+  spacing-submenu-highlight-mobile-header-01-submenu-03-04-margin-bottom-sm:5px,
+  spacing-submenu-highlight-mobile-header-01-submenu-03-04-padding-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-03-04-margin-right-sm:5px,
+
+  spacing-social-contact-mobile-header-01-submenu-03-padding-top:32px,
+  spacing-social-contact-mobile-header-01-submenu-03-padding-bottom:32px,
+  spacing-social-contact-mobile-header-01-submenu-03-padding-left:22px,
+  spacing-social-contact-mobile-header-01-submenu-03-padding-right:20px,
+
+  spacing-currency-mobile-header-01-submenu-04-padding-top:10px,
+  spacing-currency-mobile-header-01-submenu-04-padding-bottom:10px,
+  spacing-currency-mobile-header-01-submenu-04-padding-left:20px,
+  spacing-currency-mobile-header-01-submenu-04-padding-right:20px,
+
+  spacing-currency-mobile-header-01-submenu-04-margin-top:15px,
+  spacing-currency-mobile-header-01-submenu-04-margin-bottom:15px,
+  spacing-currency-mobile-header-01-submenu-04-margin-left:15px,
+  spacing-currency-mobile-header-01-submenu-04-margin-right:15px,
+
+  spacing-social-contact-mobile-header-01-submenu-04-padding-top:32px,
+  spacing-social-contact-mobile-header-01-submenu-04-padding-bottom:32px,
+  spacing-social-contact-mobile-header-01-submenu-04-padding-left:22px,
+  spacing-social-contact-mobile-header-01-submenu-04-padding-right:20px,
+
+  spacing-social-contact-mobile-header-01-submenu-04-margin-top:15px,
+  spacing-social-contact-mobile-header-01-submenu-04-margin-bottom:15px,
+  spacing-social-contact-mobile-header-01-submenu-04-margin-left:15px,
+  spacing-social-contact-mobile-header-01-submenu-04-margin-right:15px,
+
+  spacing-main-menu-mobile-header-01-submenu-05-padding-top-sm:10px,
+  spacing-main-menu-mobile-header-01-submenu-05-padding-bottom-sm:10px,
+  spacing-main-menu-mobile-header-01-submenu-05-padding-left-sm:20px,
+  spacing-main-menu-mobile-header-01-submenu-05-padding-right-sm:40px,
+
+  spacing-submenu-mobile-header-01-submenu-05-indent-sm:20px,
+  spacing-submenu-mobile-header-01-submenu-05-padding-top-sm:8px,
+  spacing-submenu-mobile-header-01-submenu-05-padding-bottom-sm:8px,
+  spacing-submenu-mobile-header-01-submenu-05-padding-left-sm:10px,
+  spacing-submenu-mobile-header-01-submenu-05-padding-right-sm:40px,
+
+  spacing-main-menu-highlight-mobile-header-01-submenu-05-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-05-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-05-margin-left-sm:20px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-05-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-01-submenu-05-margin-top-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-05-margin-bottom-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-05-margin-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-05-margin-right-sm:5px,
+
+  spacing-currency-mobile-header-01-submenu-05-padding-top:10px,
+  spacing-currency-mobile-header-01-submenu-05-padding-bottom:10px,
+  spacing-currency-mobile-header-01-submenu-05-padding-left:22px,
+  spacing-currency-mobile-header-01-submenu-05-padding-right:20px,
+
+  spacing-social-contact-mobile-header-01-submenu-05-padding-top:18px,
+  spacing-social-contact-mobile-header-01-submenu-05-padding-bottom:18px,
+  spacing-social-contact-mobile-header-01-submenu-05-padding-left:22px,
+  spacing-social-contact-mobile-header-01-submenu-05-padding-right:25px,
+
+  spacing-main-menu-mobile-header-01-submenu-06-padding-top-sm:10px,
+  spacing-main-menu-mobile-header-01-submenu-06-padding-bottom-sm:10px,
+  spacing-main-menu-mobile-header-01-submenu-06-padding-left-sm:15px,
+  spacing-main-menu-mobile-header-01-submenu-06-padding-right-sm:45px,
+
+  spacing-submenu-mobile-header-01-submenu-06-indent-sm:15px,
+  spacing-submenu-mobile-header-01-submenu-06-padding-top-sm:10px,
+  spacing-submenu-mobile-header-01-submenu-06-padding-bottom-sm:10px,
+  spacing-submenu-mobile-header-01-submenu-06-padding-left-sm:10px,
+  spacing-submenu-mobile-header-01-submenu-06-padding-right-sm:10px,
+
+  spacing-main-menu-highlight-mobile-header-01-submenu-06-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-06-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-06-margin-left-sm:15px,
+  spacing-main-menu-highlight-mobile-header-01-submenu-06-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-01-submenu-06-margin-top-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-06-margin-bottom-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-06-margin-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-01-submenu-06-margin-right-sm:5px,
+
+  spacing-currency-mobile-header-01-submenu-06-padding-top:10px,
+  spacing-currency-mobile-header-01-submenu-06-padding-bottom:10px,
+  spacing-currency-mobile-header-01-submenu-06-padding-left:20px,
+  spacing-currency-mobile-header-01-submenu-06-padding-right:20px,
+
+  spacing-social-contact-mobile-header-01-submenu-06-padding-top:18px,
+  spacing-social-contact-mobile-header-01-submenu-06-padding-bottom:18px,
+  spacing-social-contact-mobile-header-01-submenu-06-padding-left:22px,
+  spacing-social-contact-mobile-header-01-submenu-06-padding-right:30px,
+
+    // MOBILE HEADER 03
+
+  spacing-main-menu-mobile-header-03-submenu-01-02-padding-top-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-01-02-padding-bottom-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-01-02-padding-left-sm:20px,
+  spacing-main-menu-mobile-header-03-submenu-01-02-padding-right-sm:48px,
+
+  spacing-submenu-mobile-header-03-submenu-01-02-indent-sm:20px,
+  spacing-submenu-mobile-header-03-submenu-01-02-padding-top-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-01-02-padding-bottom-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-01-02-padding-left-sm:20px,
+  spacing-submenu-mobile-header-03-submenu-01-02-padding-right-sm:48px,
+
+  spacing-main-menu-highlight-mobile-header-03-submenu-01-02-margin-top-sm:10px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-01-02-margin-bottom-sm:10px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-01-02-margin-left-sm:20px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-01-02-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-03-submenu-01-02-margin-top-sm:5px,
+  spacing-submenu-highlight-mobile-header-03-submenu-01-02-margin-bottom-sm:5px,
+  spacing-submenu-highlight-mobile-header-03-submenu-01-02-margin-left-sm:20px,
+  spacing-submenu-highlight-mobile-header-03-submenu-01-02-margin-right-sm:5px,
+
+  spacing-megamenu-mobile-header-03-submenu-01-02-padding-top-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-01-02-padding-bottom-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-01-02-padding-left-sm:40px,
+  spacing-megamenu-mobile-header-03-submenu-01-02-padding-right-sm:45px,
+
+  spacing-megamenu-highlight-mobile-header-03-submenu-01-02-padding-top-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-01-02-padding-bottom-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-01-02-padding-left-sm:40px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-01-02-padding-right-sm:45px,
+
+  spacing-currency-mobile-header-03-padding-top:12px,
+  spacing-currency-mobile-header-03-padding-bottom:12px,
+  spacing-currency-mobile-header-03-padding-left:20px,
+  spacing-currency-mobile-header-03-padding-right:20px,
+
+  spacing-contact-mobile-header-03-padding-top:14px,
+  spacing-contact-mobile-header-03-padding-bottom:14px,
+  spacing-contact-mobile-header-03-padding-left:20px,
+  spacing-contact-mobile-header-03-padding-right:48px,
+
+  spacing-social-mobile-header-03-padding-top:16px,
+  spacing-social-mobile-header-03-padding-bottom:16px,
+  spacing-social-mobile-header-03-padding-left:20px,
+  spacing-social-mobile-header-03-padding-right:20px,
+
+
+  spacing-main-menu-mobile-header-03-submenu-03-04-padding-top-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-03-04-padding-bottom-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-03-04-padding-left-sm:20px,
+  spacing-main-menu-mobile-header-03-submenu-03-04-padding-right-sm:45px,
+
+  spacing-submenu-mobile-header-03-submenu-03-04-padding-top-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-03-04-padding-bottom-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-03-04-padding-left-sm:10px,
+  spacing-submenu-mobile-header-03-submenu-03-04-padding-right-sm:48px,
+
+  spacing-main-menu-highlight-mobile-header-03-submenu-03-04-padding-left-sm:20px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-03-04-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-03-04-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-03-04-margin-left-sm:0px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-03-04-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-03-submenu-03-04-padding-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-03-04-margin-top-sm:5px,
+  spacing-submenu-highlight-mobile-header-03-submenu-03-04-margin-bottom-sm:5px,
+  spacing-submenu-highlight-mobile-header-03-submenu-03-04-margin-left-sm:0px,
+  spacing-submenu-highlight-mobile-header-03-submenu-03-04-margin-right-sm:5px,
+
+  spacing-megamenu-mobile-header-03-submenu-03-04-padding-top-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-03-04-padding-bottom-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-03-04-padding-left-sm:10px,
+  spacing-megamenu-mobile-header-03-submenu-03-04-padding-right-sm:45px,
+
+  spacing-megamenu-highlight-mobile-header-03-submenu-03-04-padding-top-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-03-04-padding-bottom-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-03-04-padding-left-sm:10px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-03-04-padding-right-sm:45px,
+
+  spacing-currency-mobile-header-03-submenu-04-padding-top:22px,
+  spacing-currency-mobile-header-03-submenu-04-padding-bottom:22px,
+  spacing-currency-mobile-header-03-submenu-04-padding-left:20px,
+  spacing-currency-mobile-header-03-submenu-04-padding-right:20px,
+
+  spacing-main-menu-mobile-header-03-submenu-05-padding-top-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-05-padding-bottom-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-05-padding-left-sm:20px,
+  spacing-main-menu-mobile-header-03-submenu-05-padding-right-sm:40px,
+
+  spacing-submenu-mobile-header-03-submenu-05-indent-sm:20px,
+  spacing-submenu-mobile-header-03-submenu-05-padding-top-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-05-padding-bottom-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-05-padding-left-sm:10px,
+  spacing-submenu-mobile-header-03-submenu-05-padding-right-sm:40px,
+
+  spacing-main-menu-highlight-mobile-header-03-submenu-05-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-05-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-05-margin-left-sm:20px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-05-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-03-submenu-05-margin-top-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-05-margin-bottom-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-05-margin-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-05-margin-right-sm:5px,
+
+  spacing-megamenu-mobile-header-03-submenu-05-padding-top-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-05-padding-bottom-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-05-padding-left-sm:30px,
+  spacing-megamenu-mobile-header-03-submenu-05-padding-right-sm:45px,
+
+  spacing-megamenu-highlight-mobile-header-03-submenu-05-padding-top-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-05-padding-bottom-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-05-padding-left-sm:30px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-05-padding-right-sm:45px,
+
+  spacing-contact-mobile-header-03-submenu-05-padding-top:10px,
+  spacing-contact-mobile-header-03-submenu-05-padding-bottom:10px,
+  spacing-contact-mobile-header-03-submenu-05-padding-left:20px,
+  spacing-contact-mobile-header-03-submenu-05-padding-right:48px,
+
+  spacing-main-menu-mobile-header-03-submenu-06-padding-top-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-06-padding-bottom-sm:12px,
+  spacing-main-menu-mobile-header-03-submenu-06-padding-left-sm:15px,
+  spacing-main-menu-mobile-header-03-submenu-06-padding-right-sm:40px,
+
+  spacing-submenu-mobile-header-03-submenu-06-indent-sm:15px,
+  spacing-submenu-mobile-header-03-submenu-06-padding-top-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-06-padding-bottom-sm:12px,
+  spacing-submenu-mobile-header-03-submenu-06-padding-left-sm:10px,
+  spacing-submenu-mobile-header-03-submenu-06-padding-right-sm:10px,
+
+  spacing-main-menu-highlight-mobile-header-03-submenu-06-margin-top-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-06-margin-bottom-sm:5px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-06-margin-left-sm:15px,
+  spacing-main-menu-highlight-mobile-header-03-submenu-06-margin-right-sm:5px,
+
+  spacing-submenu-highlight-mobile-header-03-submenu-06-margin-top-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-06-margin-bottom-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-06-margin-left-sm:10px,
+  spacing-submenu-highlight-mobile-header-03-submenu-06-margin-right-sm:5px,
+
+  spacing-megamenu-mobile-header-03-submenu-06-padding-top-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-06-padding-bottom-sm:12px,
+  spacing-megamenu-mobile-header-03-submenu-06-padding-left-sm:25px,
+  spacing-megamenu-mobile-header-03-submenu-06-padding-right-sm:45px,
+
+  spacing-megamenu-highlight-mobile-header-03-submenu-06-padding-top-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-06-padding-bottom-sm:12px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-06-padding-left-sm:25px,
+  spacing-megamenu-highlight-mobile-header-03-submenu-06-padding-right-sm:45px,
+
+  spacing-contact-mobile-header-03-submenu-06-padding-top:10px,
+  spacing-contact-mobile-header-03-submenu-06-padding-bottom:10px,
+  spacing-contact-mobile-header-03-submenu-06-padding-left:15px,
+  spacing-contact-mobile-header-03-submenu-06-padding-right:48px,
+
+  // MENU ICON SIZE
+
+  size-menu-icon-width: inherit,
+  size-menu-icon-height: inherit,
+  size-submenu-icon-width: inherit,
+  size-submenu-icon-height: inherit,
+  size-megamenu-icon-width: inherit,
+  size-megamenu-icon-height: inherit,
+
+  // MENU ICON SIZE END
+
+  // PORTAL FORM VARIABLES
+
+  // TYPOGRAPHY PORTAL FORM HEADING
+
+color-portal-form-heading : map-get($base_vars, 'color-primary'),
+font-family-portal-form-heading : map-get($base_vars, 'font-family-heading'),
+font-size-portal-form-heading : 32px,
+font-transform-portal-form-heading : uppercase,
+font-weight-portal-form-heading : 400,
+font-line-height-portal-form-heading : 40px,
+font-letter-spacing-portal-form-heading : 5px,
+
+// TYPOGRAPHY PORTAL FORM NAME
+
+color-portal-form-name : #000,
+font-family-portal-form-name : map-get($base_vars, 'font-family-base'),
+font-size-portal-form-name : 16px,
+font-transform-portal-form-name : none,
+font-weight-portal-form-name : 400,
+font-line-height-portal-form-name : 24px,
+font-letter-spacing-portal-form-name : normal,
+
+  // TYPOGRAPHY PORTAL FORM LABEL
+
+color-portal-form-label : #8e8e8e,
+font-family-portal-form-label : map-get($base_vars, 'font-family-base'),
+font-size-portal-form-label : 16px,
+font-transform-portal-form-label : none,
+font-weight-portal-form-label : normal,
+font-line-height-portal-form-label : 16px,
+font-letter-spacing-portal-form-label : normal,
+
+  // TYPOGRAPHY PORTAL FORM FIELD
+
+color-portal-form-field : map-get($base_vars, 'color-text'),
+font-family-portal-form-field : map-get($base_vars, 'font-family-base'),
+font-size-portal-form-field: 16px,
+font-transform-portal-form-field : none,
+font-weigh-portalt-form-field : normal,
+font-line-height-portal-form-field : normal,
+font-letter-spacing-portal-form-field : normal,
+
+  // COLOR VARIABLES PORTAL FORM
+
+color-portal-form-field-background : map-get($base_vars, 'color-default'),
+color-portal-form-field-border : map-get($base_vars, 'color-border'),
+color-portal-form-field-active-border : map-get($base_vars, 'color-primary'),
+color-portal-form-placeholder : RGBA(convertHexToRgb(map-get($base_vars, 'color-text')),0.5),
+
+  // PORTAL FORM MESSAGES
+
+color-portal-form-error-message-text : #FF4949,
+color-portal-form-warning-message-text : #FFC82C,
+color-portal-form-success-message-text : #13CE66,
+color-portal-form-info-message-text : #1FB6FF,
+
+  // PORTAL FORM BUTTON
+
+color-portal-form-button-submit-background : map-get($base_vars, 'color-primary'),
+color-portal-form-button-submit-border : transparent,
+size-portal-form-button-submit-border : 0,
+style-portal-form-button-submit-border : none,
+
+color-portal-form-button-submit-hover-background : darken(map-get($base_vars, 'color-primary'),10%),
+color-portal-form-button-submit-hover-text-and-icon : map-get($base_vars, 'color-default'),
+color-portal-form-button-submit-hover-border : transparent,
+
+color-portal-form-button-submit : map-get($base_vars, 'color-default'),
+font-family-portal-form-button-submit : map-get($base_vars,'font-family-base'),
+font-size-portal-form-button-submit : 16px,
+font-transform-portal-form-button-submit : uppercase,
+font-weight-portal-form-button-submit : 400,
+font-line-height-portal-form-button-submit:  24px,
+font-letter-spacing-portal-form-button-submit: 3.8px,
+portal-form-button-submit-border-radius: 0px,
+
+tooltip-background-color : map-get($base_vars,'color-default'),
+tooltip-text-color : map-get($base_vars, 'color-text'),
+tooltip-svg-color : map-get($base_vars, 'color-text'),
+tooltip-border-color : map-get($base_vars, 'color-border')
+);
+
+@import "_base-map";

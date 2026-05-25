@@ -1,0 +1,46 @@
+<div class="theme-product-varients-row" data-nostock-cart-add="theme-nostock-cart-add">
+	<div class="theme-product-variant theme-product-quantity-cart-container">
+	
+		<div class="theme-product-varient-quantity">
+			{% if page.template_vars.product_details_style == '11' %}
+				{{ wishlistView("detail", product, page ) }}
+			{% endif %}
+			{% if product.is_out_of_stock == false  %}
+				<div class="theme-product-quantity-spinner" data-zs-quantity-container>
+					<input class="theme-quantity-decrease" aria-label="{{i18n.get("product.action.decrease_quantity")}}" onclick="decreaseCount(this)" type="button" value="-">
+					<input aria-label="{{i18n.get("cart.quantity.label")}}" name="qty" title="quantity" type="text" maxlength="999" onkeypress='return productQuantity(event);' value="1" data-quantity="{{ product.product_id }}" data-theme-quantity data-zs-quantity>
+					<input class="theme-quantity-increase" onclick="increaseCount(this)" aria-label="{{i18n.get("product.action.increase_quantity")}}" type="button" value="+">
+				</div>
+				{% if page.template_vars.product_details_style != '11' %}
+					<div data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+				{% endif %}
+				<div class="theme-button-area">
+				<button type="button" aria-label="{{i18n.get("product.action.add_to_cart")}}" class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width"  {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-cart-button {% endif %} data-zs-add-to-cart data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if product.variants[0].hide_add_to_cart %} style="display: none;" {% endif %}>
+					<span data-theme-cart-button-text="theme-cart-button-text">{% if page.template_vars.product_details_style != '11' %}+ {% endif %}{{i18n.get("product.action.add_to_cart")}}</span>
+					<span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none">
+						{{i18n.get("product.message.please_wait")}} <div class="theme-cart-button-loading-dots"><span></span><span></span><span></span></div>
+					</span>
+				</button>
+				{% if page.is_quotes_enabled_in_storefront %}
+					<button type="button" data-zs-add-to-quote {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-quote-button {% endif %} class="theme-quote-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width" data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if !product.variants[0].show_add_to_quote %} style="display: none;" {% endif %}>
+						<span data-theme-cart-button-text="theme-quote-button-text">{{i18n.get("page_title.request_quote")}}</span>
+						<span class="theme-quote-button-loading-container" data-theme-cart-button-loading="theme-quote-button-loading" style="display:none">
+							{{i18n.get("product.message.please_wait")}} <div class="theme-quote-button-loading-dots"><span></span><span></span><span></span></div>
+						</span>
+					</button>
+				{% endif %}
+				</div>
+				{% if page.template_vars.product_details_style == '11' %}
+					<div data-theme-error="theme-error-message-{{product.product_id}}" style="display:none;"></div>
+				{% endif %}
+			{% endif %}
+			{% if page.template_vars.product_details_style == '11' %}
+				<a class="theme-cart-button theme-more-details zpbutton zpbutton-type-primary zpbutton-size-lg" data-zs-more-details data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} href="{{product.url}}">
+					<span data-theme-cart-button-text="theme-cart-button-text">
+						{{i18n.get("product.label.view_details")}}
+					</span>
+				</a>
+			{% endif %}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,74 @@
+<div class="theme-product-box-content">
+  <div class="theme-product-image-area" data-zs-image-container>
+    <div class="theme-wishlist-icon">
+      {{ wishlistView("list", product, page ) }}
+    </div>
+    <a href="{{ product.url }}" alt="{{ product.name }}" aria-label="{{ product.name }}">
+      {% if product.is_out_of_stock == false && product.on_sale %}
+        <div class="theme-product-sale-ribbon" data-zs-sale>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="46" height="20" viewBox="0 0 46 20" fill="none">
+            <path d="M0 0H46L38.3763 10L46 20H0V0Z" fill="#F8E8E0"/>
+          </svg>
+          <span class='theme-sale-message'>{{i18n.get("product.message.sale")}}</span>
+        </div>
+      {% endif %}
+      <div class="theme-product-ribbon-area" >
+        {% if product.is_out_of_stock == true %}
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="86" height="86" viewBox="0 0 86 86" fill="none">
+            <path d="M61 0L0 61V86L86 0H61Z" fill="#B57441"/>
+          </svg>
+          <div class="theme-ribbon-stock" data-zs-outofstock>{{i18n.get("product.message.out_of_stock")}}</div>
+        {% endif %}
+      </div>
+      {% include '_store-product-list-image-loader' %}
+      <picture>
+        {% if product.images[0].is_placeholder_image %}
+          <img rel="preload" as="image" width="300" height="300" data-src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}"
+          alt="{{product.images[0].alternate_text}}" style="display:none;"
+          loading="lazy" decoding="async" onload="onListImageLoaded(this)"
+          data-fallback="{{ product.images[0].url }}"
+          onerror="handleFallBackForImage(this)"/>
+        {% else %}
+          <source srcset="{{cdn_prefix_url}}{{ product.images[0].url }}/400x400{{cdn_suffix_url}} 1x, {{cdn_prefix_url}}{{ product.images[0].url }}/600x600{{cdn_suffix_url}} 2x">
+          <img rel="preload" as="image" width="300" height="300" data-src="{{cdn_prefix_url}}{{ product.images[0].url }}/400x400{{cdn_suffix_url}}"
+          alt="{{product.images[0].alternate_text}}" style="display:none;"
+          loading="lazy" decoding="async" onload="onListImageLoaded(this)"
+          data-fallback="{{ product.images[0].url }}/400x400"
+          onerror="handleFallBackForImage(this)"/>
+        {% endif %}
+      </picture>
+      <span class='theme-org-img' data-src='{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}'></span>
+    </a>
+  </div>
+
+  <div class="theme-product-details-area">
+    <div class="theme-product-name-price">
+      {% if product.is_product_review_enabled %}
+        <div class="theme-rating" data-zs-review-id = "{{ product.review_id }}" data-zs-review-type = "star-rating"></div>
+      {% endif %}
+      <div class="theme-product-name" data-zs-product-name>
+        <a title="{{ product.name }}" href="{{ product.url }}">{{ product.name }}</a>
+      </div>
+
+      <div class = "theme-product-price-coupon">
+        {% include '_store-product-pricing-six' %}
+
+        {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+          <div class="theme-prod-coupons-container" style = "display:none" data-zs-coupon-product-id = "{{ product.product_id }}"></div>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <div class= "theme-view-details-quick-view">
+      <a href="{{ product.url }}" data-zs-view-details class="theme-product-details">{{i18n.get("product.label.view_details")}}</a>
+      <div class="theme-product-quick-view" data-zs-quick-view>
+        <button type="button" onclick="javascript:viewProductQuickLook(this)" data-zs-product-url="{{ product.url }}">
+          {{i18n.get("product.label.quick_view")}}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+                  

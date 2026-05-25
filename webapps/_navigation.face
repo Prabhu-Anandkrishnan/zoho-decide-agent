@@ -1,0 +1,58 @@
+
+{% macro navi(menu, template_vars) %}
+	{% assign sub_menus=menu.menu_items %}
+	{% if sub_menus %}
+		<ul role="navigation" data-zs-menu-container>
+			{% for sub_menu in sub_menus %}
+				{% assign count = 1 %}
+				{{ subnavi(sub_menu, count, template_vars) }}
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<div data-zp-submenu-icon="mymenu1" style="display:none">
+    <span class="theme-sub-li-menu theme-non-responsive-menu"></span>
+    <span class="theme-sub-li-menu theme-responsive-menu theme-submenu-down-arrow"></span>
+  </div>
+
+{% endmacro %}
+{% macro subnavi(menu_item, count, template_vars) %}
+	{% assign menu_icon_enabled = menu_item.menu_icon_info && menu_item.menu_icon_info.icon_enabled %}
+	{% assign highlight_menu = menu_item.highlight_info %}
+	<li {% if highlight_menu && highlight_menu.highlight_enabled %} {% if highlight_menu.highlight_style == "1" %} class="menu-highlight-primary" {% elif highlight_menu.highlight_style == "2"%} class="menu-highlight-secondary" {% endif%}{% endif %} {% if menu_item.linked_mega_menu %}data-megamenu="{{menu_item.linked_mega_menu}}"{% endif %} {% if menu_item.more_menu %}data-zp-more-menu="mymenu1"{% endif %}>
+		{% assign sub_menus=menu_item.menu_items %}
+             <a href="{% if menu_item.url %}{{menu_item.url}}{% else %}javascript:;{% endif %}" {% if menu_item.target %}target="_blank" {% else %}target="_self" {% endif %} {% if sub_menus && sub_menus | length > 0 %} aria-haspopup="true" aria-expanded="false" aria-controls="submenu-{{menu_item.item_name}}-{{ count }}" onkeydown="handleMenuKeydown(event)" {% endif %}>
+			<span class="theme-menu-content {% if menu_icon_enabled %} theme-menu-icon-enabled {% endif %}">
+            	{% if menu_icon_enabled %}
+                    <span class="theme-menu-icon" data-theme-menu-icon="{{menu_item.menu_icon_info.icon_id}}" >{{ menu_item.icon_svg}}</span>
+                {% endif %}
+                <span class="theme-menu-name" data-theme-menu-name="{{menu_item.item_name}}" >{{menu_item.item_name}}</span> 
+            </span>
+			{% if sub_menus && sub_menus | length > 0 %}
+				{% if count == 1 %}
+					<span class="theme-sub-li-menu theme-non-responsive-menu theme-submenu-down-arrow">
+					</span>
+					<span class="theme-sub-li-menu theme-responsive-menu theme-submenu-down-arrow">
+					</span>
+				{% else %}
+					<span class="theme-sub-li-menu theme-non-responsive-menu theme-submenu-right-arrow">
+					</span>
+					<span class="theme-sub-li-menu theme-responsive-menu theme-submenu-down-arrow">
+					</span>
+				{% endif %}
+			{% endif %}
+		</a>
+		{% if sub_menus && sub_menus | length > 0 %}
+		<ul class="theme-sub-menu" data-zs-submenu-container id="submenu-{{menu_item.item_name}}-{{ count }}" style="display:none;">
+			{% for sub_menu in sub_menus %}
+            			{% if menu_item.linked_mega_menu %}
+					{{ constructMegaMenu(sub_menu, template_vars) }}
+				{% else %}
+                			{% assign temp_count = count+1 %}
+                    			{{ subnavi(sub_menu, temp_count, template_vars) }}
+            			{% endif %}
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</li>
+{% endmacro %}

@@ -1,0 +1,527 @@
+.zpmm{
+    @media (max-width: 991px){
+        .zpcontainer{
+            width:100%;
+        }
+    }
+    @include respond-to(mediumdevice){
+        display: none;
+        max-block-size:500px;
+        overflow-y: auto;
+        position: absolute;
+        left:0px;
+        right:0px;
+        top:100%;
+        z-index: 255;
+        &.mmactive{
+            display: block;
+        }
+        &[data-megamenu-direction="right"]{
+            max-block-size:initial;
+        }
+    }
+    @if map-get($user_layout_vars,'megamenu_container_style') == 01 {
+        &.zpmm-container-style-01{
+            @include respond-to(mediumdevice){
+                width:992px;
+                left:50%;
+                right:auto;
+                transform: translateX(-50%);
+                &[data-megamenu-direction="right"]{
+                    transform: translateX(0px);
+                }
+            }
+            @include respond-to(largedevice){
+                width:1140px;
+            }
+            .zpcontainer{
+                .zpmm-inner{
+                    @include respond-to(mediumdevice){
+                        background: map-get($default_vars,'color-megamenu-background');
+                        border-block-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                        box-shadow: 0px 5px 8px -5px map-get($default_vars,'color-megamenu-boxshadow');
+                        padding-block-start:30px;
+                        padding-block-end:30px;
+                        padding-inline-start:15px;
+                        padding-inline-end:15px;
+                        &[data-megamenu-direction="right"]{
+                            border-inline-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @if map-get($user_layout_vars,'megamenu_container_style') == 02 {
+        &.zpmm-container-style-02{
+            @include respond-to(mediumdevice){
+                background: map-get($default_vars,'color-megamenu-background');
+                border-block-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                box-shadow: 0px 5px 8px -5px map-get($default_vars,'color-megamenu-boxshadow');
+                padding-block-start:30px;
+                padding-block-end:30px;
+                padding-inline-start:15px;
+                padding-inline-end:15px;
+                &[data-megamenu-direction="right"]{
+                  border-inline-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                }
+            }
+        }
+    }
+    @if map-get($user_layout_vars,'megamenu_container_style') == 03 {
+        &.zpmm-container-style-03{
+            @include respond-to(mediumdevice){
+                background: map-get($default_vars,'color-megamenu-background');
+                border-block-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                box-shadow: 0px 5px 8px -5px map-get($default_vars,'color-megamenu-boxshadow');
+                padding-block-start:30px;
+                padding-block-end:30px;
+                padding-inline-start:15px;
+                padding-inline-end:15px;
+                &[data-megamenu-direction="right"]{
+                  border-inline-start:1px solid RGBA(map-get($default_vars,'color-border-rgba'),0.5);
+                }
+            }
+            .zpcontainer{
+                width: 100%;
+                max-inline-size: none;
+                @include respond-to(mediumdevice){
+                  padding-block-start:0px !important;
+                  padding-block-end:0px !important;
+                  padding-inline-start:0;
+                  padding-inline-end:0;
+                }
+                @include respond-to(largedevice){
+                  padding-inline-start:15px;
+                  padding-inline-end:15px;
+                }
+            }
+        }
+    }
+    .zpcontainer{
+        @include respond-to(mediumdevice){
+          padding-block-start:0px !important;
+          padding-block-end:0px !important;
+        }
+    }
+    .zpcontainer-fluid{
+        @include respond-to(mediumdevice){
+          padding-block-start:0px !important;
+          padding-block-end:0px !important;
+        }
+        .zpmm-inner{
+            margin-block-start:0px;
+            margin-block-end:0px;
+            margin-inline-start:-15px;
+            margin-inline-end:-15px;
+
+        }
+    }
+    .zpmm-inner{
+        width:100%;
+        .zpelem-col{
+            @media (max-width: 991px){
+                padding: 0px;
+                &.seperator-divider{
+                  border-block-end:none;
+                }
+            }
+            &.seperator-divider{
+              border-inline-end:1px solid map-get($default_vars,'color-megamenu-divider');
+                &:last-child{
+                  border-inline-end:none;
+                }
+            }
+        }
+        @media (max-width: 991px){
+            &.seperator-divider{
+                .zpelem-col{
+                  border-block-end:1px solid map-get($default_vars,'color-megamenu-divider');
+                    &:last-child{
+                      border-block-end:none;
+                    }
+                    border:none;
+                }
+            }
+        }
+        .seperator-divider{
+            .zpelem-col{
+              border-inline-end:1px solid map-get($default_vars,'color-megamenu-divider');
+                &:last-child{
+                  border-inline-end:none;
+                }
+                @media (max-width: 991px){
+                    border:none;
+                }
+            }
+        }
+        .seperator-background{
+            @include respond-to(mediumdevice){
+                .zpelem-col{
+                    &:nth-child(odd){
+                        background-color: map-get($default_vars,'color-megamenu-background-odd');
+                    }
+                    &:nth-child(even){
+                        background-color: map-get($default_vars,'color-megamenu-background-even');
+                    }
+                }
+            }
+        }
+        .zprow{
+            margin-block-start:10px;
+            &:first-child{
+              margin-block-start:0px;
+            }
+            @media (max-width: 991px){
+                margin:0px;
+            }
+        }
+        .zpmm-element{
+            margin-block-start:5px;
+            @media (max-width: 991px){
+                margin:0px;
+                padding-block-start:map-get($default_vars,'spacing-megamenu-padding-top-sm');
+                padding-block-end:map-get($default_vars,'spacing-megamenu-padding-bottom-sm');
+                padding-inline-start:map-get($default_vars,'spacing-megamenu-padding-left-sm');
+                padding-inline-end:map-get($default_vars,'spacing-megamenu-padding-right-sm');
+                border-block-end:1px solid map-get($default_vars,'color-submenu-border');
+            }
+            &:first-child{
+                @media (max-width: 991px){
+                  border-block-start:1px solid map-get($default_vars,'color-submenu-border');
+                }
+            }
+            &:last-child{
+                margin-block-end:5px;
+                @media (max-width: 991px){
+                    margin-block-end:0px;
+                    border-block-end:none;
+                }
+            }
+            img{
+                display: none;
+            }
+            &.zpmm-image{
+                img{
+                    display: block;
+                }
+                .zpmm-element-textcontent{
+                    display: none;
+                }
+            }
+            &.zpmm-imagetext{
+                img{
+                    display: block;
+                    max-inline-size:50%;
+                    width: 100%;
+                }
+            }
+            &.zpmm-title{
+                a{
+                    padding-block-start:4px;
+                    padding-block-end:4px;
+                    @if map-get($user_layout_vars,'submenu_style') == 03 or map-get($user_layout_vars,'submenu_style') == 04 {
+                      @media (max-width: 991px){
+                        margin-block-start:map-get($default_vars,'spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-top-sm');
+                        margin-block-end:map-get($default_vars,'spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-bottom-sm');
+                      }
+                    }
+                    .zpmm-element-menu-icon{
+                        margin-inline-end: 5px;
+                        margin-block-end:0;
+                        @include respond-to(mediumdevice){
+                            margin-inline-end: map-get($default_vars, 'spacing-megamenu-icon');
+                        }
+                        display:flex;
+                        align-items:center;
+                        svg{
+                            fill:currentcolor;
+                        }
+                    }
+
+                    @media (max-width: 991px){
+                        padding: 0px;
+                    }
+                    @include respond-to(mediumdevice){
+                        color: map-get($default_vars, 'color-megamenu-heading');
+                        font-size: map-get($default_vars, 'font-size-megamenu-heading');
+                        font-family: map-get($default_vars,'font-family-megamenu-heading');
+                        font-weight: map-get($default_vars,'font-weight-megamenu-heading');
+                        text-transform: map-get($default_vars, 'font-transform-megamenu-heading');
+                        line-height: map-get($default_vars, 'font-line-height-megamenu-heading-normal');
+                        letter-spacing: map-get($default_vars, 'font-letter-spacing-megamenu-heading');
+                        &:hover{
+                            color: map-get($default_vars, 'color-megamenu-heading-hover-active-text');
+                        }
+                        &:not([href]){
+                            cursor: initial;
+                            &:hover{
+                                color: map-get($default_vars, 'color-megamenu-heading');
+                            }
+                        }
+                    }
+                    .zpmm-element-menu-content{
+                        display:flex;
+                        align-items:center;
+                        &.zpmm-element-menu-icon-top{
+                            flex-flow:column;
+                            align-items:flex-start;
+                            .zpmm-element-menu-icon{
+                                margin-block-end: 5px;
+                                margin-inline-end:0;
+                                @include respond-to(mediumdevice){
+                                    margin-block-end: map-get($default_vars, 'spacing-megamenu-icon');
+                                }
+                            }
+                        }
+                    }
+                }
+                &.menu-highlight-primary{
+                    a{
+                        @include primary-highlight(false);
+                        width:100%;
+                        @include respond-to(mediumdevice){
+                        	width:max-content;
+                        }
+                        &:not([href]){
+                            &:hover{
+                                @include primary-highlight-hover();
+                            }
+                        }
+                    }
+                    &:hover, &.theme-menu-selected {
+                        a{
+                            @include primary-highlight-hover();
+                        }
+                    }
+                }
+                &.menu-highlight-secondary{
+                    a{
+                        @include secondary-highlight(false);
+                        width:100%;
+                        @include respond-to(mediumdevice){
+                        	width:max-content;
+                        }
+                        &:not([href]){
+                            &:hover{
+                                @include secondary-highlight-hover();
+                            }
+                        }
+                    }
+                    &:hover, &.theme-menu-selected {
+                        a{
+                            @include secondary-highlight-hover();
+                        }
+                    }
+                }
+            }
+            &.zpmm-text{
+                a{
+                    padding-block-start:4px;
+                    padding-block-end:4px;
+                    @if map-get($user_layout_vars,'submenu_style') == 03 or map-get($user_layout_vars,'submenu_style') == 04 {
+                      @media (max-width: 991px){
+                        margin-block-start:map-get($default_vars,'spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-top-sm');
+                        margin-block-end:map-get($default_vars,'spacing-megamenu-mobile-header-01-submenu-03-linktext-margin-bottom-sm');
+                      }
+                    }
+                    .zpmm-element-menu-icon{
+
+                        margin-inline-end:5px;
+                        margin-block-end:0;
+                        @include respond-to(mediumdevice){
+                            margin-inline-end: map-get($default_vars, 'spacing-megamenu-icon');
+                        }
+                        display:flex;
+                        align-items:center;
+                        svg{
+                            fill:currentcolor;
+                        }
+                    }
+
+                    @media (max-width: 991px){
+                        padding: 0px;
+                    }
+                    @include respond-to(mediumdevice){
+                        color: map-get($default_vars, 'color-megamenu-text');
+                        font-size: map-get($default_vars, 'font-size-megamenu-text');
+                        font-family: map-get($default_vars,'font-family-megamenu-text');
+                        font-weight: map-get($default_vars,'font-weight-megamenu-text');
+                        text-transform: map-get($default_vars, 'font-transform-megamenu-text');
+                        line-height: map-get($default_vars, 'font-line-height-megamenu-text');
+                        letter-spacing: map-get($default_vars, 'font-letter-spacing-megamenu-text');
+                        &:hover{
+                            color: map-get($default_vars, 'color-megamenu-text-hover-active-text');
+                        }
+                        &:not([href]){
+                            cursor: initial;
+                            &:hover{
+                                color: map-get($default_vars, 'color-megamenu-text');
+                            }
+                        }
+                    }
+                    .zpmm-element-menu-content{
+                        display:flex;
+                        align-items:center;
+                        &.zpmm-element-menu-icon-top{
+                            flex-flow:column;
+                            align-items:flex-start;
+                            .zpmm-element-menu-icon{
+                                margin-block-end:5px;
+                                margin-inline-end:0;
+                                @include respond-to(mediumdevice){
+                                    margin-block-end: map-get($default_vars, 'spacing-megamenu-icon');
+                                }
+                            }
+                        }
+                    }
+                }
+                .zpmm-element-textcontent{
+                    @include respond-to(mediumdevice){
+                      padding-inline-start:map-get($default_vars, 'left-indent-megamenu-textcontent');
+                    }
+                }
+                &.menu-highlight-primary{
+                    a{
+                        @include primary-highlight(false);
+                        width:100%;
+                        @include respond-to(mediumdevice){
+                        	width:max-content;
+                        }
+                        &:not([href]){
+                            &:hover{
+                                @include primary-highlight-hover();
+                            }
+                        }
+                    }
+                    &:hover, &.theme-menu-selected {
+                        a{
+                            @include primary-highlight-hover();
+                        }
+                    }
+                }
+                &.menu-highlight-secondary{
+                    a{
+                        @include secondary-highlight(false);
+                        width:100%;
+
+                        @include respond-to(mediumdevice){
+                        	width:max-content;
+                        }
+                        &:not([href]){
+                            &:hover{
+                                @include secondary-highlight-hover();
+                            }
+                        }
+                    }
+                    &:hover, &.theme-menu-selected {
+                        a{
+                            @include secondary-highlight-hover();
+                        }
+                    }
+                }
+            }
+            a{
+                @include flexbox;
+                @include prefix(align-items,center);
+                cursor: pointer;
+            }
+            &.menu-highlight-primary, &.menu-highlight-secondary{
+                display: flex;
+            }
+        }
+        .zpmm-image{
+            img{
+                width:auto;
+                height:auto;
+                max-inline-size:100%;
+            }
+        }
+    }
+}
+
+// SITE FULL STRETCH
+
+.theme-pages-full-stretch{
+  .zpmm{
+    @if map-get($user_layout_vars,'megamenu_container_style') == 01 {
+      &.zpmm-container-style-01{
+        @include respond-to(mediumdevice){
+          width:100%;
+        }
+      }
+    }
+  }
+}
+
+// SITE FULL STRETCH END
+
+.theme-responsive-menu-area{
+    .theme-responsive-menu{
+        .theme-menu {
+            ul {
+                li {
+                    .theme-sub-menu{
+                        .zpmm{
+                            .menu-highlight-primary, .menu-highlight-secondary{
+                                padding-block-start:map-get($default_vars,'spacing-megamenu-highlight-padding-top-sm');
+                                padding-block-end:map-get($default_vars,'spacing-megamenu-highlight-padding-bottom-sm');
+                                padding-inline-start:map-get($default_vars,'spacing-megamenu-highlight-padding-left-sm');
+                                padding-inline-end:map-get($default_vars,'spacing-megamenu-highlight-padding-right-sm');
+                                >a{
+                                    margin:0;
+                                    width:100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.zpmm-backdrop{
+    display: none;
+    width:0px;
+    height:0px;
+    @include respond-to(mediumdevice){
+        position: fixed;
+        top:0px;
+        left: 0px;
+        width:100vw;
+        height:100vh;
+        z-index: 240;
+        &.zpmm-backdrop-enabled{
+            background:map-get($default_vars, 'color-megamenu-backdrop-background');
+        }
+        &.zpmm-backdrop-disabled{
+            background: transparent;
+        }
+    }
+}
+div[class^="zpheader-style-"]{
+    @include respond-to(mediumdevice){
+        z-index: 250;
+    }
+}
+[data-zp-more-menu] [data-megamenu] .theme-non-responsive-menu{
+    display: none !important;
+}
+
+@if map-get($user_layout_vars,'header_style') == 02 {
+  .zpheader-style-02{
+    .theme-header{
+      &.theme-header-navigation-style{
+        .theme-sub-menu{
+          .zpmm-container-style-01,
+          .zpmm-container-style-02,
+          .zpmm-container-style-03{
+            .zpcontainer{
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
+}

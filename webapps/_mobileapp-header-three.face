@@ -1,0 +1,193 @@
+<div data-zs-mobile-header-three-top class="theme-mobile-header-style-{{ page.template_vars.mobile_header_style }} theme-mobile-header-top {% if !page.template_vars.is_mobile_logo_enabled && page.type != PAGE_TYPE.CHECKOUT %}theme-disable-logo-mobile{% endif %}">
+    {% if !mobile_header.three.is_delivery_location_only_enabled %}
+    <div class="theme-mobile-header-nav-wrapper {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}">
+        {% if ((page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || page.is_social_icon_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED) && page.template_vars.store_template_no != "10" %}
+            <span data-zs-mobile-header-slide-open data-zs-drawer-open-button="navigation" class="theme-mobile-header-icon theme-mobile-header-slide-open">
+                <svg width="24px" height="24px" fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><path d="M 2 5 L 2 7 L 22 7 L 22 5 L 2 5 z M 2 11 L 2 13 L 22 13 L 22 11 L 2 11 z M 2 17 L 2 19 L 22 19 L 22 17 L 2 17 z"/></svg>
+            </span>
+        {% endif %}
+            {% if page.is_logo_enabled %}
+            <span data-zs-mobile-header-logo data-zs-logo-container class="theme-mobile-header-logo {% if !page.template_vars.is_mobile_logo_enabled && page.type != PAGE_TYPE.CHECKOUT %}theme-disable-logo-mobile{% endif %}">
+                <a href="/">
+                    <picture>
+                        <img src="{% if page.logo.url %}{{ page.logo.url }}{% else %}{{ page.template_assets }}/images/logo.png{% endif %}" alt="{{page.site_title}}" />
+                    </picture>
+                </a>
+            </span>
+            {% endif %}
+            {% if (page.site_title && page.is_title_enabled) || (page.site_caption && page.is_caption_enabled) %}
+            <span data-zs-mobile-header-sitename-caption class="theme-mobile-header-site-name-caption">
+                {% if page.is_title_enabled && page.site_title %}
+                <div data-zs-sitename class="theme-mobile-header-site-name {% if !page.template_vars.is_mobile_site_title_enabled %}theme-mobile-header-disable-sitename-mobile{% endif %}">
+                    {{page.site_title}}
+                </div>
+                {% endif %}
+                {% if page.is_caption_enabled && page.site_caption %}
+                <div data-zs-sitecaption class="theme-mobile-header-site-caption {% if !page.template_vars.is_mobile_site_caption_enabled %}theme-mobile-header-disable-sitecaption-mobile{% endif %}">
+                    {{page.site_caption}}
+                </div>
+                {% endif %}
+            </span>
+            {% endif %}
+         
+        
+        {% if page.is_search_enabled %}
+            <span data-zs-mobile-header-search class="theme-mobile-header-search">
+                <span data-zs-mobile-header-search-icon class="theme-mobile-header-search-icon-wrapper">
+                    {% if page.template_vars.store_carticon_style_header_07 == "14" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                            <path d="M19.2507 19.2507L14.4868 14.4868M14.4868 14.4868C15.7762 13.1974 16.5005 11.4487 16.5005 9.62526C16.5005 7.80183 15.7762 6.05308 14.4868 4.76372C13.1974 3.47436 11.4487 2.75 9.62526 2.75C7.80183 2.75 6.05308 3.47436 4.76372 4.76372C3.47436 6.05308 2.75 7.80183 2.75 9.62526C2.75 11.4487 3.47436 13.1974 4.76372 14.4868C6.05308 15.7762 7.80183 16.5005 9.62526 16.5005C11.4487 16.5005 13.1974 15.7762 14.4868 14.4868Z" stroke="black" stroke-width="1.375" stroke-linecap="square" stroke-linejoin="round"/>
+                        </svg>
+                    {% else %}
+                        <svg class="theme-mobile-header-search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_302_2343)">
+                            <path d="M19.9971 18.4519L15.6689 14.1238C16.8604 12.5964 17.5049 10.7253 17.5049 8.75659C17.5049 6.42065 16.5947 4.22144 14.9424 2.56909C13.29 0.916748 11.0908 0.0065918 8.75488 0.0065918C6.41895 0.0065918 4.21973 0.916748 2.56738 2.56909C0.915039 4.22144 0.00488281 6.42065 0.00488281 8.75659C0.00488281 11.0925 0.915039 13.2917 2.56738 14.9441C4.21973 16.5964 6.41895 17.5066 8.75488 17.5066C10.7236 17.5066 12.5947 16.8621 14.1221 15.6707L18.4502 19.9988L19.9971 18.4519ZM8.75488 15.3191C5.1377 15.3191 2.19238 12.3738 2.19238 8.75659C2.19238 5.1394 5.1377 2.19409 8.75488 2.19409C12.3721 2.19409 15.3174 5.1394 15.3174 8.75659C15.3174 12.3738 12.3721 15.3191 8.75488 15.3191Z" fill="black"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_302_2343">
+                                    <rect width="20" height="20" fill="white"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    {% endif %}
+                </span>
+                <div class="theme-search-field-container" data-search="zptheme-search-container">
+                    <span data-zs-mobile-header-search-back class="theme-mobile-header-search-back" {% if page.template_vars.is_search_suggestion_enabled %} onclick="toggleSearchSuggestions(this)" {% endif %}>
+                        <svg width="24px" height="24px" viewBox="0 0 24 24"><path fillrule="evenodd" d="M20.25 11.25H5.555l6.977-6.976a.748.748 0 000-1.056.749.749 0 00-1.056 0L3.262 11.43A.745.745 0 003 12a.745.745 0 00.262.57l8.214 8.212a.75.75 0 001.056 0 .748.748 0 000-1.056L5.555 12.75H20.25a.75.75 0 000-1.5"></path></svg>
+                    </span>
+                    <form method="get" action="{{ page.search_url }}">
+                        <input {% if page.template_vars.search_style == "01" %}id="search-with-suggestion-mobile"{% endif %} type="text" name="q" aria-label="{{i18n.get("search.page.title")}}" placeholder="{{i18n.get("search.page.title")}}" data-search-input="zptheme-search-input" maxlength="100" data-zs-search-input />
+                        <input type="submit" name="" aria-label="{{i18n.get("search.page.title")}}" class="theme-search-go" value="{{i18n.get("search.button.label")}}" data-zs-search="{{page.primary_search}}" />
+                        <span data-zs-mobile-header-search-clear class="theme-mobile-header-search-clear"></span>
+                    </form>
+                </div>
+            </span>
+            {% if page.template_vars.is_search_suggestion_enabled %}
+                {% include '_search-suggestions' %}
+            {% endif %}
+        {% endif %}
+        <div data-zs-mobile-header-three-bottom class="theme-mobile-header-style-{{ page.template_vars.mobile_header_style }} theme-mobile-header-bottom {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}">
+    <div class="theme-mobile-header-icon-wrapper">
+        {% if ((page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || page.is_social_icon_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED) && page.template_vars.store_template_no == "10" %}
+            <span data-zs-mobile-header-slide-open data-zs-drawer-open-button="navigation" class="theme-mobile-header-icon theme-mobile-header-slide-open">
+                <svg width="24px" height="24px" fill="#000000" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24"><path d="M 2 5 L 2 7 L 22 7 L 22 5 L 2 5 z M 2 11 L 2 13 L 22 13 L 22 11 L 2 11 z M 2 17 L 2 19 L 22 19 L 22 17 L 2 17 z"/></svg>
+            </span>
+        {% endif %}
+        {% comment %} WISHLIST STARTS {% endcomment %}
+          {% include '_wishlist' %}
+        {% comment %} WISHLIST ENDS {% endcomment %}
+        {% if portal_position == "01" || portal_position == "02" %}
+        <span data-zs-drawer-open-button="portal" class="theme-mobile-header-icon">
+          {% if page.template_vars.header_style == "02" %}
+           <svg   version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+            <path d="M255.6,84c-55.1,0-100,44.9-100,100s44.9,100,100,100s100-44.9,100-100S310.8,84,255.6,84z M255.6,228
+                c-24.3,0-44-19.7-44-44s19.7-44,44-44c24.3,0,44,19.7,44,44S279.9,228,255.6,228z"/>
+            <path d="M436.6,74.7c-48.4-48.4-112.6-75-181-75c-68.4,0-132.7,26.6-181,75s-75,112.6-75,181s26.6,132.7,75,181
+                c48.4,48.4,112.6,75,181,75c68.4,0,132.7-26.6,181-75c48.4-48.4,75-112.6,75-181S485,123,436.6,74.7z M147.8,424.1
+                c10.9-14.5,24.1-26.8,39-36.1c20.9-13.1,44.7-20,68.8-20c24.2,0,48.1,6.9,69,20.1c14.8,9.3,28,21.5,38.8,36
+                c-31.1,20-68.1,31.6-107.8,31.6C215.9,455.7,178.9,444.1,147.8,424.1z M405.9,387.5c-14.5-18.6-32-34.5-51.6-46.8
+                c-29.9-18.7-64-28.6-98.8-28.6c-34.7,0-68.7,9.8-98.5,28.5c-19.7,12.3-37.2,28.2-51.8,46.9c-30.9-35.2-49.7-81.3-49.7-131.8
+                c0-110.3,89.7-200,200-200c110.3,0,200,89.7,200,200C455.6,306.1,436.9,352.2,405.9,387.5z"/>
+           </svg>
+          {% elif page.template_vars.store_temp_no == "12" %}
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 13C14.7614 13 17 10.7614 17 8C17 5.23858 14.7614 3 12 3C9.23858 3 7 5.23858 7 8C7 10.7614 9.23858 13 12 13Z" stroke="#212121" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M20 21C20 18.8783 19.1571 16.8434 17.6569 15.3431C16.1566 13.8429 14.1217 13 12 13C9.87827 13 7.84344 13.8429 6.34315 15.3431C4.84285 16.8434 4 18.8783 4 21" stroke="#212121" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          {% elif page.template_vars.header_style == "07" %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M19.8498 22C19.4681 22 19.159 21.6909 19.159 21.3092V19.2404C19.159 17.34 17.6127 15.7938 15.7123 15.7938H7.43771C5.53729 15.7938 3.99104 17.34 3.99104 19.2404V21.3092C3.99104 21.6909 3.68187 22 3.30021 22C2.91854 22 2.60938 21.6909 2.60938 21.3092V19.2404C2.60938 16.5779 4.77521 14.4121 7.43771 14.4121H15.7123C18.3748 14.4121 20.5406 16.5779 20.5406 19.2404V21.3092C20.5406 21.6909 20.2315 22 19.8498 22Z" fill="black"></path><path d="M11.5744 11.6567C8.91193 11.6567 6.74609 9.49084 6.74609 6.82834C6.74609 4.16583 8.91235 2 11.5744 2C14.2365 2 16.4028 4.16583 16.4028 6.82834C16.4028 9.49084 14.2369 11.6567 11.5744 11.6567ZM11.5744 3.38167C9.67401 3.38167 8.12776 4.92792 8.12776 6.82834C8.12776 8.72875 9.67401 10.275 11.5744 10.275C13.4748 10.275 15.0211 8.72875 15.0211 6.82834C15.0211 4.92792 13.4748 3.38167 11.5744 3.38167Z" fill="black"></path></svg>
+          {% elif page.template_vars.header_style == "04" &&  page.template_vars.store_temp_no != "12" %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="20" viewBox="0 0 18 20" fill="none"><circle cx="8.99922" cy="4.8" r="4.05" stroke="black" stroke-width="1.5"></circle><path d="M17 20C17 15.5817 13.4183 12 9 12C4.58172 12 1 15.5817 1 20" stroke="black" stroke-width="1.5"></path></svg>
+          {% elif page.template_vars.header_style == "09" %}
+            <svg width="20" height="20" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="none" d="M10.1533 3.90009C10.1533 5.77397 8.62033 7.30018 6.72046 7.30018C4.82059 7.30018 3.2876 5.77397 3.2876 3.90009C3.2876 2.02621 4.82059 0.5 6.72046 0.5C8.62033 0.5 10.1533 2.02621 10.1533 3.90009Z" stroke="#750A27"></path>
+              <path fill="none" d="M0.931864 15.1002C1.01969 11.7605 3.7546 9.08008 7.11555 9.08008C10.4765 9.08008 13.2114 11.7605 13.2992 15.1002H0.931864Z" stroke="#750A27"></path>
+            </svg>
+          {% else %}
+            <svg   version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+            <path d="M255.6,84c-55.1,0-100,44.9-100,100s44.9,100,100,100s100-44.9,100-100S310.8,84,255.6,84z M255.6,228
+                c-24.3,0-44-19.7-44-44s19.7-44,44-44c24.3,0,44,19.7,44,44S279.9,228,255.6,228z"/>
+            <path d="M436.6,74.7c-48.4-48.4-112.6-75-181-75c-68.4,0-132.7,26.6-181,75s-75,112.6-75,181s26.6,132.7,75,181
+                c48.4,48.4,112.6,75,181,75c68.4,0,132.7-26.6,181-75c48.4-48.4,75-112.6,75-181S485,123,436.6,74.7z M147.8,424.1
+                c10.9-14.5,24.1-26.8,39-36.1c20.9-13.1,44.7-20,68.8-20c24.2,0,48.1,6.9,69,20.1c14.8,9.3,28,21.5,38.8,36
+                c-31.1,20-68.1,31.6-107.8,31.6C215.9,455.7,178.9,444.1,147.8,424.1z M405.9,387.5c-14.5-18.6-32-34.5-51.6-46.8
+                c-29.9-18.7-64-28.6-98.8-28.6c-34.7,0-68.7,9.8-98.5,28.5c-19.7,12.3-37.2,28.2-51.8,46.9c-30.9-35.2-49.7-81.3-49.7-131.8
+                c0-110.3,89.7-200,200-200c110.3,0,200,89.7,200,200C455.6,306.1,436.9,352.2,405.9,387.5z"/>
+           </svg>
+          {% endif %}
+
+        </span>
+        {% endif %}
+         
+         {% if !hide_carticon_in_cart_checkout %}
+        <span class="theme-mobile-header-icon" data-zs-cart-iconcount-container {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart {% endif %}>
+            <div data-zs-cart-icon>
+                {% comment %} MINI-CART START {% endcomment %}
+                    {% include '_store-cart-count' %}
+                {% comment %} MINI-CART END {% endcomment %}
+            </div>            
+        </span>
+        {% endif %}
+        {% comment %} QUOTE START {% endcomment %}
+          {% if page.is_quotes_enabled_in_storefront %}
+            {% include '_store-quotes-count' %}
+          {% endif %}
+        {% comment %} QUOTE END {% endcomment %}
+    </div>
+</div>
+
+    </div>
+    {% endif %}
+    {% if page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}
+    <div class="theme-delivery-location-mobile-container">
+        {% include '_store-select-location' %}
+    </div>
+    {% endif %}
+</div>
+
+
+
+
+{% if (page.is_menu_enabled && (page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART)) || page.is_social_icon_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || page.is_portal_enabled %}
+<div data-zs-mobile-header-slide-wrapper data-zs-drawer class="theme-mobile-header-style-{{ page.template_vars.mobile_header_style }} theme-mobile-header-slidewrapper {% if page.template_vars.header_background == "dark" %}zpdark-header-portion{% endif %}">
+    <div class="theme-mobile-header-slide">
+        <div class="theme-mobile-header-slide-header">
+            {% if page.is_logo_enabled && page.template_vars.is_mobile_logo_enabled %}
+            <span data-zs-mobile-header-logo class="theme-mobile-header-logo {% if !page.template_vars.is_mobile_logo_enabled && page.type != PAGE_TYPE.CHECKOUT %}theme-disable-logo-mobile{% endif %}">
+                <a href="/">
+                    <picture>
+                        <img src="{% if page.logo.url %}{{ page.logo.url }}{% else %}{{ page.template_assets }}/images/logo.png{% endif %}" alt="{{page.site_title}}" />
+                    </picture>
+                </a>
+            </span>
+            {% elif page.type != PAGE_TYPE.CHECKOUT && page.site_title && page.is_title_enabled && page.template_vars.is_mobile_site_title_enabled %}
+                <span data-zs-mobile-header-sitename-caption class="theme-mobile-header-site-name-caption">
+                    {% if page.is_title_enabled && page.site_title %}
+                    <div data-zs-sitename class="theme-mobile-header-site-name">
+                        {{page.site_title}}
+                    </div>
+                    {% endif %}
+                </span>
+            {% endif %}
+            <span data-zs-drawer-close-button class="theme-mobile-header-slide-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M4.707 3.293 3.293 4.707 10.586 12l-7.293 7.293 1.414 1.414L12 13.414l7.293 7.293 1.414-1.414L13.414 12l7.293-7.293-1.414-1.414L12 10.586 4.707 3.293z"/></svg>
+            </span>
+        </div>
+        <div data-zs-drawer-content="navigation" class="theme-mobile-header-slide-content">
+            {% if page.is_menu_enabled || page.is_social_icon_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED %}
+            <div data-zs-responsive-menu-area class="theme-mobile-header-slide-box theme-mobile-header-navigation theme-responsive-menu-area theme-navigation-and-icons">
+                <div class="theme-responsive-menu theme-menu-area" data-zp-responsive-container="mymenu1"></div>
+            </div>
+            {% endif %}
+            {% if page.is_social_icon_enabled %}
+            <div class="theme-mobile-header-sociallinks">
+                {% include '_social-links' %}
+            </div>
+            {% endif %}
+        </div>
+        <div data-zs-drawer-content="portal" class="theme-mobile-header-slide-content">
+            {% if page.is_portal_enabled %}
+                <div class="theme-portal-style" data-theme-portal-responsive="zptheme-portal-responsive"></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+

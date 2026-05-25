@@ -1,0 +1,38 @@
+{% assign collection_obj = collection %}
+{% if category %}
+	{% assign collection_obj = category %}
+{% elif search %}
+    {% assign collection_obj = search %}
+{% endif %}
+
+{% if (page.is_sorting_enabled || filters.is_enabled) && collection_obj.products | size > 1 %}
+    <div data-zs-mobile-header-refine-wrapper class="theme-mobile-header-refine-wrapper {% if page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}theme-mobile-header-delivery-location-enabled{% endif %}">
+        {% if page.is_sorting_enabled %}
+        <div class="theme-mobile-header-sortby">
+            {% comment %} CATEGORY SORTBY {% endcomment %}
+            <select aria-label="{{i18n.get("product.sort_by.label")}}" data-sort-by-products>
+            {% for sort_by_option in collection_obj.sort_by_options %}
+                <option value="{{ sort_by_option.value }}" {% if sort_by_option.is_selected %} selected {% endif %}>{{ sort_by_option.name }}</option>
+            {% endfor %}
+            </select>
+            {% comment %} CATEGORY SORTBY END {% endcomment %}
+        </div>
+        {% endif %}
+        {% if filters.is_enabled && filters.has_filters %}
+        <div data-theme-product-filter-mobile-icon data-zs-mobile-header-filterby class="theme-mobile-header-filterby">
+            
+            <span class="theme-filterby-label">{{i18n.get("product_filters.refine_by.label")}} </span>
+            <span data-zs-mobile-header-filter-selectedcount class="theme-mobile-header-filter-selectedcount"></span>
+        </div>
+         <div class="theme-filter-mobile">
+                {% for filter in filters.filter_set %}
+                    {% if filter.has_filter_options %}
+                        <button data-zs-filter-option-container="{{ filter.name }}" data-zs-filter-option-container-id="{{ filter.id }}" data-zs-filter-option-type="{{ filter.type }}"  data-theme-product-filter-type-mobile-icon data-zs-filter-option-default-value-to-show="{{ filter.value_to_show_by_default }}" class="theme-product-filter-box" onclick="openFilterByDefault(this)">
+                         <span>{{ filter.name }}</span>
+                        </button>
+                    {% endif %}
+                {%endfor%}
+        </div>
+        {% endif %}
+    </div>
+{% endif %}

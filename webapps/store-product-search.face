@@ -1,0 +1,313 @@
+{% assign cdn_prefix_url = "" %}
+{% if page.cdn_prefix_url %}
+  {% assign cdn_prefix_url = page.cdn_prefix_url %}
+  {% assign cdn_suffix_url = "?storefront_domain=" + page.domain_name %}
+{% endif %}
+
+{% comment %} COLLECTION SORTBY AND FILTER MOBILE FLOATING STYLE START {% endcomment %}
+	{% if page.template_vars.mobile_header_style == '03' || page.template_vars.mobile_header_style == '04' %}
+		{% include "_mobileapp-refine-wrapper" %}
+	{% endif %}
+{% comment %} COLLECTION SORTBY AND FILTER MOBILE FLOATING STYLE END {% endcomment %}
+<div class="theme-collection-heading-view-all theme-collection-heading-view-all-search {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}theme-filter-search-result-heading{% endif %}">
+	<h2 class="theme-section-heading zpcol-md-6">
+		{{i18n.get("search.result.title", search.query)}}
+	</h2>
+  {% if page.template_vars.product_category_style == '07' || page.template_vars.product_category_style == '09' %}
+    <div class="theme-sort-by-filter">
+
+    {% if page.is_sorting_enabled && search.products | size > 1 %}
+      <div class="theme-category-sortby-section">
+        <div class=" {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+            <div class="theme-collection-sort" >
+              {% include "_store-custom-sortby" %}
+              {{ sortBy(search,page.template_vars.product_category_style) }}
+            </div>
+        </div>
+      </div>
+    {% endif %}
+
+      {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+        <div class = "theme-filter-container">  
+          <span role="button" class="theme-filter-label" data-toggle-filters onclick='toggleFilters()'>{{i18n.get("product_filters.refine_by.label")}}
+          {% if page.template_vars.product_category_style == '09' %}
+            <svg class='theme-filter-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+              <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+            </svg>
+        {% endif %}
+
+          </span>
+          <div class="theme-filter-overlay">
+          <div data-zs-filter-container class="theme-produt-filter-row">
+            {% include 'store-product-filters' %} 
+          </div>
+          </div>
+        </div>
+    {% endif %}
+
+    </div>
+  {% endif %}
+  {% if page.template_vars.product_category_style != '10' && page.template_vars.product_category_style != '05' && page.template_vars.product_category_style != '13'%}
+    {% if page.is_sorting_enabled && search.products | size > 1 && (!filters.is_enabled || !filters.has_filters) %}
+      {% if page.template_vars.product_category_style == '02' || page.template_vars.product_category_style == '06' ||  page.template_vars.product_category_style == '11'%}
+        <div class="theme-product-filter-icon-mobile-container">
+      {% endif %}
+      <div class='theme-collection-sortby-section {% if page.template_vars.product_category_style == '03' || page.template_vars.product_category_style == '12'  || page.template_vars.product_category_style == '14' %}zpcol-md-6{% endif %}' data-theme-sortby-with-no-filter>
+        {% if page.template_vars.product_category_style == '03' || page.template_vars.product_category_style == '12' || page.template_vars.product_category_style == '14' %}
+          <div class="theme-product-filter-icon-mobile-container">
+        {% endif %}
+        <div class="theme-collection-sort">
+          {% include "_store-custom-sortby" %}
+          {{ sortBy(search,page.template_vars.product_category_style) }}
+        </div>
+        {% if page.template_vars.product_category_style == '03' || page.template_vars.product_category_style == '12' || page.template_vars.product_category_style == '14' %}
+          </div>
+        {% endif %}
+      </div>
+      {% if page.template_vars.product_category_style == '02' || page.template_vars.product_category_style == '06' ||  page.template_vars.product_category_style == '11' %}
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+  {% if page.template_vars.product_category_style == "13" %}
+    {% comment %} VIEW BY START {% endcomment %}
+      <div class="theme-view-by" data-view-by="cards">
+        <span class="theme-view-by-label">View By :</span>
+        <button aria-label="View as cards" class="theme-view-by-cards" data-zs-view-by-cards onclick='toggleProductsView(this, "cards")'>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 11.6C2 10.676 2 10.214 2.2082 9.8744C2.3246 9.6842 2.4842 9.5246 2.6744 9.4082C3.0134 9.2 3.476 9.2 4.4 9.2C5.324 9.2 5.786 9.2 6.1256 9.4082C6.3158 9.5246 6.4754 9.6842 6.5918 9.8744C6.8 10.2134 6.8 10.676 6.8 11.6C6.8 12.524 6.8 12.986 6.5918 13.3262C6.4754 13.5158 6.3158 13.6754 6.1256 13.7918C5.7866 14 5.324 14 4.4 14C3.476 14 3.014 14 2.6744 13.7918C2.48441 13.6756 2.32465 13.516 2.2082 13.3262C2 12.986 2 12.524 2 11.6ZM9.2 11.6C9.2 10.676 9.2 10.214 9.4082 9.8744C9.5246 9.6842 9.6842 9.5246 9.8744 9.4082C10.2134 9.2 10.676 9.2 11.6 9.2C12.524 9.2 12.986 9.2 13.3262 9.4082C13.5158 9.5246 13.6754 9.6842 13.7918 9.8744C14 10.2134 14 10.676 14 11.6C14 12.524 14 12.986 13.7918 13.3262C13.6753 13.5158 13.5158 13.6753 13.3262 13.7918C12.986 14 12.524 14 11.6 14C10.676 14 10.214 14 9.8744 13.7918C9.68441 13.6756 9.52465 13.516 9.4082 13.3262C9.2 12.986 9.2 12.524 9.2 11.6ZM2 4.4C2 3.476 2 3.014 2.2082 2.6744C2.3246 2.4842 2.4842 2.3246 2.6744 2.2082C3.0134 2 3.476 2 4.4 2C5.324 2 5.786 2 6.1256 2.2082C6.3158 2.3246 6.4754 2.4842 6.5918 2.6744C6.8 3.0134 6.8 3.476 6.8 4.4C6.8 5.324 6.8 5.786 6.5918 6.1256C6.4754 6.3158 6.3158 6.4754 6.1256 6.5918C5.7866 6.8 5.324 6.8 4.4 6.8C3.476 6.8 3.014 6.8 2.6744 6.5918C2.48434 6.47543 2.32457 6.31566 2.2082 6.1256C2 5.7866 2 5.324 2 4.4ZM9.2 4.4C9.2 3.476 9.2 3.014 9.4082 2.6744C9.5246 2.4842 9.6842 2.3246 9.8744 2.2082C10.2134 2 10.676 2 11.6 2C12.524 2 12.986 2 13.3262 2.2082C13.5158 2.3246 13.6754 2.4842 13.7918 2.6744C14 3.0134 14 3.476 14 4.4C14 5.324 14 5.786 13.7918 6.1256C13.6754 6.3158 13.5158 6.4754 13.3262 6.5918C12.986 6.8 12.524 6.8 11.6 6.8C10.676 6.8 10.214 6.8 9.8744 6.5918C9.68434 6.47543 9.52457 6.31566 9.4082 6.1256C9.2 5.7866 9.2 5.324 9.2 4.4Z" stroke="black" stroke-opacity="0.5" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button aria-label="View as list" class="theme-view-by-lists" data-zs-view-by-list onclick='toggleProductsView(this, "list")'>
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 7.64C2 6.9452 2.1452 6.8 2.84 6.8H13.16C13.8548 6.8 14 6.9452 14 7.64V8.36C14 9.0548 13.8548 9.2 13.16 9.2H2.84C2.1452 9.2 2 9.0548 2 8.36V7.64ZM2 2.84C2 2.1452 2.1452 2 2.84 2H13.16C13.8548 2 14 2.1452 14 2.84V3.56C14 4.2548 13.8548 4.4 13.16 4.4H2.84C2.1452 4.4 2 4.2548 2 3.56V2.84ZM2 12.44C2 11.7452 2.1452 11.6 2.84 11.6H13.16C13.8548 11.6 14 11.7452 14 12.44V13.16C14 13.8548 13.8548 14 13.16 14H2.84C2.1452 14 2 13.8548 2 13.16V12.44Z" stroke="#FAF3DD" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      {% if (filters.is_enabled && filters.has_filters) %}
+        <div data-theme-product-filter-mobile-icon="" class="theme-product-filter-icon-mobile">
+          <svg aria-hidden="true" viewBox="0 0 16 14" xmlns="http://www.w3.org/2000/svg"><g id="Artboard-Copy-10" stroke="none" stroke-width="1" fill-rule="evenodd"><path id="Path" d="M15.333 0H0l6.133 7.253v5.014L9.2 13.8V7.253z"></path></g></svg>
+        </div>
+      {% elif (page.is_sorting_enabled && search.products | size > 1) %}
+        <div data-theme-product-sortby-mobile-icon="" class="theme-product-filter-icon-mobile">
+          <svg aria-hidden="true" viewBox="0 0 16 14" xmlns="http://www.w3.org/2000/svg"><g id="Artboard-Copy-10" stroke="none" stroke-width="1" fill-rule="evenodd"><path id="Path" d="M15.333 0H0l6.133 7.253v5.014L9.2 13.8V7.253z"></path></g></svg>
+        </div>
+      {% endif %}
+    {% comment %} VIEW BY END {% endcomment %}
+  {% endif %}
+</div>
+
+{% if ( filters.is_enabled && filters.has_filters && search.products | size > 1 ) || page.template_vars.product_category_style == '13' %}
+<div class="theme-collection-section theme-productfilter-enable theme-productfilter-enable-search">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && search.products | size > 1 %}theme-filter-enable-container{% endif %}">
+{% endif %}
+    {% if page.template_vars.product_category_style == '10' %}
+      {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+        {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+          <div class="theme-filter-sortby-container">
+            <div class="theme-filters-header theme-desktop-header">{{i18n.get("product_filters.refine_by.label")}}</div>
+
+            {% comment %} CATEGORY SORTBY {% endcomment %}
+              <div class="theme-product-filter-icon-mobile-container">
+                <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile">
+                  <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+                </div>
+                {% if page.is_sorting_enabled && search.products | size > 1 %}
+                <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+                  <div class="theme-collection-sort">
+                    {% include "_store-custom-sortby" %}
+                    {{ sortBy(search,page.template_vars.product_category_style) }}
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            {% comment %} CATEGORY SORTBY END {% endcomment %}
+            <div data-zs-filter-container class="theme-produt-filter-row">
+              {% include "store-product-filters" %}
+            </div>
+          </div>
+        {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+      {% elif page.is_sorting_enabled && search.products | size > 1 && (!filters.is_enabled || !filters.has_filters) %}
+        {% comment %} CATEGORY SORTBY {% endcomment %}
+          <div class="theme-filter-sortby-container">
+            <div class="theme-product-filter-icon-mobile-container">
+              <div class="theme-collection-sortby-section" data-theme-sortby-with-no-filter>
+                <div class="theme-collection-sort">
+                  {% include "_store-custom-sortby" %}
+                  {{ sortBy(search,page.template_vars.product_category_style) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% comment %} CATEGORY SORTBY END {% endcomment %}
+      {% endif %}
+    {% endif %}
+
+    {% if page.template_vars.product_category_style == '04' || page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' %}
+    <div class="theme-store-collection-container {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %} theme-store-collection-container-filter {% endif %}">
+    {% endif %}
+    {% if page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' && filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+      {% if page.is_sorting_enabled %}
+        <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+          <div class="theme-collection-sort">
+            {% include "_store-custom-sortby" %}
+            {{ sortBy(search,page.template_vars.product_category_style) }}
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+
+      {% if page.template_vars.product_category_style == "13" %}
+        <div class="theme-filter-section zpcol-md-2">
+          <div class="theme-filters-header theme-filters-header-mobile">
+            {% if filters.is_enabled && filters.has_filters %}
+              <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+              <button data-theme-product-filter-overlay type="button" aria-label="{{i18n.get("product.label.close")}} {{i18n.get("product_filters.refine_by.label")}}" class="theme-product-filter-mobile-overlay">
+                <svg class='theme-desktop-close-filters' xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M1 1L11 11" stroke="#BB9D87" stroke-width="0.6"/>
+                  <path d="M11 1L1 11" stroke="#BB9D87" stroke-width="0.6"/>
+                </svg>
+              </button>
+            {% elif page.is_sorting_enabled && search.products | size > 1 %}
+              <div>{{i18n.get("product.sort_by.label")}}</div>
+              <button data-theme-product-sortby-mobile-icon type="button" aria-label="{{i18n.get("product.label.close")}} {{i18n.get("product_filters.refine_by.label")}}" class="theme-product-filter-mobile-overlay">
+                <svg class='theme-desktop-close-filters' xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M1 1L11 11" stroke="#BB9D87" stroke-width="0.6"/>
+                  <path d="M11 1L1 11" stroke="#BB9D87" stroke-width="0.6"/>
+                </svg>
+              </button>
+            {% endif %}
+          </div>
+          <div class="theme-selected-filters-container">
+              {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+                  {% include "_store-product-selected-filter" %}
+              {% endif %}
+          </div>
+          {% comment %} CATEGORY SORTBY {% endcomment %}
+            <div class="theme-product-filter-icon-mobile-container">
+              {% if page.is_sorting_enabled && search.products | size > 1 %}
+              <div class="theme-collection-sortby-section" {% if filters.is_enabled && filters.has_filters %} data-theme-sortby-with-filter {% else %} data-theme-sortby-with-no-filter {% endif %}>
+                <div class="theme-collection-sort">
+                  {% include "_store-custom-sortby" %}
+                  {{ sortBy(search,page.template_vars.product_category_style) }}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            {% comment %} CATEGORY SORTBY END {% endcomment %}
+          {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+              {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+              <div class='theme-filters-container'>
+                  <div data-zs-filter-container class="theme-produt-filter-row">
+                  {% include "store-product-filters" %}
+                  </div>
+              </div>
+              {% endif %}
+          {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+        </div>
+      {% else %}
+        {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+        {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+          {% if page.template_vars.product_category_style == '01' %}
+            <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay">
+              <svg viewBox="0 0 512 513.5" xmlns="http://www.w3.org/2000/svg">
+                <path d="M115.5 92.5l140.5 140.5 140.5-140.5 23 23-140.5 140.5 140.5 140.5-23 23-140.5-140.5-140.5 140.5-23-23 140.5-140.5-140.5-140.5z" />
+              </svg>
+            </div>
+            <div data-zs-filter-container class="theme-produt-filter-row">
+              {% include "store-product-filters" %}
+            </div>
+          {% endif %}
+          {% if page.template_vars.product_category_style == '02' || page.template_vars.product_category_style == '06' ||  page.template_vars.product_category_style == '11' %}
+            <div class='theme-filters-container'>
+                {% if page.template_vars.product_category_style == '06' %}
+                <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay">
+                  <svg viewBox="0 0 512 513.5" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M115.5 92.5l140.5 140.5 140.5-140.5 23 23-140.5 140.5 140.5 140.5-23 23-140.5-140.5-140.5 140.5-23-23 140.5-140.5-140.5-140.5z" />
+                  </svg>
+                </div>
+                {% endif %}
+                <div data-zs-filter-container class="theme-produt-filter-row">
+                {% include "store-product-filters" %}
+                </div>
+            </div>
+          {% endif %}
+          {% if page.template_vars.product_category_style == '03' || page.template_vars.product_category_style == '12' || page.template_vars.product_category_style == '14' %}
+            <div data-zs-filter-container class="theme-produt-filter-row theme-filters-container">
+              {% include "store-product-filters" %}
+            </div>
+          {% endif %}
+          {% if page.template_vars.product_category_style == '04' || page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' %}
+            <div class = "theme-filter-container">
+              <div data-zs-filter-container class="theme-produt-filter-row">
+                {% include 'store-product-filters' %} 
+                </div>
+              </div>
+            {% endif %}
+            {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+            <div class="zprow theme-produt-category-list-row">
+          {% endif %}
+
+          {% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+            <div class="theme-filter-sortby-container">
+
+              {% include "_store-product-selected-filter" %}
+              {% if page.template_vars.product_category_style != '05' && page.template_vars.product_category_style != '10' && page.template_vars.product_category_style != '08' %}
+                <div class="theme-product-filter-icon-mobile-container">
+                {% if page.template_vars.product_category_style == '01' %}
+                  <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile theme-product-filter-icon-mobile-search">
+                    <svg viewBox="0 0 16 14" xmlns="http://www.w3.org/2000/svg"><g id="Artboard-Copy-10" stroke="none" stroke-width="1" fill-rule="evenodd"><path id="Path" d="M15.333 0H0l6.133 7.253v5.014L9.2 13.8V7.253z"/></g></svg>
+                  </div>
+                {% endif %}
+                {% if page.is_sorting_enabled && search.products | size > 1 %}
+                  <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+                    <div class="theme-collection-sort">
+                      {% include "_store-custom-sortby" %}
+                      {{ sortBy(search,page.template_vars.product_category_style) }}
+                    </div>
+                  </div>
+                {% endif %}
+                <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile" {% if !page.is_sorting_enabled %} data-no-sort{% endif %}>
+                      <div class='theme-filters-header'>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                              <path d="M14.3565 21.2333C14.2432 21.2333 14.1299 21.2075 14.0253 21.155L10.3216 19.3033C10.0707 19.1779 9.91197 18.9212 9.91197 18.6408V12.8567L2.67992 4.30461C2.49367 4.08461 2.45242 3.77628 2.57367 3.51461C2.69492 3.25295 2.95742 3.08545 3.24575 3.08545H21.764C22.0523 3.08545 22.3144 3.25295 22.4361 3.51461C22.5573 3.77628 22.5161 4.08461 22.3298 4.30461L15.0978 12.8567V20.4929C15.0978 20.7495 14.9649 20.9879 14.7465 21.1229C14.6278 21.1962 14.4924 21.2337 14.357 21.2337L14.3565 21.2333ZM11.3936 18.1829L13.6157 19.2941V12.5854C13.6157 12.4104 13.6778 12.2408 13.7907 12.1071L20.1673 4.56711H4.842L11.2186 12.1071C11.3316 12.2408 11.3936 12.4104 11.3936 12.5854V18.1833V18.1829Z" fill="black"/>
+                          </svg>
+                          <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="zpcol-md-12 zpcol-sm-12 {% if filters.is_enabled && filters.has_filters && search.products | size > 1 && page.template_vars.product_list_style == '04' %} theme-store-collection-colum-style-04 {% endif %}">
+          {% endif %}
+      {% endif %}
+
+        <div class="zprow theme-product-ratio {% if page.template_vars.product_list_style == '04'  || page.template_vars.product_list_style == '05' %}theme-blur-style-04{% endif %} theme-store-style-collection-row-{{page.template_vars.product_list_style}} {% if !filters.is_enabled && !filters.has_filters && (page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07') %}theme-collection-row-no-margin{% endif %} {% if filters.is_enabled && filters.has_filters && search.products | size > 1 && (page.template_vars.product_list_style == '09' || page.template_vars.product_list_style == '08') %}theme-product-filter-addcart-spacing-08-09{% endif %} {% if filters.is_enabled && filters.has_filters && search.products | size > 1 && page.template_vars.product_list_style == '02' %}theme-product-box-filter-spacing-02{% endif %}" data-sort-by-products-target data-search-result-loading>
+        	{% for product in search.products %}
+        		{% include "store-product-list-view" %}
+        	{% forelse %}
+        		<div role="alert" class="zpcol-md-12 theme-no-products-error {% if page.template_vars.product_list_style == '05' %}theme-no-products-error-style-05{% endif %} {% if page.template_vars.product_list_style == '02' || page.template_vars.product_list_style == '04' || page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '09' %}theme-no-products-error-style-02-04{% endif %}">
+        			{{ no_products_message }}
+        		</div>
+        	{% endfor %}
+        	{% include "_store-pagination" %}
+        </div>
+			  {% if filters.is_enabled && filters.has_filters && search.products | size > 1 || page.template_vars.product_category_style == '13' %}
+        </div>
+      </div>
+			{% endif %}
+
+    {% if page.template_vars.product_category_style == '04' || page.template_vars.product_category_style == '05' || page.template_vars.product_category_style == '08' %}
+    </div>
+    {% endif %}
+    {% if page.template_vars.product_category_style == '13' %}
+      {% include "_store-picklist" %}
+    {% endif %}
+{% if filters.is_enabled && filters.has_filters && search.products | size > 1 %}
+  </div>
+</div>
+{% endif %}
+
+{% include "_loader" %}

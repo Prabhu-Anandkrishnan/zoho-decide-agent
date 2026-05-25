@@ -1,0 +1,69 @@
+<div class="save-for-later-container" data-zs-save-for-later-container style="display: {% if save_for_later | size != 0 %} block {% else %} none {% endif %};">
+  <h3>{{i18n.get("saveforlater.title")}}</h3>
+    <div class="save-for-later-inner-container">
+      {% for variant in save_for_later %}
+        <div class="zpcol-md-3 zpcol-sm-12" data-zs-variant-save-for-later data-zs-variant-id="{{variant.variant_id}}" data-zs-product-id="{{variant.variant_id}}" tabindex="0">
+          <div class="wishlist-grid" data-zs-save-for-later-grid>
+            <div class="wishlist-image">
+              {% assign url = cdn_prefix_url + variant.images[0].url  %}
+              <picture>
+                {% if !variant.images[0].is_placeholder_image %}
+                  <source srcset="{{url}}/400x400{{cdn_suffix_url}} 1x, {{url}}/800x800{{cdn_suffix_url}} 2x">
+                {% endif %}
+                <img rel="preload" as="image" width="300" height="300" data-src="{{url}}{% if !variant.images[0].is_placeholder_image %}/400x400{%endif%}{{cdn_suffix_url}}"
+                    alt="{{variant.images[0].alternate_text}}" style="display:none;"
+                    loading="lazy" decoding="async" class="wishlist-image-container"
+                    data-fallback="{{ variant.images[0].url }}{% if !variant.images[0].is_placeholder_image %}/400x400{%endif%}"
+                    onerror="handleFallBackForImage(this)"/>
+              </picture>
+            </div>
+            <div class="variant-wishlist">
+              <div class="theme-product-name" data-zs-save-for-later-variant-name>
+                <a href="{{ variant.url }}">{{ variant.name }}</a>
+              </div>
+              {% if variant.is_product_review_enabled %}
+                <div class="theme-prod-box-content theme-rating" data-zs-review-id="{{ variant.review_id }}" data-zs-review-type="star-rating"></div>
+              {% endif %}
+              {% if !variant.hide_price %}
+              {% assign currencyObj = currency %}
+              {% if save_for_later_currency && save_for_later_currency.code  %}
+                {% assign currencyObj = save_for_later_currency %}
+              {% endif %}
+              <div class="variant-price" data-zs-save-for-later-pricing data-zs-pricings  data-zs-variant-id="{{ variant.variant_id }}">
+                <span data-zs-selling-price={{variant.rate}} data-zs-currency-code="{{currencyObj.code}}">{{variant.rate | currency(currencyObj)}}</span>
+                {%if variant.label_price && (variant.label_price > variant.rate) %}
+                  <span class="variant-old-price" data-zs-label-price={{variant.label_price}} data-zs-currency-code="{{currencyObj.code}}">{{variant.label_price | currency(currencyObj)}}</span>
+                {% endif %}
+              </div>
+              {% endif %}
+              <div class="variant-addcart-container">
+                <div class="zpbutton-container zpbutton-align-center wishlist-btn">
+                  {% if variant.is_out_of_stock == true %}
+                    <a href="{{variant.url}}" class="theme-button">
+                      <span>{{i18n.get("product.message.out_of_stock")}}</span>
+                    </a>
+                  {% else %}
+                   {% if !variant.hide_add_to_cart %}
+                    <a href="javascript:;" data-zs-move-to-cart data-zs-product-variant-id="{{ variant.variant_id }}" data-zs-product-lineitem-id="{{ variant.item_id}}" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-md">
+                      <span data-theme-cart-button-text="theme-cart-button-text">{{i18n.get("saveforlater.movetocart")}}</span>
+                      <span data-theme-cart-button-loading="theme-cart-button-loading" class="theme-cart-loading" style="display: none;">. . .</span>
+                    </a>
+                    {% endif %}
+                  {% endif %}
+
+                </div>
+                <button type="button" class="wishlist-rm-icon"  data-zs-delete-save-for-later-variant data-zs-product-variant-id={{variant.variant_id}}  data-zs-product-lineitem-id="{{ variant.item_id}}"  aria-label={{i18n.get("wishlist.delete")}}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" style="display:flex; align-items:center;margin:3px;">
+                      <rect width="32" height="32" />
+                      <path
+                        d="M20 13V23H12V13H20ZM18.5 7H13.5L12.5 8H9V10H23V8H19.5L18.5 7ZM22 11H10V23C10 24.1 10.9 25 12 25H20C21.1 25 22 24.1 22 23V11Z"
+                        fill="#999999" />
+                    </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+</div>

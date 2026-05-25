@@ -1,0 +1,32 @@
+@import "_mixin";
+/* #EXCLUDEOUTPUTSTARTS */
+@import "_base-variable";
+/* #EXCLUDEOUTPUTENDS */
+
+// RTL STYLES
+
+html[dir="rtl"] {
+  .theme-shopping-cart-table-container {
+    .theme-cart-table-row {
+      &.theme-checkout-button-area {
+        .theme-cart-table-data {
+          &.theme-cart-continue-shopping-button {
+            .theme-continue-shopping-button {
+              margin-inline-start: auto;
+              margin-inline-end: 0px;
+            }
+            &.theme-cart-empty-shopping-button{
+              .theme-continue-shopping-button{
+                margin-inline-start: 0;
+              }
+            }
+          }
+          .theme-checkout-button {
+            margin-inline-start: 0;
+            margin-inline-end: auto;
+          }
+        }
+      }
+    }
+  }
+}

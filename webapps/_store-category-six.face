@@ -1,0 +1,248 @@
+{% comment %} CATEGORY IMAGE AND DESCRIPTION STARTS {% endcomment %}
+
+  <div class="theme-section" data-category-style-06>
+    <div class="zpcontainer theme-category-image-desc-container {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      <div {% if !collection && !category.images[0].is_placeholder_image %} role="img" {% endif %} class="theme-category-image-description-conatainer {% if collection || category.images[0].is_placeholder_image %}theme-category-image-description-conatainer-no-image{% endif %}"
+      data-fallback-init data-bg="{{cdn_prefix_url}}{% if !!collection && !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}{{cdn_suffix_url}}"
+      data-bg-fallback="{% if !collection && !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}"
+      style="background-image:url({% if !collection && !category.images[0].is_placeholder_image %}{{cdn_prefix_url}}{{category.images[0].url}}/1200x1200{{cdn_suffix_url}}{% endif %});">
+        <div class="{% if !collection && !category.images[0].is_placeholder_image %}theme-category-name-description zpdark-section{% else %}theme-category-name-description-no-imgage{% endif %}">
+          {% comment %} BREADCRUMB STARTS HERE {% endcomment %}
+            {% if page.template_vars.breadcrumb_style == '01' && page.is_breadcrumb_enabled %}
+              <div class="theme-breadcrumb-container" data-breadcrumb-container>
+                <div class="zpcol-md-12">
+                  <div class="theme-product-breadcrumb" data-breadcrumb>
+                    {% for bread_crumb in page.breadcrumbs %}
+                      <a href="{{ bread_crumb.url}}">
+                        {{ bread_crumb.name }}
+                      </a>
+                      <span>/</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% if page.template_vars.breadcrumb_style == '04' && page.is_breadcrumb_enabled %}
+                <div class="theme-product-page-breadcrumb">
+                  <div class="theme-product-breadcrumb">
+                    {% for bread_crumb in page.breadcrumbs %}
+                      {% if loop.last %}
+                        <span class="theme-last-breadcrumb-nav">
+                            {{ bread_crumb.name }}
+                        </span>
+                      {% else %}
+                        <a href="{{ bread_crumb.url }}">
+                          {{ bread_crumb.name }}
+                        </a>
+                        <svg width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+                        </svg>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                </div>
+            {% endif %}
+              
+            {% if page.template_vars.breadcrumb_style == '02' && page.is_breadcrumb_enabled %}
+              <div class="theme-product-page-breadcrumb" data-breadcrumb-container>
+                <div class="theme-product-breadcrumb" data-breadcrumb>
+                  {% for bread_crumb in page.breadcrumbs %}
+                    <a href="{{ bread_crumb.url }}">
+                      {{ bread_crumb.name }}
+                    </a>
+                    <svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+                    </svg>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+                  
+            {% if page.template_vars.breadcrumb_style == '05' && page.is_breadcrumb_enabled %}
+              <div class="theme-breadcrumb-container" data-breadcrumb-container>
+                <div class="theme-product-breadcrumb" data-breadcrumb>
+                  {% for bread_crumb in page.breadcrumbs %}
+                    {% if loop.last %}
+                      <div class="theme-breadcrumb-active">
+                        {{ bread_crumb.name }}
+                      </div>
+                      <span>/</span>
+                    {% else %}
+                      <a href="{{ bread_crumb.url}}">
+                        {{ bread_crumb.name }}
+                      </a>
+                      <span>/</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          {% comment %} BREADCRUMB ENDS HERE {% endcomment %}
+          <h1 class="theme-category-name {% if category.description %}theme-category-name-with-desc{% endif %}">{{ category.name }}</h1>
+          {% if category.description %}
+            <div class="theme-category-description">
+              {{ category.description }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+ {% comment %} CATEGORY IMAGE AND DESCRIPTION END {% endcomment %}
+
+ {% comment %} CATEGORY SORTBY {% endcomment %}
+
+{% if page.is_sorting_enabled && category.products | size > 1 && (!filters.is_enabled || !filters.has_filters) %}
+  <div class="theme-collection-sortby-section theme-section" {% if filters.is_enabled && filters.has_filters %} data-theme-sortby-with-filter {% else %} data-theme-sortby-with-no-filter {% endif %}>
+    <div class="theme-collection-sort zpcontainer">
+      <div aria-hidden="true" class="theme-collection-sort-inner" style='display:none;'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+          <path d="M5.08554 20.6714C4.67638 20.6714 4.34473 20.3398 4.34473 19.9306V14.0387C4.34473 13.6295 4.67638 13.2979 5.08554 13.2979C5.4947 13.2979 5.82636 13.6295 5.82636 14.0387V19.9306C5.82636 20.3398 5.4947 20.6714 5.08554 20.6714Z" fill="black"/>
+          <path d="M5.08554 11.4119C4.67638 11.4119 4.34473 11.0803 4.34473 10.6711V4.77915C4.34473 4.36999 4.67638 4.03833 5.08554 4.03833C5.4947 4.03833 5.82636 4.36999 5.82636 4.77915V10.6711C5.82636 11.0803 5.4947 11.4119 5.08554 11.4119Z" fill="black"/>
+          <path d="M11.8189 20.6713C11.4098 20.6713 11.0781 20.3397 11.0781 19.9305V12.3548C11.0781 11.9457 11.4098 11.614 11.8189 11.614C12.2281 11.614 12.5598 11.9457 12.5598 12.3548V19.9305C12.5598 20.3397 12.2281 20.6713 11.8189 20.6713Z" fill="black"/>
+          <path d="M11.8189 9.72863C11.4098 9.72863 11.0781 9.39696 11.0781 8.98781V4.77915C11.0781 4.36999 11.4098 4.03833 11.8189 4.03833C12.2281 4.03833 12.5598 4.36999 12.5598 4.77915V8.98781C12.5598 9.39696 12.2281 9.72863 11.8189 9.72863Z" fill="black"/>
+          <path d="M18.5533 20.6713C18.1442 20.6713 17.8125 20.3396 17.8125 19.9304V15.7218C17.8125 15.3126 18.1442 14.981 18.5533 14.981C18.9625 14.981 19.2941 15.3126 19.2941 15.7218V19.9304C19.2941 20.3396 18.9625 20.6713 18.5533 20.6713Z" fill="black"/>
+          <path d="M18.5533 13.0956C18.1442 13.0956 17.8125 12.764 17.8125 12.3548V4.77915C17.8125 4.36999 18.1442 4.03833 18.5533 4.03833C18.9625 4.03833 19.2941 4.36999 19.2941 4.77915V12.3548C19.2941 12.764 18.9625 13.0956 18.5533 13.0956Z" fill="black"/>
+          <path d="M7.61046 14.779H2.56015C2.15099 14.779 1.81934 14.4473 1.81934 14.0382C1.81934 13.629 2.15099 13.2974 2.56015 13.2974H7.61046C8.01962 13.2974 8.35128 13.629 8.35128 14.0382C8.35128 14.4473 8.01962 14.779 7.61046 14.779Z" fill="black"/>
+          <path d="M14.3444 9.7287H9.29404C8.88488 9.7287 8.55322 9.39704 8.55322 8.98788C8.55322 8.57873 8.88488 8.24707 9.29404 8.24707H14.3444C14.7535 8.24707 15.0852 8.57873 15.0852 8.98788C15.0852 9.39704 14.7535 9.7287 14.3444 9.7287Z" fill="black"/>
+          <path d="M21.0787 16.4626H16.0284C15.6193 16.4626 15.2876 16.1309 15.2876 15.7218C15.2876 15.3126 15.6193 14.981 16.0284 14.981H21.0787C21.4879 14.981 21.8195 15.3126 21.8195 15.7218C21.8195 16.1309 21.4879 16.4626 21.0787 16.4626Z" fill="black"/>
+        </svg>
+        <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}</span>
+        <span class="theme-sort-colon" >:</span>
+        <select aria-label="{{i18n.get("product.sort_by.label")}}" data-sort-by-products>
+          {% for sort_by_option in category.sort_by_options %}
+            <option value="{{ sort_by_option.value }}" {% if sort_by_option.is_selected %} selected {% endif %}>{{ sort_by_option.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="theme-collection-sort-inner theme-custom-sort" onclick="toggleCustomSort(this)" aria-label="{{i18n.get("product.sort_by.label")}}" role="button" tabindex='0' aria-haspopup="listbox" aria-controls="customSortListbox" aria-expanded="false" onkeydown="handleKeyPressForClick(event, this)">
+        <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}</span>
+        <span class="theme-sort-colon">:</span>
+        <div class="theme-sort-select-container">
+          <div class='theme-custom-select-value' data-custom-select-value>
+            {% for sort_by_option in category.sort_by_options %}
+              {% if sort_by_option.is_selected %}{{ sort_by_option.name }}{% endif %}
+            {% endfor %}
+          </div>
+          <div class='theme-custom-select-option-container' id="customSortListbox" data-custom-select-option-container>
+            {% for sort_by_option in category.sort_by_options %}
+              <div class='theme-custom-select-option {% if sort_by_option.is_selected %} theme-selected-sort {% endif %}' data-value-{{ sort_by_option.value }} aria-label="{{i18n.get("sort_by_option.value")}}" role="button" tabindex='0' onclick='customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)'>{{ sort_by_option.name }}</div>
+            {% endfor %}
+          </div>
+          <svg aria-hidden="true" class='theme-sort-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+            <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% comment %} CATEGORY SORTBY END {% endcomment %}
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+
+<div class="theme-collection-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    {% if page.template_vars.product_list_style == '04' %}
+    <div class="theme-store-collection-container {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %} theme-store-collection-container-filter {% endif %}">
+    {% endif %}
+      {% if category.products | size == 0 %}
+        <h2 role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</h2>
+      {% endif %}
+
+      {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+      {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+        <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay" aria-label="Close filter">
+          <svg aria-hidden="true" viewBox="0 0 512 513.5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M115.5 92.5l140.5 140.5 140.5-140.5 23 23-140.5 140.5 140.5 140.5-23 23-140.5-140.5-140.5 140.5-23-23 140.5-140.5-140.5-140.5z" />
+          </svg>
+        </div>
+        <div data-zs-filter-container class="theme-produt-filter-row">
+          {% include "store-product-filters" %}
+        </div>
+      {% endif %}
+      {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+      <div class="zprow theme-produt-category-list-row">
+
+        <div class="theme-filter-sortby-container">
+
+          {% include "_store-product-selected-filter" %}
+
+          {% comment %} CATEGORY SORTBY {% endcomment %}
+
+          {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+          <div class="theme-product-filter-icon-mobile-container">
+            <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile">
+              <svg viewBox="0 0 16 14" xmlns="http://www.w3.org/2000/svg"><g id="Artboard-Copy-10" stroke="none" stroke-width="1" fill-rule="evenodd"><path id="Path" d="M15.333 0H0l6.133 7.253v5.014L9.2 13.8V7.253z"/></g></svg>
+            </div>
+            {% if page.is_sorting_enabled && category.products | size > 1 %}
+            <div class="theme-collection-sortby-section" {% if filters.is_enabled && filters.has_filters %} data-theme-sortby-with-filter {% else %} data-theme-sortby-with-no-filter {% endif %}>
+              <div class="theme-collection-sort">
+                <div aria-hidden="true" class="theme-collection-sort-inner" style='display:none;'>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                    <path d="M5.08554 20.6714C4.67638 20.6714 4.34473 20.3398 4.34473 19.9306V14.0387C4.34473 13.6295 4.67638 13.2979 5.08554 13.2979C5.4947 13.2979 5.82636 13.6295 5.82636 14.0387V19.9306C5.82636 20.3398 5.4947 20.6714 5.08554 20.6714Z" fill="black"/>
+                    <path d="M5.08554 11.4119C4.67638 11.4119 4.34473 11.0803 4.34473 10.6711V4.77915C4.34473 4.36999 4.67638 4.03833 5.08554 4.03833C5.4947 4.03833 5.82636 4.36999 5.82636 4.77915V10.6711C5.82636 11.0803 5.4947 11.4119 5.08554 11.4119Z" fill="black"/>
+                    <path d="M11.8189 20.6713C11.4098 20.6713 11.0781 20.3397 11.0781 19.9305V12.3548C11.0781 11.9457 11.4098 11.614 11.8189 11.614C12.2281 11.614 12.5598 11.9457 12.5598 12.3548V19.9305C12.5598 20.3397 12.2281 20.6713 11.8189 20.6713Z" fill="black"/>
+                    <path d="M11.8189 9.72863C11.4098 9.72863 11.0781 9.39696 11.0781 8.98781V4.77915C11.0781 4.36999 11.4098 4.03833 11.8189 4.03833C12.2281 4.03833 12.5598 4.36999 12.5598 4.77915V8.98781C12.5598 9.39696 12.2281 9.72863 11.8189 9.72863Z" fill="black"/>
+                    <path d="M18.5533 20.6713C18.1442 20.6713 17.8125 20.3396 17.8125 19.9304V15.7218C17.8125 15.3126 18.1442 14.981 18.5533 14.981C18.9625 14.981 19.2941 15.3126 19.2941 15.7218V19.9304C19.2941 20.3396 18.9625 20.6713 18.5533 20.6713Z" fill="black"/>
+                    <path d="M18.5533 13.0956C18.1442 13.0956 17.8125 12.764 17.8125 12.3548V4.77915C17.8125 4.36999 18.1442 4.03833 18.5533 4.03833C18.9625 4.03833 19.2941 4.36999 19.2941 4.77915V12.3548C19.2941 12.764 18.9625 13.0956 18.5533 13.0956Z" fill="black"/>
+                    <path d="M7.61046 14.779H2.56015C2.15099 14.779 1.81934 14.4473 1.81934 14.0382C1.81934 13.629 2.15099 13.2974 2.56015 13.2974H7.61046C8.01962 13.2974 8.35128 13.629 8.35128 14.0382C8.35128 14.4473 8.01962 14.779 7.61046 14.779Z" fill="black"/>
+                    <path d="M14.3444 9.7287H9.29404C8.88488 9.7287 8.55322 9.39704 8.55322 8.98788C8.55322 8.57873 8.88488 8.24707 9.29404 8.24707H14.3444C14.7535 8.24707 15.0852 8.57873 15.0852 8.98788C15.0852 9.39704 14.7535 9.7287 14.3444 9.7287Z" fill="black"/>
+                    <path d="M21.0787 16.4626H16.0284C15.6193 16.4626 15.2876 16.1309 15.2876 15.7218C15.2876 15.3126 15.6193 14.981 16.0284 14.981H21.0787C21.4879 14.981 21.8195 15.3126 21.8195 15.7218C21.8195 16.1309 21.4879 16.4626 21.0787 16.4626Z" fill="black"/>
+                  </svg>
+                  <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}</span>
+                  <span class="theme-sort-colon" >:</span>
+                  <select aria-label="{{i18n.get("product.sort_by.label")}}" data-sort-by-products>
+                    {% for sort_by_option in category.sort_by_options %}
+                      <option value="{{ sort_by_option.value }}" {% if sort_by_option.is_selected %} selected {% endif %}>{{ sort_by_option.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="theme-collection-sort-inner theme-custom-sort" onclick="toggleCustomSort(this)" aria-label="{{i18n.get("product.sort_by.label")}}" role="button" tabindex='0' aria-haspopup="listbox" aria-controls="customSortListbox" aria-expanded="false" onkeydown="handleKeyPressForClick(event, this)">
+                  <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}}</span>
+                  <span class="theme-sort-colon">:</span>
+                  <div class="theme-sort-select-container">
+                    <div class='theme-custom-select-value' data-custom-select-value>
+                      {% for sort_by_option in category.sort_by_options %}
+                        {% if sort_by_option.is_selected %}{{ sort_by_option.name }}{% endif %}
+                      {% endfor %}
+                    </div>
+                    <div class='theme-custom-select-option-container' id="customSortListbox" data-custom-select-option-container>
+                      {% for sort_by_option in category.sort_by_options %}
+                        <div class='theme-custom-select-option {% if sort_by_option.is_selected %} theme-selected-sort {% endif %}' data-value-{{ sort_by_option.value }} aria-label="{{i18n.get("sort_by_option.value")}}" role="button" tabindex='0' onclick='customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)'>{{ sort_by_option.name }}</div>
+                      {% endfor %}
+                    </div>
+                    <svg aria-hidden="true" class='theme-sort-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+                      <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          {% comment %} CATEGORY SORTBY END {% endcomment %}
+
+        </div>
+
+        <div class="zpcol-md-12 zpcol-sm-12 {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '04' %} theme-store-collection-colum-style-04 {% endif %}">
+          <div class="zprow theme-product-collection-container theme-product-ratio {% if page.template_vars.product_list_style == '04' %}theme-blur-style-04{% endif %} {% if page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07'  %}theme-collection-row-no-margin{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && (page.template_vars.product_list_style == '09' || page.template_vars.product_list_style == '08') %}theme-product-filter-addcart-spacing-08-09{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '02' %}theme-product-box-filter-spacing-02{% endif %}" data-sort-by-products-target>
+          {% for product in category.products %}
+            {% include "store-product-list-view" %}
+          {% endfor %}
+          {% include "_store-pagination" %}
+          </div>
+        </div>
+      </div>
+    {% if page.template_vars.product_list_style == '04' %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% comment %} PRODUCTS LIST CATEGORY PAGE END {% endcomment %}

@@ -1,0 +1,21 @@
+<div class="zpcontainer theme-picklist-basket" data-zs-picklist>
+  <div class="zprow zpjustify-content-flex-end theme-picklist-basket-content">
+    <div class="zpcol-3">
+      <div class="theme-picklist-item-count">
+        <span class="theme-picklist-label">{{i18n.get("product.message.added_to_cart")}}</span>
+        <span>:</span>
+        <span class="theme-picklist-value" data-zs-piclist-count>0</span>
+      </div>
+      <span class="theme-divider">|</span>
+      <div class="theme-picklist-item-price">
+        <span class="theme-picklist-label">{{i18n.get("checkout.order_review.sub_total")}}</span>
+        <span>:</span>
+        <span data-zs-currency-symbol="{{currency.symbol}}">{{currency.symbol_formatted}}</span>
+        <span class="theme-picklist-value" data-zs-piclist-total>0</span>
+      </div>
+    </div>
+    <div class="zpcol-3">
+      <button class="zpbutton zpbutton-type-primary" type="button" data-zs-view-mini-cart>{{i18n.get("product.label.view_cart")}}</button>
+    </div>
+  </div>
+</div>

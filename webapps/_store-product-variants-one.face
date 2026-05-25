@@ -1,0 +1,71 @@
+<select style="display: none" data-zs-variants>
+	{% for variant in product.variants %}
+		{% assign variant_options = variant.options %}
+		{% assign variant_option_identifiers = variant_options | map(attr="id") %}
+		{% assign variant_images = variant.images %}
+		{% assign variant_image_identifiers = variant_images | map(attr="id") %}
+		<option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-hide-add-to-cart='{{variant.hide_add_to_cart}}' data-zs-show-add-to-quote='{{variant.show_add_to_quote}}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'></option>
+	{% endfor %}
+</select>
+
+{% for attribute in product.attributes %}
+<div class="theme-product-varients-row" data-zs-product-variant-container>
+		<div class="theme-product-variant" data-zs-product-variant-container="{{attribute.name}}" {% if attribute.type == 'Color' %}data-zs-product-color-variants{% endif %}>
+			<div class="theme-product-variant-label" data-zs-product-variant-label>
+				{{ attribute.name }}
+			</div>
+
+			{% if attribute.type == 'Color' %}
+				<fieldset role="radiogroup" aria-label="Choose {{ attribute.name }}" class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+					<legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+						{% for coloroption in attribute.options %}
+						<span class="theme-product-color">
+							<label tabindex="0"
+								aria-checked="false"
+								role="radio"
+								aria-label="{{ coloroption.value }}" 
+								for="{{ coloroption.id }}" 
+								data-theme-color-label style="background:{{coloroption.color_code}}" onclick="selectcolor(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+								<input id="{{ coloroption.id }}" type="radio" name="{{ attribute.id }}" data-zs-attribute-option value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+								{% if page.template_vars.product_details_style == '11' %}
+								<svg xmlns="http://www.w3.org/2000/svg" width="15" height="12" viewBox="0 0 15 12" fill="none">
+									<g clip-path="url(#clip0_4044_4076)">
+										<path d="M14.2848 0.436843C11.5171 2.31695 8.34915 5.10118 5.89617 9.15299C5.72766 9.43137 5.48934 9.97409 4.87723 10.9972C4.85369 11.0364 4.78719 11.1331 4.66989 11.2202C4.62652 11.2524 4.52244 11.328 4.38366 11.354C4.38366 11.354 4.20771 11.3871 3.99955 11.2995C2.63325 10.7242 0.6441 7.92423 0.6441 7.92423C0.283938 7.41455 0.112944 7.15145 0.0716416 6.7599C0.0245563 6.313 0.157139 5.80498 0.316981 5.19204C0.329785 5.14207 0.35374 5.0735 0.397521 4.93473C0.44502 4.78562 0.580493 4.36351 0.808485 3.83648C0.912568 3.5961 0.94561 3.5548 1.00385 3.52217C1.21697 3.40404 1.66222 3.8307 1.72541 3.891C2.49075 4.62413 3.41098 6.5633 3.74718 7.29601C3.78601 7.36168 3.85292 7.40629 3.9285 7.41579C4.03589 7.42901 4.11808 7.39307 4.15195 7.37408C4.26884 7.30882 4.32088 7.19647 4.32914 7.18078C4.46503 6.90983 7.08983 4.04382 9.19669 2.48258C10.1847 1.75028 11.7583 0.786679 14.07 0.109311C14.1539 0.0704868 14.2505 0.087834 14.3063 0.148549C14.3752 0.224134 14.3715 0.355064 14.2852 0.43643L14.2848 0.436843Z" fill="white"/>
+									</g>
+									<defs>
+										<clipPath id="clip0_4044_4076">
+											<rect width="14.292" height="11.2716" fill="white" transform="translate(0.0620117 0.088623)"/>
+										</clipPath>
+									</defs>
+								</svg>
+							{% endif %}
+							</label>
+						</span>
+						{% endfor %}
+					<div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+				</fieldset>
+			{% else %}
+				<div class="theme-variant-select-container-main">
+					<fieldset aria-label="Choose {{ attribute.name }}" class="theme-variant-select-container" role="radiogroup" aria-label="{{ attribute.name }}" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+						<legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+							{% for variantOption in attribute.options %}
+							<span class="theme-product-variant">
+								<label tabindex="0"
+									aria-checked="false" 
+									aria-label="{{ coloroption.value }}" 
+									role="radio"
+									for="{{ variantOption.id }}" data-theme-variant-label onclick="selectVariant(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+									{{variantOption.value}}
+									<input id="{{ variantOption.id }}" type="radio" name="{{ attribute.id }}" data-zs-attribute-option value="{{ variantOption.id }}" data-text="{{ variantOption.value }}">
+								</label>
+							</span>
+							{% endfor %}
+					</fieldset>
+
+					<div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+
+				</div>
+			{% endif %}
+		</div>
+</div>
+{% endfor %}

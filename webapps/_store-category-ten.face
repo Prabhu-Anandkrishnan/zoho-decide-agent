@@ -1,0 +1,89 @@
+{% comment %} CATEGORY IMAGE AND DESCRIPTION STARTS {% endcomment %}
+
+  <div class="theme-section" data-category-style-10>
+    <div class="zpcontainer-fluid theme-category-image-desc-container {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      <div {% if !category.images[0].is_placeholder_image %} role="img" {% endif %} class="theme-category-image-description-conatainer {% if category.images[0].is_placeholder_image %}theme-category-image-description-conatainer-no-image{% endif %}" 
+      data-fallback-init data-bg="{{cdn_prefix_url}}{% if !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}{{cdn_suffix_url}}"
+      data-bg-fallback="{% if !category.images[0].is_placeholder_image %}{{category.images[0].url}}/1200x1200{% endif %}"
+      style="background-image:url({% if !category.images[0].is_placeholder_image %}{{cdn_prefix_url}}{{category.images[0].url}}/1200x1200{{cdn_suffix_url}}{% endif %});">
+        <div class="theme-category-name-description-no-imgage {% if !category.images[0].is_placeholder_image %}theme-category-name-description{% endif %}">
+          <h1 class="theme-category-name {% if category.description %}theme-category-name-with-desc{% endif %}">{{ category.name }}</h1>
+          {% if category.description %}
+            <div class="theme-category-description">
+              {{ category.description }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% comment %} CATEGORY IMAGE AND DESCRIPTION END {% endcomment %}
+
+<div class="theme-collection-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      {% if category.products | size == 0 %}
+        <h2 role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</h2>
+      {% endif %}
+
+      {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+        {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+          <div class="theme-filter-sortby-container">
+            <div class="theme-filters-header theme-desktop-header">{{i18n.get("product_filters.refine_by.label")}}</div>
+
+            {% comment %} CATEGORY SORTBY {% endcomment %}
+                <div class="theme-product-filter-icon-mobile-container">
+                  <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile">
+                    <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+                  </div>
+                  {% if page.is_sorting_enabled && category.products | size > 1 %}
+                  <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+                    <div class="theme-collection-sort">
+                      {% include "_store-custom-sortby" %}
+                      {{ sortBy(category,page.template_vars.product_category_style) }}
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+            {% comment %} CATEGORY SORTBY END {% endcomment %}
+            <div data-zs-filter-container class="theme-produt-filter-row">
+              {% include "store-product-filters" %}
+            </div>
+          </div>
+        {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+      {% elif page.is_sorting_enabled && category.products | size > 1 && (!filters.is_enabled || !filters.has_filters) %}
+        {% comment %} CATEGORY SORTBY {% endcomment %}
+          <div class="theme-filter-sortby-container">
+            <div class="theme-product-filter-icon-mobile-container">
+              <div class="theme-collection-sortby-section" data-theme-sortby-with-no-filter>
+                <div class="theme-collection-sort">
+                  {% include "_store-custom-sortby" %}
+                  {{ sortBy(category,page.template_vars.product_category_style) }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% comment %} CATEGORY SORTBY END {% endcomment %}
+      {% endif %}
+
+
+      {% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+      <div class="zprow theme-produt-category-list-row">
+        {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+          <div class="theme-category-header">{{ category.name }}</div>
+        {% endif %}
+        {% include "_store-product-selected-filter" %}
+        <div class="zpcol-md-12 zpcol-sm-12 {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '04' %} theme-store-collection-colum-style-04 {% endif %}">
+          <div class="zprow theme-product-collection-container theme-product-ratio {% if page.template_vars.product_list_style == '04' %}theme-blur-style-04{% endif %} {% if page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07'  %}theme-collection-row-no-margin{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && (page.template_vars.product_list_style == '09' || page.template_vars.product_list_style == '08') %}theme-product-filter-addcart-spacing-08-09{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '02' %}theme-product-box-filter-spacing-02{% endif %}" data-sort-by-products-target>
+          {% for product in category.products %}
+            {% include "store-product-list-view" %}
+          {% endfor %}
+          {% include "_store-pagination" %}
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+{% comment %} PRODUCTS LIST CATEGORY PAGE END {% endcomment %}

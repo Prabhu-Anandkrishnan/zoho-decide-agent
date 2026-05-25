@@ -1,0 +1,772 @@
+{% extends "_theme" %}
+
+{% block header_area %}
+
+	{% include '_header' %}
+
+{% endblock %}
+
+{% block content_area %}
+
+{% comment %} HEADER STYLE-06 CODE COMES HERE WHEN THERE IS HEADER STYLE-06 AND SIDEBAR ENABLED {% endcomment %}
+
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+  <div class="theme-vertical-navigation-sidebar-container">
+{% endif %}
+
+{% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && (page.is_portal_enabled || page.is_multi_currency_enabled || page.is_contact_information_enabled || page.is_menu_enabled || page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || page.is_logo_enabled || page.is_title_enabled || page.is_caption_enabled || page.is_delivery_location_enabled) %}
+
+<div class="theme-vertical-navigation-container {% if page.is_multi_currency_enabled %}theme-currency-enable-vertical{% endif %} {% if page.is_sidebar_enabled %} theme-veritical-nav-with-sidebar {% endif %}" data-theme-vertical-menu="zptheme-vertical-menu">
+	<div data-megamenu-content-container class="theme-header {% if page.template_vars.header_background == "dark" %}zpdark-header-portion theme-dark-part-applied{% endif %} {% if page.template_vars.header_background == "dark" && page.is_sidebar_enabled %}zpdark-section{% endif %}" data-banner-base-header="theme-banner-base-header">
+		<div class="zpcontainer">
+			{% if portal_position == "01" || page.is_multi_currency_enabled || page.is_delivery_location_enabled %}
+			<div class="theme-header-topbar theme-vertical-navigation-portal {% if page.template_vars.topbar_background == "dark" %}zpdark-header-portion theme-dark-part-applied{% endif %}" data-banner-base-header="theme-banner-base-header">
+				{% if portal_position == "01" %}
+				<div data-theme-portal-non-responsive="zptheme-portal-non-responsive">
+					{% include '_member-portal' %}
+				</div>
+				{% endif %}
+
+        {% if page.is_multi_currency_enabled %}
+				<div data-theme-currency-placeholder-non-res class="theme-currency-container-style-06-non-res">
+					{% include '_store-currency-target' %}
+				</div>
+        {% endif %}
+
+        {% if page.is_delivery_location_enabled %}
+          {% include '_store-select-location' %}
+        {% endif %}
+
+			</div>
+			{% endif %}
+
+			{% include '_branding' %}
+
+			{% if !hide_search_in_cart_checkout || !hide_carticon_in_cart_checkout || portal_position == "02" %}
+			<div class="theme-navigation-and-icons theme-vertical-navigation-search-cart-container">
+				<div data-search-cart-position-non-responsive="zptheme-search-cart-position-non-responsive" class="theme-search-cart-non-res">
+					{% include '_search-store-cart-count' %}
+				</div>
+			</div>
+			{% endif %}
+
+			{% if page.is_menu_enabled %}
+			<div class="theme-navigation-and-icons">
+				<div class="theme-menu-area" data-zp-nonresponsive-container="mymenu1">
+					<div class="theme-menu {% if template_vars.navigation_menu_icon_position == "02" %} theme-menu-icon-top{% endif %} {% if template_vars.sub_menu_icon_position == "02"%} theme-submenu-icon-top{% endif %}" data-nav-menu-icon-width={{template_vars.size_nav_menu_icon_width | remove("px") }} data-nav-menu-icon-height={{template_vars.size_nav_menu_icon_height | remove("px") }} data-sub-menu-icon-height={{template_vars.size_sub_menu_icon_height | remove("px") }} data-sub-menu-icon-width={{template_vars.size_sub_menu_icon_width | remove("px") }} data-mega-menu-icon-width={{template_vars.size_mega_menu_icon_width | remove("px") }} data-mega-menu-icon-height={{template_vars.size_mega_menu_icon_height | remove("px") }} data-non-res-menu='zptheme-menu-non-res' data-zp-theme-menu="id: mymenu1 ;active: theme-menu-selected; maxitem: {{page.template_vars.maxmenuitem}};position: theme-sub-menu-position-change; orientation: vertical; submenu: theme-sub-menu; moretext: {{i18n.get('menu.more.text')}}; nonresponsive-icon-el: theme-non-responsive-menu; responsive-icon-el: theme-responsive-menu; burger-close-icon: theme-close-icon; animate-open: theme-toggle-animate; animate-close: theme-toggle-animate-end;open-icon: theme-submenu-down-arrow; close-icon: theme-submenu-up-arrow; root-icon: theme-submenu-down-arrow; subtree-icon: theme-submenu-right-arrow;">
+						{{navi(menu, template_vars)}}
+						{% if page.template_vars.mobile_header_style == "02" && page.is_portal_enabled %}
+						  <div data-theme-portal-responsive="zptheme-portal-responsive" class="theme-portal-style"></div>
+						{% endif %}
+						<div data-theme-currency-placeholder-res class="theme-currency-res">
+						</div>
+            {% if page.is_delivery_location_enabled %}
+              <div class="theme-delivery-location-mobile-container">
+              {% include '_store-select-location' %}
+              </div>
+            {% endif %}
+						<div class="theme-close-mobile-currency" data-theme-currency-open-top>
+							<div class="theme-currency-open-label">
+								{{i18n.get("currency.label")}}
+							</div>
+							<div onclick="closeCurrencyMobile()" class="theme-currency-close-icon-container" data-theme-currency-hide-mobile>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+
+      <div class="theme-sidebar-area"> {% comment %} TO GIVE BOTTOM SPACE TO CONTACT INFO - IN PAGE FACE WE HAVE SIDEBAR CONTENT {% endcomment %}
+      </div>
+
+		</div>
+
+		{% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.is_contact_information_enabled %}
+		<div class="zpcontainer theme-vertical-navigation-contact-social-container">
+			<div class="theme-vertical-navigation-contact-social">
+				<div class="theme-header-topbar">
+					{% if page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled %}
+						{% include '_social-links' %}
+					{% endif %}
+					{% if page.is_contact_information_enabled %}
+					<div data-topbarinfo-position="zptheme-topbarinfo-position">
+						{% include '_contacts' %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		{% endif %}
+
+	</div>
+</div>
+{% endif %}
+
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+	<div class="theme-vertical-header-sidebar-banner-content-container">
+{% endif %}
+
+{% include "_wishlist-view" %}
+
+<div data-theme-content-container="theme-content-container" class="theme-content-area {% if page.template_vars.header_style == "06" && page.is_portal_enabled || page.template_vars.header_style == "06" && page.is_contact_information_enabled || page.template_vars.header_style == "06" && page.is_menu_enabled || page.template_vars.header_style == "06" && page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.template_vars.header_style == "06" && page.is_search_enabled || page.template_vars.header_style == "06" && page.is_store_enabled || page.template_vars.header_style == "06" && page.is_logo_enabled || page.template_vars.header_style == "06" && page.is_title_enabled || page.template_vars.header_style == "06" && page.is_caption_enabled %}zpcontent-for-header-06{% endif %} {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled %}zpcontent-for-productdetails-header-06{% endif %} {% if page.template_vars.is_site_full_stretch %}theme-pages-full-stretch{% endif %}">
+		<div class="theme-content-container theme-product-details-style-{{page.template_vars.product_details_style}}">
+			<main class="theme-content-area-inner" data-zs-product-details-section-container id="main-content">
+				{% comment %} BREADCRUMB STARTS HERE {% endcomment %}
+				{% if page.template_vars.breadcrumb_style == '01' && page.is_breadcrumb_enabled %}
+				  <div class="theme-section theme-breadcrumb-container" data-zs-product-details-breadcrumb-section data-breadcrumb-container>
+				    <div class="zpcontainer">
+				      <div class="zpcol-md-12">
+				        <div class="theme-product-breadcrumb" data-breadcrumb>
+				          {% for bread_crumb in page.breadcrumbs %}
+				            <a href="{{ bread_crumb.url}}">{{ bread_crumb.name }}</a>
+				            <span>/</span>
+				          {% endfor %}
+			            </div>
+				       </div>
+				    </div>
+				  </div>
+				{% endif %}
+				{% if page.template_vars.breadcrumb_style == '02' && page.is_breadcrumb_enabled %}
+				  <div class="theme-section theme-product-page-breadcrumb theme-product-page-breadcrumb-details {% if page.template_vars.product_details_style == '02' %}theme-breadcrumb-bottom-space{% endif %}" data-zs-product-details-breadcrumb-section data-breadcrumb-container>
+				    <div class="zpcontainer">
+				      <div class="theme-product-breadcrumb" data-breadcrumb>
+				        {% for bread_crumb in page.breadcrumbs %}
+				          <a href="{{ bread_crumb.url }}">{{ bread_crumb.name }}</a>
+				          <svg width="1792" height="1792" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+				            <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+				          </svg>
+				        {% endfor %}
+				      </div>
+				    </div>
+				  </div>
+				{% endif %}
+				{% if page.template_vars.breadcrumb_style == '04' && page.is_breadcrumb_enabled %}
+				  <div class="theme-section theme-breadcrumb-container" data-zs-product-details-breadcrumb-section data-breadcrumb-container>
+				    <div class="zpcontainer">
+				      <div class="theme-product-breadcrumb">
+				        {% for bread_crumb in page.breadcrumbs %}
+				          {% if loop.last %}
+				            <span class="theme-last-breadcrumb-nav"> {{ bread_crumb.name }}</span>
+				          {% else %}
+				            <a href="{{ bread_crumb.url }}">{{ bread_crumb.name }}</a>
+				            <svg width="15" height="15" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+				              <path d="M1171 960q0 13-10 23l-466 466q-10 10-23 10t-23-10l-50-50q-10-10-10-23t10-23l393-393-393-393q-10-10-10-23t10-23l50-50q10-10 23-10t23 10l466 466q10 10 10 23z"/>
+				            </svg>
+				          {% endif %}
+				        {% endfor %}
+				      </div>
+				    </div>
+				  </div>
+				{% endif %}
+			
+        {% if page.template_vars.breadcrumb_style == '05' && page.is_breadcrumb_enabled %}
+          <div class="theme-section theme-breadcrumb-container" data-zs-product-details-breadcrumb-section data-breadcrumb-container>
+            <div class="zpcontainer">
+              <div class="theme-product-breadcrumb" data-breadcrumb>
+                {% for bread_crumb in page.breadcrumbs %}
+                  {% if loop.last %}
+                    <div class="theme-breadcrumb-active">
+                      {{ bread_crumb.name }}
+                    </div>
+                    <span>/</span>
+                  {% else %}
+                    <a href="{{ bread_crumb.url}}">
+                      {{ bread_crumb.name }}
+                    </a>
+                    <span>/</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+				{% comment %} BREADCRUMB ENDS HERE {% endcomment %}
+
+				{% if page.template_vars.product_details_style == '01' %}
+
+					{% include "_store-product-one" %}
+
+				{% elif page.template_vars.product_details_style == '02' || page.template_vars.product_details_style == '14' %}
+
+					{% include "_store-product-two" %}
+
+				{% elif page.template_vars.product_details_style == '03' %}
+
+				  {% include "_store-product-three" %}
+
+				{% elif page.template_vars.product_details_style == '04' %}
+
+				  {% include "_store-product-four" %}
+				  
+				{% elif page.template_vars.product_details_style == '05' %}
+
+					{% include "_store-product-five" %}
+					
+				{% elif page.template_vars.product_details_style == '09' %}
+
+					{% include "_store-product-nine" %}
+
+				{% elif page.template_vars.product_details_style == '06' %}
+
+				  {% include "_store-product-six" %}
+
+				{% elif page.template_vars.product_details_style == '07' %}
+
+				  {% include "_store-product-seven" %}
+				  
+				{% elif page.template_vars.product_details_style == '08' %}
+
+				  {% include "_store-product-eight" %}
+
+				{% elif page.template_vars.product_details_style == '10' %}
+
+				  {% include "_store-product-ten" %}
+				  
+				{% elif page.template_vars.product_details_style == '11' %}
+
+				  {% include "_store-product-eleven" %}
+
+				{% elif page.template_vars.product_details_style == '12' %}
+
+				  {% include "_store-product-twelve" %}
+				  
+				{% elif page.template_vars.product_details_style == '13' %}
+
+				  {% include "_store-product-thirteen" %}
+				  
+				{% elif page.template_vars.product_details_style == '15' %}
+
+				  {% include "_store-product-fifteen" %}
+				  
+				{% endif %}
+
+				
+				{% if page.template_vars.product_content_style == '01' %}
+					{% if product.description || ( page.is_specification_enabled && product.specification_group | size != 0 ) || (page.template_vars.product_content_style == '01' && product.is_product_review_enabled)%}
+						<div class="theme-section  {% if page.template_vars.product_content_style == '01'%}theme-detail-tab-with-reviews{% endif %}" data-zs-product-details-tab-section>
+							<div class="zpcontainer">
+								<div class="theme-prod-detail-tab-tabcontent-container" data-zs-detail-tabs-tabcontents-container>
+									<div class="theme-prod-detail-tabs" data-zs-detail-tabs-container>
+										{% if product.description %}
+											<div class="theme-prod-detail-tab theme-prod-detail-tab-active" data-detail-tab="theme-product-detail" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">
+												{{i18n.get("product.label.details")}} 
+											</div>
+										{% endif %}
+										{% if page.is_specification_enabled && product.specification_group | size != 0 %}
+											<div class="theme-prod-detail-tab{% if !product.description %} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-specification" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">{{i18n.get("product.label.specifications")}}</div>
+										{% endif %}
+										{% if product.is_product_review_enabled && page.template_vars.product_content_style == '01'%}
+											<div class="theme-prod-detail-tab{% if !product.description && !(page.is_specification_enabled && product.specification_group | size != 0)%} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-review" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">Ratings & Reviews</div>
+										{% endif %}
+									</div>
+									<div class="theme-prod-detail-tabs" data-zs-detail-tabs-container>        
+										{% if product.description %}
+											<div class="tab-accordian">
+												<div class="theme-prod-detail-tab theme-prod-detail-tab-active" data-detail-tab="theme-product-detail" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">
+													{{i18n.get("product.label.details")}} 
+												</div>
+												<div class="theme-prod-detail-tab-content theme-prod-detail-tab-content-active" data-detail-tab-content="theme-product-detail-content">
+													<div class="theme-tab-name"> {{i18n.get("product.label.details")}} </div>
+													<div class="theme-prod-detail-content-info-container">
+														{{ product.description }}
+													</div>
+												</div>
+											</div>
+										{% endif %}
+										{% if page.is_specification_enabled && product.specification_group | size != 0 %}
+											<div class="tab-accordian">
+												<div class="theme-prod-detail-tab{% if !product.description %} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-specification" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">{{i18n.get("product.label.specifications")}}</div>
+												<div class="theme-prod-detail-tab-content{% if !product.description %} theme-prod-detail-tab-content-active{% endif %}" data-detail-tab-content="theme-product-specification-content">
+													<div class="theme-tab-name">{{i18n.get("product.label.specifications")}}</div>
+													<div class="theme-prod-specification-table">
+														{% for specification_group in product.specification_group %}
+															<h5 class="theme-prod-specification-group">{{specification_group.name}}</h5>
+															<ul>
+																{% for attributes in specification_group.attributes %}
+																	<li><div class="theme-prod-specification-field">{{attributes.name}}</div><div class="theme-prod-specification-value">{{attributes.value}}</div></li>
+																{% endfor %}
+															</ul>
+														{% endfor %}
+													</div>
+												</div>
+											</div>
+										{% endif %}
+										{% if product.is_product_review_enabled && page.template_vars.product_content_style == '01'%}
+											<div class="tab-accordian">
+												<div class="theme-prod-detail-tab{% if !product.description && !(page.is_specification_enabled && product.specification_group | size != 0)%} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-review" role="button" tabindex="0" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') detailtab(this)">Ratings & Reviews</div>
+												<div class="theme-prod-detail-tab-content{% if !product.description && !(page.is_specification_enabled && product.specification_group | size != 0)%} theme-prod-detail-tab-content-active{% endif %}" data-zs-product-details-commentbox-section data-detail-tab-content="theme-product-review-content">
+													<div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox"></div>
+												</div>
+											</div>
+										{% endif %}
+									</div>
+									{% comment %} COMMENT BOX ENDS HERE {% endcomment %}
+								</div>
+							</div>
+						</div>
+						<div class="zprow">
+							<div class="zpcol-md-12 zpcol-sm-12">
+								<div class="theme-product-ratio" data-zs-upsell-products>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+				{%endif%}
+
+						{% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+							<div class="theme-section" data-zs-product-details-recommended-section>
+								<div class="zpcontainer">
+									<div class="zprow">
+										<div class="zpcol-md-12 zpcol-sm-12">
+											<div class="theme-product-ratio" data-zs-recommended-products>
+
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+					{%endif%}
+
+				{% if page.template_vars.product_content_style == '02' %}
+					{% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+						<div class="theme-section" data-zs-product-details-recommended-section>
+							<div class="zpcontainer">
+								<div class="zprow">
+									<div class="zpcol-md-12 zpcol-sm-12">
+										<div class="theme-product-ratio" data-zs-recommended-products>
+
+										</div>
+									</div>
+								</div>
+								<div class="zprow">
+									<div class="zpcol-md-12 zpcol-sm-12">
+										<div class="theme-product-ratio" data-zs-upsell-products>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+					{{commentbox_rating}}
+                    {% if page.template_vars.product_details_style == '10' %}
+                      {% if product.is_product_review_enabled %}
+                        <div class="theme-product-review-container">
+                          <div tabindex="0" class="theme-product-review" data-review-label>{{i18n.get("product.label.reviews")}}</div>
+                          <div class="theme-review-content" data-detail-tab-content="theme-product-review-content">
+                            <div class="theme-section" data-zs-product-details-commentbox-section>
+                              <div class="zpcontainer">
+                                <div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+
+          {% if page.template_vars.product_content_style == '03' %}
+            {% if (product.description || ( page.is_specification_enabled && product.specification_group | size != 0 )) && page.template_vars.product_details_style != '03' %}
+              <div class="theme-section theme-product-specification-section" data-zs-product-details-tab-section>
+                <div class="zpcontainer">
+                  <div class="theme-product-detail-tab-tabcontent-container" data-zs-detail-tabs-tabcontents-container>
+                    <div class="theme-product-detail-tabs" data-zs-detail-tabs-container>
+                      {% if product.description %}
+                        <div class="theme-product-detail-tab theme-prod-detail-tab-active" data-detail-tab="theme-product-detail" onclick="detailtab(this)">
+                          {{i18n.get("product.label.details")}}
+                        </div>
+                      {% endif %}
+                      {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+                        <div class="theme-product-detail-tab {% if !product.description %} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-specification" onclick="detailtab(this)">{{i18n.get("product.label.specifications")}}</div>
+                      {% endif %}
+                    </div>
+                    <div class="theme-product-detail-tab-contents" data-zs-detail-tabs-content-container>
+                      {% if product.description %}
+                        <div class="theme-product-detail-tab-content theme-prod-detail-tab-content-active" data-detail-tab-content="theme-product-detail-content">
+                          <div class="theme-product-detail-content-info-container">
+                            {{ product.description }}
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+                        <div data-detail-tab-content="theme-product-specification-content" class="theme-product-detail-tab-content {% if !product.description %} theme-prod-detail-tab-content-active{% endif %}">
+                          <div class="theme-prod-specification-table">
+                            {% for specification_group in product.specification_group %}
+                              <h5 class="theme-prod-specification-group">{{specification_group.name}}</h5>
+                              <ul>
+                                {% for attributes in specification_group.attributes %}
+                                  <li><div class="theme-prod-specification-field">{{attributes.name}}</div><div class="theme-prod-specification-value">{{attributes.value}}</div></li>
+                                {% endfor %}
+                              </ul>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            {% comment %} COMMENT BOX STARTS HERE {% endcomment %}
+
+            {% if product.is_product_review_enabled %}
+              <div class="theme-section" data-zs-product-details-commentbox-section>
+                <div class="zpcontainer">
+                  <div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox">
+
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            {% comment %} COMMENT BOX ENDS HERE {% endcomment %}
+
+            {% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+              <div class="theme-section" data-zs-product-details-recommended-section>
+                <div class="zpcontainer">
+                  <div class="zprow">
+                    <div class="zpcol-md-12 zpcol-sm-12">
+                      <div class="theme-product-ratio" data-zs-recommended-products>
+
+                      </div>
+                    </div>
+                  </div>
+
+									<div class="zprow">
+										<div class="zpcol-md-12 zpcol-sm-12">
+											<div class="theme-product-ratio" data-zs-upsell-products>
+
+											</div>
+										</div>
+									</div>
+                </div>
+              </div>
+            {% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+          {% endif %}
+	
+        {% if page.template_vars.product_content_style == '04' %}
+          <div class="theme-section" data-zs-product-details-tab-section>
+            <div class="zpcontainer">
+              {% if product.description || ( page.is_specification_enabled && product.specification_group | size != 0 ) %}
+                <div class="theme-prod-detail-tab-tabcontent-container" >
+                  <div class="theme-prod-detail-tabs" data-zs-detail-tabs-container>
+                    {% if product.description %}
+                      <div role="button" tabindex="0" class="theme-prod-detail-tab theme-prod-detail-tab-active" data-detail-tab="theme-product-detail" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') { detailtab(this); }">{{i18n.get("product.label.details")}}</div>
+                    {% endif %}
+                    {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+                      <div role="button" tabindex="0" aria-label="{{i18n.get("product.label.specifications")}}" class="theme-prod-detail-tab{% if !product.description %} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-specification" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') { detailtab(this); }">{{i18n.get("product.label.specifications")}}</div>
+                    {% endif %}
+                  </div>
+                  <div class="theme-prod-detail-tab-contents" data-zs-detail-tabs-content-container>
+                    {% if product.description %}
+                      <div class="theme-prod-detail-tab-content theme-prod-detail-tab-content-active" data-detail-tab-content="theme-product-detail-content">
+                        <div aria-label="{{i18n.get("product.label.details")}}" class="theme-prod-detail-content-info-container" data-zs-description>
+                          {{ product.description }}
+                        </div>
+                      </div>
+                    {% endif %}
+                    {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+                      <div class="theme-prod-detail-tab-content{% if !product.description %} theme-prod-detail-tab-content-active{% endif %}" data-detail-tab-content="theme-product-specification-content">
+                        <div class="theme-prod-specification-table" data-zs-specification>
+                          {% for specification_group in product.specification_group %}
+                            <h5 aria-label="{{specification_group.name}}" class="theme-prod-specification-group">{{specification_group.name}}</h5>
+                            <ul>
+                              {% for attributes in specification_group.attributes %}
+                                <li>
+                                  <div aria-label="{{attributes.name}}" class="theme-prod-specification-field">{{attributes.name}}</div>
+                                  <div aria-label="{{attributes.value}}" class="theme-prod-specification-value">{{attributes.value}}</div>
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+              {% if product.is_product_review_enabled %}
+                <div class="theme-product-review-container">
+                  <div tabindex="0" class="theme-product-review" data-review-label>{{i18n.get("product.label.reviews")}}</div>
+                  <div class="theme-review-content" data-detail-tab-content="theme-product-review-content">
+                    <div class="theme-section" data-zs-product-details-commentbox-section>
+                      <div class="zpcontainer">
+                        <div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+          <div class="theme-section" data-zs-product-details-recommended-section>
+            <div class="zpcontainer">
+              <div class="zprow">
+                <div class="zpcol-md-12 zpcol-sm-12">
+                  <div class="theme-product-ratio" data-zs-recommended-products></div>
+                </div>
+              </div>
+
+							<div class="zprow">
+								<div class="zpcol-md-12 zpcol-sm-12">
+									<div class="theme-product-ratio" data-zs-upsell-products>
+
+									</div>
+								</div>
+							</div>
+            </div>
+          </div>
+          {% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+        {% endif %}
+				
+				{% if page.template_vars.product_content_style == '05' %}
+					{% if product.is_product_review_enabled %}
+						<div class="theme-section" data-zs-product-details-commentbox-section>
+							<div class="zpcontainer">
+							<div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox">
+
+							</div>
+							</div>
+						</div>
+					{% endif %}
+					{% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+						<div class="theme-section" data-zs-product-details-recommended-section>
+							<div class="zpcontainer">
+								<div class="zprow">
+									<div class="zpcol-md-12 zpcol-sm-12">
+										<div class="theme-product-ratio" data-zs-recommended-products>
+
+										</div>
+									</div>
+								</div>
+
+								<div class="zprow">
+									<div class="zpcol-md-12 zpcol-sm-12">
+										<div class="theme-product-ratio" data-zs-upsell-products>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+					{{commentbox_rating}}
+				{% endif %}
+        {% if page.template_vars.product_content_style == '06' %}
+          <div class="theme-section" data-zs-product-details-tab-section>
+            <div class="zpcontainer">
+              {% if product.description || ( page.is_specification_enabled && product.specification_group | size != 0 ) || product.is_product_review_enabled %}
+                  <div class="theme-prod-details-specification-ratings" data-zs-product-content>
+                    {% if product.description %}
+                      <div class="theme-product-description">
+                        <div role="button" tabindex="0" class="theme-prod-detail-tab theme-prod-detail-tab-active" data-detail-tab="theme-product-detail" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') { detailtab(this); }">{{i18n.get("product.label.details")}}</div>
+                        <div class="theme-prod-detail-tab-content" data-detail-tab-content="theme-product-detail-content">
+                          <div aria-label="{{i18n.get("product.label.details")}}" class="theme-prod-detail-content-info-container" data-zs-description>
+                            {{ product.description }}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+                      <div class="theme-product-specification">
+                        <div role="button" tabindex="0" aria-label="{{i18n.get("product.label.specifications")}}" class="theme-prod-detail-tab{% if !product.description %} theme-prod-detail-tab-active{% endif %}" data-detail-tab="theme-product-specification" onclick="detailtab(this)" onkeydown="if(event.key === 'Enter' || event.key === ' ') { detailtab(this); }">{{i18n.get("product.label.specifications")}}</div>
+                        <div class="theme-prod-detail-tab-content" data-detail-tab-content="theme-product-specification-content">
+                          <div class="theme-prod-specification-table" data-zs-specification>
+                            {% for specification_group in product.specification_group %}
+                            <details class="theme-product-specification">
+                              <summary class="theme-specification-summary"><div class="theme-specification-heading">{{specification_group.name}}</div>
+                                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">						<path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black">						</path>
+                                </svg>
+                              </summary>
+                              <ul>
+                                {% for attributes in specification_group.attributes %}
+                                  <li>
+                                    <div aria-label="{{attributes.name}}" class="theme-prod-specification-field">{{attributes.name}}</div>
+                                    <div class="theme-colon">:</div>
+                                    <div aria-label="{{attributes.value}}" class="theme-prod-specification-value">{{attributes.value}}</div>
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            </details>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+
+                    {% if product.is_product_review_enabled %}
+                      <div class="theme-product-review-container">
+                        <div tabindex="0" class="theme-product-review"  data-detail-tab="theme-product-review" data-review-label>{{i18n.get("product.label.reviews")}}</div>
+                        <div class="theme-prod-detail-tab-content" data-detail-tab-content="theme-product-review-content">
+                          <div class="theme-section" data-zs-product-details-commentbox-section>
+                            <div class="zpcontainer">
+                              <div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    {% endif %}
+                  </div>
+              {% endif %}
+             
+            </div>
+          </div>
+
+          {% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+          <div class="theme-section" data-zs-product-details-recommended-section>
+            <div class="zpcontainer">
+              <div class="zprow">
+                <div class="zpcol-md-12 zpcol-sm-12">
+                  <div class="theme-product-ratio" data-zs-recommended-products></div>
+                </div>
+              </div>
+							<div class="zprow">
+								<div class="zpcol-md-12 zpcol-sm-12">
+									<div class="theme-product-ratio" data-zs-upsell-products>
+
+									</div>
+								</div>
+							</div>
+            </div>
+          </div>
+          {% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+        {% endif %}
+        
+        {% if page.template_vars.product_content_style == '07' %}
+				{% comment %} COMMENT BOX STARTS HERE {% endcomment %}
+				{% if product.is_product_review_enabled %}
+				<div class="theme-section" data-zs-product-details-commentbox-section>
+					<div class="zpcontainer">
+							<div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox">
+							</div>
+					</div>
+				</div>
+				{% endif %}
+				{% comment %} COMMENT BOX ENDS HERE {% endcomment %}
+				{% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+				<div class="theme-section" data-zs-product-details-recommended-section>
+					<div class="zpcontainer">
+						<div class="zprow">
+							<div class="zpcol-md-12 zpcol-sm-12">
+								<div class="theme-rec-prod-slider-btn-container" data-rec-prod-slider-btn-container>
+									<button class="theme-rec-prod-navigation theme-navigate-left" onclick="slideRecommendedProds(this,'left')" aria-label="{{i18n.get("common.previous")}}">
+										<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 17" fill="none">
+											<mask id="path-1-inside-1_3029_7081" fill="white">
+												<path d="M8 16.3042L-1.75292e-06 8.3042L8 0.3042"/>
+											</mask>
+											<path d="M7.29289 17.0113L8 17.7184L9.41421 16.3042L8.7071 15.5971L7.29289 17.0113ZM-1.75292e-06 8.3042L-0.707109 7.5971C-1.09763 7.98762 -1.09763 8.62079 -0.707108 9.01131L-1.75292e-06 8.3042ZM8.7071 1.01131L9.41421 0.3042L8 -1.11001L7.29289 -0.402906L8.7071 1.01131ZM8.7071 15.5971L0.707105 7.5971L-0.707108 9.01131L7.29289 17.0113L8.7071 15.5971ZM0.707105 9.01131L8.7071 1.01131L7.29289 -0.402906L-0.707109 7.5971L0.707105 9.01131Z" fill="#4F3622" mask="url(#path-1-inside-1_3029_7081)"/>
+										</svg>
+									</button>
+									<button class="theme-rec-prod-navigation theme-navigate-right" onclick="slideRecommendedProds(this,'right')" aria-label="{{i18n.get("common.next")}}">
+										<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="8" height="17" viewBox="0 0 8 17" fill="none">
+											<mask id="path-1-inside-1_3029_7083" fill="white">
+												<path d="M3.50584e-06 16.3042L8 8.3042L3.33786e-06 0.3042"/>
+											</mask>
+											<path d="M0.70711 17.0113L2.86204e-06 17.7184L-1.41421 16.3042L-0.707103 15.5971L0.70711 17.0113ZM8 8.3042L8.70711 7.5971C9.09763 7.98762 9.09763 8.62079 8.70711 9.01131L8 8.3042ZM-0.707104 1.01131L-1.41421 0.3042L3.98166e-06 -1.11001L0.707111 -0.402906L-0.707104 1.01131ZM-0.707103 15.5971L7.2929 7.5971L8.70711 9.01131L0.70711 17.0113L-0.707103 15.5971ZM7.29289 9.01131L-0.707104 1.01131L0.707111 -0.402906L8.70711 7.5971L7.29289 9.01131Z" fill="#4F3622" mask="url(#path-1-inside-1_3029_7083)"/>
+										</svg>
+									</button>
+								</div>
+								<div class="theme-product-ratio" data-zs-recommended-products>
+								</div>
+							</div>
+						</div>
+
+						<div class="zprow">
+							<div class="zpcol-md-12 zpcol-sm-12">
+								<div class="theme-product-ratio" data-zs-upsell-products>
+
+								</div>
+							</div>
+						</div>
+					
+					</div>
+				</div>
+				{% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+				{% endif %}
+
+				{% if page.template_vars.product_content_style == '08' %}
+                   <div class="theme-product-specification-review-section">
+					  <div class="theme-product-specification" data-zs-product-details-tab-section>
+						{% if product.description %}
+						  <details name='product-details' open>
+							<summary class='theme-prod-content-summary'>
+							  <span>{{i18n.get("product.label.details")}}</span>
+							  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16" fill="none"><path d="M0.200839 15.7803C-0.0669465 15.4874 -0.0669465 15.0126 0.200839 14.7197L6.34452 7.99999L0.200839 1.28028C-0.0669465 0.987377 -0.0669465 0.512576 0.200839 0.219675C0.468625 -0.073225 0.902802 -0.073225 1.17059 0.219675L7.79915 7.46969C8.06695 7.76259 8.06695 8.23739 7.79915 8.53029L1.17059 15.7803C0.902802 16.0732 0.468625 16.0732 0.200839 15.7803Z" fill="#442200"/></svg>
+							</summary>
+							<div class='theme-prod-content-details'>{{ product.description }}</div>
+							</details>
+						{% endif %}
+				
+						{% if page.is_specification_enabled && product.specification_group | size != 0 %}
+						   <details name='specification' open>
+							<summary class='theme-prod-content-summary'>
+							  <span>{{i18n.get("product.label.specifications")}}</span>
+							  <svg xmlns="http://www.w3.org/2000/svg" width="8" height="16" viewBox="0 0 8 16" fill="none"><path d="M0.200839 15.7803C-0.0669465 15.4874 -0.0669465 15.0126 0.200839 14.7197L6.34452 7.99999L0.200839 1.28028C-0.0669465 0.987377 -0.0669465 0.512576 0.200839 0.219675C0.468625 -0.073225 0.902802 -0.073225 1.17059 0.219675L7.79915 7.46969C8.06695 7.76259 8.06695 8.23739 7.79915 8.53029L1.17059 15.7803C0.902802 16.0732 0.468625 16.0732 0.200839 15.7803Z" fill="#442200"/></svg>
+							</summary>
+							<div class='theme-prod-content-details'>
+							  {% for specification_group in product.specification_group %}
+								<ul class='theme-spec-group'>
+								  {% for attributes in specification_group.attributes %}
+									<li class='theme-spec'>
+									<div class="theme-prod-specification-field">{{attributes.name}}</div>
+									<div class="theme-prod-specification-value">{{attributes.value}}</div>
+									</li>
+								  {% endfor %}
+								</ul>
+							  {% endfor %}
+							</div>
+						  </details>
+						{%endif%}
+					</div>
+					{% if product.is_product_review_enabled %}
+					  <div class="theme-section" data-zs-product-details-commentbox-section>
+						<div class="zpcontainer">
+						<div class="zpcol-md-12 zpcol-sm-12 theme-store-commentbox" data-zs-product-commentbox data-zs-app="commentbox"></div>
+						</div>
+					  </div>
+			        {% endif %}
+                  </div>
+			
+				  {% comment %} RECOMMENDED PRODUCTS STARTS HERE {% endcomment %}
+					<div class="theme-section" data-zs-product-details-recommended-section>
+						<div class="zpcontainer">
+							<div class="zprow">
+								<div class="zpcol-md-12 zpcol-sm-12">
+									<div class="theme-product-ratio" data-zs-recommended-products>
+									</div>
+								</div>
+							</div>
+
+							<div class="zprow">
+								<div class="zpcol-md-12 zpcol-sm-12">
+									<div class="theme-product-ratio" data-zs-upsell-products>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				  {% comment %} RECOMMENDED PRODUCTS ENDS HERE {% endcomment %}
+		        {% endif %}
+			</main>
+		</div>
+
+</div>
+
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+  </div>
+{% endif %}
+{% if page.template_vars.header_style == '06' && page.is_sidebar_enabled %}
+</div>
+{% endif %}
+
+{% endblock %}

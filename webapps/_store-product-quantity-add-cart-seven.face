@@ -1,0 +1,75 @@
+<div class="theme-product-quantity-cart-area" data-nostock-cart-add="theme-nostock-cart-add">
+  {% if !product.is_out_of_stock  %}
+    {% for variant in product.variants %}
+      {% if variant.is_stock_managed && page.template_vars.is_product_stocks_enabled %}
+        <div class="theme-variant-available-stock" data-zs-variant-id={{ variant.variant_id }} data-zs-skus="{{variant.sku}}" {% if product.has_variants %}style="display: none"{% endif %}>
+          <div class="theme-instock">
+            <div class="theme-product-stock-label theme-row-labels" data-zs-stock-label>
+              <span>In stock</span>
+              <span>:</span>
+            </div>
+            <div class="theme-stock-value" data-zs-variant-stock="{{variant.stock_available}}">{{variant.stock_available}}</div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+    <div class="theme-product-varient-quantity">
+      <div class="theme-product-quantity-spinner hidden" data-zs-list-quantity-container style="display: none;">
+        <input name="qty" aria-label="{{i18n.get("product.message.choose_quantity")}}" title="quantity" type="text" maxlength="999" onkeypress='return productQuantity(event);' value="1" data-quantity="{{ product.product_id }}" data-theme-quantity data-zs-quantity>
+        <div class="theme-quantity-controls">
+          <button aria-label='{{i18n.get("product.action.increase_quantity")}}' class="theme-quantity-increase theme-hover-element" data-theme-qty-update onclick="increaseCount(this)" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 10C4 10 6.946 6 8 6C9.054 6 12 10 12 10" stroke="#545454" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button aria-label='{{i18n.get("product.action.remove_from_cart")}}' class="theme-quantity-remove theme-hover-element" data-theme-qty-remove type="button" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6C4 6 6.946 10 8 10C9.054 10 12 6 12 6" stroke="#545454" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button aria-label='{{i18n.get("product.action.decrease_quantity")}}' class="theme-quantity-decrease theme-hover-element" data-theme-qty-update data-decrease-quantity onclick="decreaseCount(this)" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6C4 6 6.946 10 8 10C9.054 10 12 6 12 6" stroke="#545454" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div data-theme-error="theme-error-message-{{product.product_id}}" aria-live="polite" style="display:none;"></div>
+    </div> 
+  {% endif %}
+  <div class="theme-product-cart-buttons">
+    {% if !product.is_out_of_stock  %}
+      <button type='button' class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg" {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-cart-button {% endif %} data-zs-add-to-cart data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if product.variants[0].hide_add_to_cart %}data-hide-add-to-cart style="display: none;"{% endif %}>
+        <svg class="theme-cta-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="17" viewBox="0 0 15 17" fill="none">
+          <path d="M1.04119 10.1758L1.28453 8.74778C1.57253 7.05912 1.71586 6.21445 2.28586 5.71445C2.85586 5.21512 3.67453 5.21512 5.31119 5.21512H8.68853C10.3252 5.21512 11.1439 5.21512 11.7139 5.71512C12.2839 6.21512 12.4272 7.05912 12.7152 8.74778L12.9585 10.1758C13.3572 12.5125 13.5559 13.6805 12.9432 14.4478C12.3299 15.2151 11.1965 15.2151 8.93186 15.2151H5.06786C2.80253 15.2151 1.66986 15.2151 1.05653 14.4485C0.443192 13.6805 0.643192 12.5125 1.04119 10.1758Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M4 6.54844L4.14333 4.54178C4.19512 3.81951 4.51858 3.14366 5.0486 2.65028C5.57863 2.1569 6.27588 1.8826 7 1.8826C7.72412 1.8826 8.42137 2.1569 8.9514 2.65028C9.48142 3.14366 9.80488 3.81951 9.85667 4.54178L10 6.54844" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span data-theme-cart-button-text="theme-cart-button-text">
+          {{i18n.get("product.action.add_to_cart")}}
+        </span>
+        <span class="theme-cart-button-loading-container" data-theme-cart-button-loading="theme-cart-button-loading" style="display:none">
+          {{i18n.get("product.message.please_wait")}} <div class="theme-cart-button-loading-dots"><span></span><span></span><span></span></div>
+        </span>
+      </button>
+    {% else %}
+      <button type='button' disabled class="theme-cart-button zpbutton zpbutton-type-primary zpbutton-size-lg">
+        <span data-theme-cart-button-text="theme-cart-button-text">
+          {{i18n.get("product.message.out_of_stock")}}
+        </span>
+      </button>
+    {% endif %}
+    {% if page.is_quotes_enabled_in_storefront %}
+      <button type="button" data-zs-add-to-quote {% if page.template_vars.store_message_style == "03"%} data-zs-view-mini-quote-button {% endif %} class="theme-cart-button theme-quote-button zpbutton zpbutton-type-primary zpbutton-size-lg zpbutton-full-width"  data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} {% if !product.variants[0].show_add_to_quote %} style="display: none;" {% endif %} >
+        <span data-theme-cart-button-text="theme-quote-button-text">{{i18n.get("page_title.request_quote")}}</span>
+        <span class="theme-quote-button-loading-container" data-theme-cart-button-loading="theme-quote-button-loading" style="display:none">
+          {{i18n.get("product.message.please_wait")}} <div class="theme-quote-button-loading-dots"><span></span><span></span><span></span></div>
+        </span>
+      </button>
+    {% endif %}
+    <a class="theme-cart-button theme-more-details zpbutton zpbutton-type-primary zpbutton-size-lg" data-zs-more-details data-zs-product-variant-id{% if !product.has_variants %} ="{{ product.variants[0].variant_id }}" {% endif %} href="{{product.url}}">
+      <span data-theme-cart-button-text="theme-cart-button-text">
+        {{i18n.get("product.label.view_details")}}
+      </span>
+    </a>
+    <span data-show-wishlist-icon style="display: none;">{{ wishlistView("detail", product, page ) }}</span>
+  </div>
+</div>

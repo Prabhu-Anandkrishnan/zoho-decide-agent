@@ -1,0 +1,177 @@
+<div class="theme-sliding-cart-container theme-content-area" data-theme-content-container="theme-content-container">
+  <div class="theme-sliding-cart-overlay" role="button" tabindex="0"  onclick="closeSlidingCart()"></div>
+  <div class="theme-content-container">
+    <div class="theme-cart-table-row theme-cart-head" >
+      <div class="theme-cart-icon-and-label">
+        <div class="theme-shopping-cart">
+          {% if cart.is_quote %}
+            {{ i18n.get("page_title.request_quote") }}
+          {% else %}
+            {{i18n.get("page_title.cart")}}
+          {% endif %}
+        </div>
+        <span class="theme-mini-sliding-cart-count" data-zs-view-cart-count>{{cart.count}}</span>
+      </div>
+      <button type="button" aria-label="{{i18n.get("product.label.close")}}" class="theme-cart-close" onclick="closeSlidingCart()">
+        <svg aria-hidden="true" width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.375 4.625L14.6201 13.8701" stroke="black" stroke-width="1.84866" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14.625 4.625L5.37988 13.8701" stroke="black" stroke-width="1.84866" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="theme-cart-area-container theme-cart-body {% if cart.items | size == 0 %}theme-cart-empty{% endif %}" data-cart-table>
+      {% if page.is_delivery_location_enabled %}
+        <div data-zs-cart-delivery-availability-common-error-message class="theme-delivery-location-cart-details" style="display:none;">
+          <p class="theme-cart-delivery-location-message">{{i18n.get("delivery_location_availability.cart.important_message.label")}}:</p>
+          <p>{{i18n.get("delivery_location_availability.cart.notdeliverable.message")}}</p>
+          <ol data-zs-cart-non-deliverable-items class="theme-cart-non-deliverable-products"></ol>
+        </div>
+      {% endif %}
+      {% assign canShowPriceLabel = false %}
+        {% for item in cart.items %}
+        {% if item.hide_price == false %}
+          {% assign canShowPriceLabel = true %}
+        {% endif %}  
+      {% endfor %}	
+      <div class="theme-shopping-cart-table-container theme-cart-details-container" data-cart-items>
+        {% for cartItem in cart.items %}
+          <div class="theme-cart-table-row" data-cart-item data-zs-product-id="{{cartItem.variant_id}}">
+            <div class="theme-cart-item-img">
+              <a href="{{cartItem.url}}">
+                {% assign cartItemImage = cartItem.images[0] %}
+                <img alt="{{ cartItemImage.alternate_text }}" width="200" height="200" src="{% if cartItemImage.is_placeholder_image %}{{ cartItemImage.url }}{% else %}{{ cartItemImage.url }}/200x200{% endif %}">
+              </a>
+            </div>
+            <div class="theme-cart-details-action">
+              <div class="theme-cart-item-details">
+                <div class="theme-cart-item-info">
+                  <a href="{{cartItem.url}}" title="{{cartItem.name}}">{{cartItem.name}}</a>
+                  <div data-zs-cartitem-price-{{cartItem.variant_id}} class="item-price">
+                    {% assign prod_discount_text = "" %}
+                    {% assign label_price_formatted_text = "" %}
+                    {% if cartItem.label_price != 0 && (cartItem.label_price > cartItem.selling_price) %}
+                      {% label_price_formatted_text = cartItem.label_price | currency(currency) %}
+                      {% assign prod_discount_value = 0 %}
+                      {% prod_discount_value = ((cartItem.label_price - cartItem.selling_price)/ cartItem.label_price) * 100 %}
+                      {% assign discount_label_formatted = i18n.get("product.label.off") %}
+                      {% prod_discount_text = prod_discount_value + "% " + discount_label_formatted %}
+                    {% endif %}
+                    <span aria-label="{{i18n.get("orders.order.product.price")}}" data-zs-cart-selling-price-{{cartItem.variant_id}} data-zs-currency-code="{{currency.code}}" data-zs-cart-lineitem-selling-price={{cartItem.selling_price}} class="theme-cart-selling-price" {% if cart.is_quote && cartItem.hide_price %}style="display: none;"{% endif %}>{{ cartItem.selling_price | currency(currency) }}</span>
+                    {% if cartItem.label_price > 0 %}
+                      <span aria-label="Retail Price" data-zs-cart-label-price-{{cartItem.variant_id}} class="theme-cart-label-price" data-zs-currency-code="{{currency.code}}" data-zs-cart-lineitem-label-price={{cartItem.label_price}} {% if cart.is_quote && cartItem.hide_price %}style="display: none;"{% endif %}>{{ label_price_formatted_text }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="theme-cart-table-data theme-cart-price-label" {% if cart.is_quote && cartItem.hide_price %}style="display: none;"{% endif %}>
+                  <span data-zs-sub-total-item-{{cartItem.variant_id}} data-zs-currency-code="{{currency.code}}" data-zs-sub-total-lineitem={{cartItem.approximate_total}}> {{ cartItem.approximate_total | currency(currency) }} </span>
+                </div>
+              </div>
+              <div class="theme-cart-table-data theme-cart-action">
+                <div class="theme-cart-table-data theme-cart-qty">
+                  <span class="theme-quantity-field-button">
+                    <div class="theme-product-list-quantity">
+                      <div class="theme-product-list-quantity-decrease theme-cart-item-remove theme-cart-icon-delete">
+                        <div data-zs-delete-icon {% if cart.is_quote %}data-zs-quote-action{% endif %} data-zs-product-variant-id="{{cartItem.variant_id}}" data-zs-cart-item-delete="{{cartItem.variant_id}}" style="display:none;">
+                          <button type="button" aria-label="{{i18n.get("cart.remove.label")}}" class="theme-cart-remove-button">
+                            <svg aria-hidden="true" viewBox="0 0 26 24" xmlns="http://www.w3.org/2000/svg" ><path d="M19.91 7.415a.326.326 0 0 0-.228-.082h-3.073l-.696-1.522c-.099-.225-.278-.416-.536-.574A1.493 1.493 0 0 0 14.59 5h-3.182c-.265 0-.527.079-.785.237-.259.158-.438.35-.537.574L9.39 7.333H6.318a.326.326 0 0 0-.229.082.272.272 0 0 0-.089.21v.583c0 .085.03.155.09.21.06.055.135.082.228.082h.955v8.677c0 .505.155.934.467 1.29.312.355.686.533 1.124.533h8.272c.438 0 .813-.184 1.124-.551.312-.368.467-.804.467-1.308V8.5h.955a.325.325 0 0 0 .228-.082.272.272 0 0 0 .09-.21v-.583a.272.272 0 0 0-.09-.21ZM11.43 6.166h3.152a.284.284 0 0 1 .169.1l.477 1.067h-4.454l.487-1.066a.284.284 0 0 1 .169-.1Zm6.026 10.975a.956.956 0 0 1-.07.369.804.804 0 0 1-.144.246c-.05.052-.085.077-.105.077H8.864c-.02 0-.055-.025-.105-.077a.8.8 0 0 1-.144-.246.96.96 0 0 1-.07-.37V8.5h8.91v8.64" fill="#000" fill-rule="nonzero"/></svg>
+                          </button>
+                        </div>
+                        <input aria-label="Decrease Quantity" value = "-" type="button" data-zs-cart-qty-dec-btn="{{cartItem.variant_id}}" class="theme-cart-qty-inc-dec" {% if cart.is_quote %}data-zs-quote-action{% endif %} onclick="decreaseCount(this)">
+                      </div>
+                      {% if cartItem.quantity == cartItem.double_quantity %}
+                        <input aria-label="{{i18n.get("cart.quantity.label")}}" type="text" value="{{ cartItem.quantity }}" onkeypress='return productQuantity(event);' data-zs-quantity {% if cart.is_quote %}data-zs-quote-action{% endif %} data-zs-product-variant-id="{{cartItem.variant_id}}">
+                      {% else %}
+                        <input aria-label="{{i18n.get("cart.quantity.label")}}" type="text" value="{{ cartItem.double_quantity }}" onkeypress='return productQuantity(event);' data-zs-quantity {% if cart.is_quote %}data-zs-quote-action{% endif %} data-zs-product-variant-id="{{cartItem.variant_id}}">
+                      {% endif %}             
+                      <div class="theme-product-list-quantity-increase">
+                        <input aria-label="Increase Quantity" value = "+" type="button" class="theme-cart-qty-inc-dec" {% if cart.is_quote %}data-zs-quote-action{% endif %} onclick="increaseCount(this)">
+                      </div>
+                    </div>
+                    <div role="alert" class="theme-cart-quantity-error" data-quantity-error-cart="{{cartItem.variant_id}}" style="display:none">
+                      {{i18n.get("product.message.error.invalid_quantity")}}
+                    </div>
+                  </span>
+                </div>
+                <div class="theme-cart-table-data theme-cart-control theme-cart-item-remove">
+                  <span data-zs-delete {% if cart.is_quote %}data-zs-quote-action{% endif %} data-zs-product-variant-id="{{cartItem.variant_id}}" style="cursor:pointer;">
+                    <button type="button" class="theme-cart-remove-button" aria-label="{{i18n.get("cart.remove.label")}}">
+                      <svg aria-hidden="true" viewBox="0 0 26 24" xmlns="http://www.w3.org/2000/svg" ><path d="M19.91 7.415a.326.326 0 0 0-.228-.082h-3.073l-.696-1.522c-.099-.225-.278-.416-.536-.574A1.493 1.493 0 0 0 14.59 5h-3.182c-.265 0-.527.079-.785.237-.259.158-.438.35-.537.574L9.39 7.333H6.318a.326.326 0 0 0-.229.082.272.272 0 0 0-.089.21v.583c0 .085.03.155.09.21.06.055.135.082.228.082h.955v8.677c0 .505.155.934.467 1.29.312.355.686.533 1.124.533h8.272c.438 0 .813-.184 1.124-.551.312-.368.467-.804.467-1.308V8.5h.955a.325.325 0 0 0 .228-.082.272.272 0 0 0 .09-.21v-.583a.272.272 0 0 0-.09-.21ZM11.43 6.166h3.152a.284.284 0 0 1 .169.1l.477 1.067h-4.454l.487-1.066a.284.284 0 0 1 .169-.1Zm6.026 10.975a.956.956 0 0 1-.07.369.804.804 0 0 1-.144.246c-.05.052-.085.077-.105.077H8.864c-.02 0-.055-.025-.105-.077a.8.8 0 0 1-.144-.246.96.96 0 0 1-.07-.37V8.5h8.91v8.64" fill="#000" fill-rule="nonzero"/></svg>
+                    </button>
+                  </span>
+                </div>
+              </div>    
+              {% if page.is_delivery_location_enabled %}
+                <div data-zs-cartitem-non-deliverable-error-message class="theme-cartitem-non-deliverable-message">{{i18n.get("delivery_location_availability.cart.items.nondeliverable.message")}}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="theme-cart-summary-container">
+        <div class="theme-cart-summary-inner-container" data-cart-summary-container>
+          <div class="theme-cart-summary-details" {% if cart.is_quote && !canShowPriceLabel %}style="display: none;"{% endif %}>
+            <p class="theme-cart-details-summary-list-item theme-scart-details-summary-main">
+              <span class='theme-subtotal'>{{i18n.get("cart.sub_total.label")}}</span>
+              <span aria-live="polite" data-zs-cart-subtotal={{cart.sub_total}} data-zs-currency-code="{{currency.code}}">{{cart.sub_total_formatted}}</span>
+            </p>
+            {% if !cart.is_quote %}
+              <p data-zs-savedamount-container style="display: none;"><em>{{i18n.get("cart.message.savedamount")}} </em><span aria-live="polite" data-zs-savedamount></span></p>
+            {% endif %}
+            {% if cart.is_quote %}
+              <div class="tooltip" style="display: flex;align-items: center;">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="#178DFA" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 5px;"><path d="M11.097 1.904A6.458 6.458 0 006.5 0a6.457 6.457 0 00-4.596 1.904A6.457 6.457 0 000 6.5c0 1.737.676 3.369 1.904 4.596A6.458 6.458 0 006.5 13a6.458 6.458 0 004.596-1.904A6.457 6.457 0 0013 6.5a6.458 6.458 0 00-1.903-4.596zM6.5 11.778A5.284 5.284 0 011.222 6.5 5.284 5.284 0 016.5 1.222 5.284 5.284 0 0111.778 6.5 5.283 5.283 0 016.5 11.778zm-.617-8.045a.617.617 0 111.234 0 .617.617 0 01-1.234 0zM8.33 8.865a.611.611 0 01-.611.611H5.281a.611.611 0 010-1.222h.608V6.342h-.36a.611.611 0 010-1.222H6.5c.337 0 .611.273.611.61v2.524h.608c.338 0 .611.274.611.611z"/></svg>
+                <span class="tooltiptext">{{i18n.get("cart.message.quotes.subtotal.warning.desc")}}</span>
+                <p style="margin-left: 4px;">{{i18n.get("cart.message.quotes.subtotal.warning")}}</p>
+              </div>
+            {% endif %}
+          </div>
+          <div class="{% if cart.items | size == 0 %}theme-cart-error-empty-message{% else %}theme-cart-error-message-not-empty{% endif %}" data-zs-cart-empty-message>
+            {% if page.template_vars.is_cart_empty_icon_enabled %}
+              <img alt="" src="{{ page.template_assets }}/images/empty_cart.png" width="200" height="200">
+            {% endif %} 
+            {% if page.template_vars.cartemptyimage != "" %}
+              <img alt="" src="{{page.template_vars.cartemptyimage}}" width="200" height="200">
+            {% endif %}
+            {{i18n.get("cart.message.empty_cart")}}
+          </div>
+          <div class="theme-cart-table-row theme-checkout-button-area" data-cart-summary-button>
+            <div class="theme-cart-table-data {% if cart.items | size == 0 %}theme-cart-empty-checkout-buton{% endif %}" data-cart-empty-checkout-button>
+              {% if cart.is_quote %}
+                <button type="button" class="zpbutton-type-primary zpbutton-size-md zpbutton-full-width theme-checkout-button" data-zs-quote-checkout>
+                  {{ i18n.get("page_title.request_quote") }}
+                </button>
+              {% else %}
+                <button type="button" class="zpbutton-type-primary zpbutton-size-md zpbutton-full-width theme-checkout-button" data-zs-checkout>
+                  {{i18n.get("cart.action.checkout")}}
+                </button>
+              {% endif %}
+              <p data-zs-cart-base-currency-content></p>
+            </div>
+            <div class="theme-cart-table-data {% if cart.items | size != 0 %}theme-cart-continue-shopping-button{% else %}theme-cart-empty-shopping-button{% endif %}" data-cart-empty-shopping-button>
+              <button  type="button" class="zpbutton zpbutton-size-md {% if cart.items | size != 0 %}zpbutton-type-link{% else %}zpbutton-type-primary zpbutton-outline{% endif %} theme-continue-sliding-cart-shopping-button" onclick="closeSlidingCart()" data-zs-mini-cart-continue-shopping>{{i18n.get("cart.action.continue_shopping")}}</button>
+            </div>
+          </div>
+          <p class = "theme-shipping-label {% if cart.items | size == 0 %}theme-hide-shipping-label{% endif %}" data-zs-shipping-label {% if cart.is_quote %}style="display: none;"{% endif %}>{{i18n.get("cart.message.shippingtax.content")}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="theme-loader" data-theme-loader>
+      <div class="spin" role="progressbar" aria-label="Loading" aria-valuetext="Loading">
+        <svg aria-hidden="true" version="1.1" id="ecc034f9-580a-4ff4-b644-5f560cb9c16a" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+          <g id="a109f5eb-339a-4b2a-a9e5-cafa62b9540a">
+            <g id="f1720609-f701-476d-91a2-72c34cd8163f">
+              <g id="bcd598c9-3bf7-4990-9c51-be743404723b">
+                <path id="b7b3a1f4-443a-409f-9c44-fdc09f232773" class="st0" fill="#EAEDF2" d="M256,0.5C114.9,0.5,0.5,114.9,0.5,256S114.9,511.5,256,511.5
+                  S511.5,397.1,511.5,256S397.1,0.5,256,0.5z M256,39.8c119.4,0,216.2,96.8,216.2,216.2S375.4,472.2,256,472.2S39.8,375.4,39.8,256
+                  S136.6,39.8,256,39.8z"/>
+                <path id="e0077dda-86b6-4939-aa42-097a514c3c50" class="st1" fill="#737D9F" d="M256,0.5c10.9,0.2,19.5,9.2,19.2,20.1
+                  c-0.2,10.5-8.7,19-19.2,19.2C136.6,39.8,39.8,136.6,39.8,256c-0.1,34.4,8.2,68.4,24,99c4.8,9.7,0.8,21.5-8.9,26.3
+                  c-9.5,4.7-21,1-26-8.3C10.2,336.8,0.5,296.7,0.5,256C0.5,114.9,114.9,0.5,256,0.5z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>

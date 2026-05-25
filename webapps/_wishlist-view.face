@@ -1,0 +1,14 @@
+{% macro wishlistView(viewType, product, page, is_variant_selection_available) %}
+  {% if (viewType == "list" && (!product.has_variants || is_variant_selection_available)) || viewType == "detail" %}
+    <button class="wishlist-selection-container" aria-label="{{i18n.get("wishlist.add")}}" 
+            data-zs-wishlist-element data-zs-wishlisted="false"
+            {% if  product.has_variants %}
+            		id = "wishlist-variant" disabled data-zs-wishlist-variant-id
+            {% else %}
+                onclick="addToWishlistFromList('{{product.variants[0].variant_id}}', this)" 
+                data-zs-wishlist-variant-id="{{product.variants[0].variant_id }}"
+            {% endif %} >
+        {% include '_wishlist-icon.face' %}
+    </button>
+  {% endif %}
+{% endmacro %}

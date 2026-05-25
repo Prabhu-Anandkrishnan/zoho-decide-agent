@@ -1,0 +1,96 @@
+<div class="theme-product-detail-image" data-zs-product-img-container>
+  <div class="theme-product-detail-image-inner">
+    {{ wishlistView("detail", product, page ) }}
+    <div class="theme-image-overlay" data-theme-image-overlay="theme-image-overlay-{{product.product_id}}">
+      <div class="theme-image-loader"></div>
+    </div>
+
+    {% if product.images[0].is_placeholder_image %}
+      <picture>
+        <img alt="{{ product.images[0].alternate_text }}" width="600" height="600" src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}" onload="startFadeInAnimation(this)" data-fallback="{{ product.images[0].url }}" onerror='handleFallBackForImage(this)' style="opacity:0" data-detail-image="theme-detail-image-{{product.product_id}}" loading="lazy" decoding="async" data-lightbox-detailImage>
+      </picture>
+    {% else %}
+      <picture>
+        <img alt="{{ product.images[0].alternate_text }}" width="600" height="600" src="{{cdn_prefix_url}}{{ product.images[0].url }}/800x800{{cdn_suffix_url}}" onload="startFadeInAnimation(this)" data-fallback="{{ product.images[0].url }}/800x800" onerror='handleFallBackForImage(this)' style="opacity:0" data-detail-image="theme-detail-image-{{product.product_id}}" loading="lazy" decoding="async" data-lightbox-detailImage>
+      </picture>
+    {% endif %}
+  </div>
+</div>
+
+<div class="theme-product-detail-thumbnail-container" data-lightbox-container="prod_images_grid_{{product.product_id}}" data-theme-thumbnail-container="theme-thumbnail-container-{{product.product_id}}" data-thumbnail-prod-id="{{product.product_id}}">
+  <div class='theme-thumbnail-scroll' role="button" tabindex="0" data-theme-thumbnail-scroll-up aria-label="Scroll up">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+      <path d="M9.38884 19.1226L14.9988 13.5126L20.6087 19.1226L22.332 17.387L14.9988 10.0538L7.66553 17.387L9.38884 19.1226Z" fill="black"/>
+    </svg>
+  </div>
+  <div class='theme-thumbnail-wrapper' data-thumbnail-wrapper>
+    {% for image in product.images %}
+      <div class="theme-product-detail-thumbnail" role="button" aria-label="{{image.title}}" tabindex='0' onclick="showDetailImage(this)" data-thumbnail-active="{{ image.id }}" data-thumbnail="{{product.product_id}}" data-zs-image-id="{{ image.id }}" data-lightbox-thumbnail>
+        {% if image.is_placeholder_image %}
+          <picture>
+            <img alt="{{ image.alternate_text }}" width="200" height="200" loading="lazy" data-image-resolution="{{cdn_prefix_url}}{{ image.url }}{{cdn_suffix_url}}" data-fallback-resolution="{{ image.url }}" data-fallback="{{ image.url }}" onerror="handleFallBackForImage(this)" decoding="async" data-zs-thumbnail-image src="{{cdn_prefix_url}}{{ image.url }}{{cdn_suffix_url}}">
+          </picture>
+        {% else %}
+          <picture>
+            <img alt="{{ image.alternate_text }}" width="200" height="200" loading="lazy" data-image-resolution="{{cdn_prefix_url}}{{ image.url }}/800x800{{cdn_suffix_url}}" data-fallback-resolution="{{ image.url }}/800x800" data-fallback="{{ image.url }}/800x800" onerror="handleFallBackForImage(this)" decoding="async" onload="startFadeInAnimation(this)" style="opacity:0" data-zs-thumbnail-image src="{{cdn_prefix_url}}{{ image.url }}/400x400{{cdn_suffix_url}}">
+          </picture>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class='theme-thumbnail-scroll' data-theme-thumbnail-scroll-down aria-label="Scroll down">
+    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+      <path d="M9.38884 10.8777L14.9988 16.4876L20.6087 10.8777L22.332 12.6132L14.9988 19.9465L7.66553 12.6132L9.38884 10.8777Z" fill="black"/>
+    </svg>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const thumbnailWrapper = document.querySelector('[data-thumbnail-wrapper]');
+    const scrollUpButton = document.querySelector('[data-theme-thumbnail-scroll-up]');
+    const scrollDownButton = document.querySelector('[data-theme-thumbnail-scroll-down]');
+
+    function updateScrollButtons() {
+      const isScrollable = thumbnailWrapper.scrollHeight > thumbnailWrapper.clientHeight;
+
+      // Disable the up button if already at the top
+      if (thumbnailWrapper.scrollTop === 0) {
+        scrollUpButton.querySelector('path').style.opacity = '0.8';
+        scrollUpButton.querySelector('path').style.fill = '#CCCCCC';
+        scrollUpButton.style.pointerEvents = 'none';
+      } else {
+        scrollUpButton.querySelector('path').style.opacity = '1';
+        scrollUpButton.querySelector('path').style.fill = '#000000';
+        scrollUpButton.style.pointerEvents = 'auto';
+      }
+
+      // Disable the down button if already at the bottom
+      if (thumbnailWrapper.scrollTop + thumbnailWrapper.clientHeight >= thumbnailWrapper.scrollHeight) {
+        scrollDownButton.querySelector('path').style.opacity = '0.8';
+        scrollDownButton.querySelector('path').style.fill = '#CCCCCC';
+        scrollDownButton.style.pointerEvents = 'none';
+      } else {
+        scrollDownButton.querySelector('path').style.opacity = '1';
+        scrollDownButton.querySelector('path').style.fill = '#000000';
+        scrollDownButton.style.pointerEvents = 'auto';
+      }
+    }
+
+    scrollUpButton.addEventListener('click', function() {
+      thumbnailWrapper.scrollBy({ top: -100, behavior: 'smooth' });
+    });
+
+    scrollDownButton.addEventListener('click', function() {
+      thumbnailWrapper.scrollBy({ top: 100, behavior: 'smooth' });
+    });
+
+    // Initial update on load
+    updateScrollButtons();
+
+    // Update buttons on scroll
+    thumbnailWrapper.addEventListener('scroll', updateScrollButtons);
+
+    // Optionally, update buttons on window resize if thumbnail wrapper size can change
+    window.addEventListener('resize', updateScrollButtons);
+  });
+</script>

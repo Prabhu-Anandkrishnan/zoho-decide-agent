@@ -1,0 +1,48 @@
+{% for attribute in product.attributes %}
+  <div class="theme-product-options">
+    <div class="theme-product-sizes" data-zs-product-variant-container="{{attribute.name}}" {% if attribute.type == 'Color' %}data-zs-product-color-variants{% endif %}>
+      <div class="theme-product-size-select">
+        <select aria-label="{{ attribute.name }}" data-zs-attribute-name="{{ attribute.name }}" data-zs-attribute-select style="display: none">
+          <option value="-1" >
+            {{i18n.get("product.message.attribute_select",attribute.name)}}
+          </option>
+          {% for option in attribute.options %}
+          <option data-zs-attribute-option value="{{ option.id }}" >
+            {{ option.value }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <details class="theme-attribute-select-inner theme-custom-attribute-select">
+        <summary class='theme-custom-select-value-container'>
+          <span class="theme-custom-select-value" data-custom-select-value>{{i18n.get("product.message.attribute_select",attribute.name)}}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18.5273 9.32568L12.5273 15.3257L6.52734 9.32569" stroke="#150004" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <span class='theme-attribute-option-container' data-custom-select-option-container>
+          {% for option in attribute.options %}
+            <div class='theme-custom-select-option' role="button" tabindex="0" data-zs-attribute-option value="{{ option.id }}" data-value="{{ option.value }}" onclick='customAttributeSelect(this)' onkeydown="handleKeyPressForClick(event, this)">
+              {% if attribute.type == 'Color' %}
+                <label data-theme-color-label style="background:{{option.color_code}}" for='option-id-{{ option.id }}'>
+                </label>
+              {% endif %}
+              <span class="theme-product-color">{{ option.value }}</span>
+            </div>
+          {% endfor %}
+        </span>
+      </details>
+      <div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">Select {{ attribute.name }}</div>
+    </div>
+  </div>
+{% endfor %}
+
+<select style="display: none" data-zs-variants >
+	{% for variant in product.variants %}
+		{% assign variant_options = variant.options %}
+		{% assign variant_option_identifiers = variant_options | map(attr="id") %}
+		{% assign variant_images = variant.images %}
+		{% assign variant_image_identifiers = variant_images | map(attr="id") %}
+		<option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-hide-add-to-cart='{{variant.hide_add_to_cart}}' data-zs-show-add-to-quote='{{variant.show_add_to_quote}}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'></option>
+	{% endfor %}
+</select>

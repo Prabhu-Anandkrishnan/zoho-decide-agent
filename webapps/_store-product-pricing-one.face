@@ -1,0 +1,60 @@
+<div data-zs-pricing-container class="price-mask">
+{% if product.has_variants && !product.variants[0].hide_price %}
+<div class="theme-product-detail-price-area" data-zs-pricings data-zs-variant-id="-1">
+	{% if product.has_variant_price %}
+		<span class="theme-product-price">
+			<span data-zs-selling-price="{{ product.starts_with }}" data-zs-currency-code="{{currency.code}}"> {{ product.starts_with | currency(currency) }} </span> - <span data-zs-selling-price="{{ product.ends_with }}" data-zs-currency-code="{{currency.code}}"> {{ product.ends_with | currency(currency) }} </span>
+		</span>
+	{% elif product.label_price && (product.label_price >= product.selling_price) %}
+		<span class="theme-product-price" data-zs-selling-price="{{ product.selling_price }}" data-zs-currency-code="{{currency.code}}">
+				{{ product.selling_price | currency(currency) }}
+		</span>
+		<span class="theme-product-old-price" data-zs-label-price="{{ product.label_price }}" data-zs-currency-code="{{currency.code}}"  {% if product.label_price == product.selling_price %}style="display: none;"{% endif %}>
+				{{ product.label_price | currency(currency) }}
+		</span>
+	{% else %}
+		<span class="theme-product-price" data-zs-selling-price="{{ product.selling_price }}" data-zs-currency-code="{{currency.code}}">
+				 {{ product.selling_price | currency(currency) }}
+		</span>
+	{% endif %}
+</div>
+{% for variant in product.variants %}
+{% if !variant.hide_price %}
+<div class="theme-product-detail-price-area" data-zs-pricings data-zs-variant-id = "{{ variant.variant_id }}" style="display: none">
+	<span class="theme-product-price" data-zs-selling-price="{{ variant.selling_price }}" data-zs-currency-code="{{currency.code}}">
+		{{ variant.selling_price | currency(currency) }}
+	</span>
+	{% if variant.label_price && (variant.label_price >= variant.selling_price) %}
+	<span class="theme-product-old-price" data-zs-label-price="{{ variant.label_price }}" data-zs-currency-code="{{currency.code}}" {% if variant.label_price == variant.selling_price %}style="display: none;"{% endif %}>
+		{{ variant.label_price | currency(currency) }}
+	</span>
+	{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+{% else %}
+
+{% assign variant = product.variants[0] %}
+<div class="theme-product-detail-price-area" data-zs-pricings data-zs-variant-id = "{{ variant.variant_id }}">
+	{% if variant.label_price && (variant.label_price >= variant.selling_price) && !variant.hide_price %}
+    <span class="theme-product-price" data-zs-selling-price="{{ variant.selling_price }}" data-zs-currency-code="{{currency.code}}">
+        {{ variant.selling_price | currency(currency) }}
+    </span>
+		<span class="theme-product-old-price" data-zs-label-price="{{ variant.label_price }}" data-zs-currency-code="{{currency.code}}" {% if variant.label_price == variant.selling_price %}style="display: none;"{% endif %}>
+			{{ variant.label_price | currency(currency) }}
+		</span>
+	{% else %}
+	  {% if !variant.hide_price %}
+		<span class="theme-product-price" data-zs-selling-price="{{ variant.selling_price }}" data-zs-currency-code="{{currency.code}}">
+			{{ variant.selling_price | currency(currency) }}
+		</span>
+	  {% endif %}
+	{% endif %}
+</div>
+
+{% endif %}
+</div>
+
+<div data-zs-pricelist class="theme-prod-pricelist-outter">
+	{% include 'store-product-pricelist' %}
+</div>

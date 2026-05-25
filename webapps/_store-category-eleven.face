@@ -1,0 +1,88 @@
+{% comment %} CATEGORY IMAGE AND DESCRIPTION {% endcomment %}
+{% if category.products | size > 1 %}
+  <div class="theme-section" data-category-style-11>
+    <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters %}theme-filter-enable-container{% endif %}">
+      <div class="zprow">
+        <div class="zpcol-md-6">
+          <div class="theme-category-name-description theme-category-name-description-noimage">
+            <div class="theme-category-description {% if !category.images[0].is_placeholder_image %}zpdark-section{% endif %}">
+              <div class="theme-category-name-count">
+                <h1 class="theme-category-name {% if category.description %}theme-category-name-with-desc{% endif %}">{{ category.name }}</h1>
+                <span class="theme-product-count" data-product-count>( {{category.products | size }} Products Available )</span>
+              </div>
+              {% if category.description %}
+                {{ category.description }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="theme-filter-sortby-container zpcol-md-6">
+          {% comment %} CATEGORY SORTBY {% endcomment %}
+          <div class="theme-product-filter-icon-mobile-container">
+            {% if page.is_sorting_enabled && category.products | size > 1 %}
+                <div class="theme-collection-sortby-section" {% if filters.is_enabled && filters.has_filters %} data-theme-sortby-with-filter {% else %} data-theme-sortby-with-no-filter {% endif %}>
+                <div class="theme-collection-sort">
+                    {% include "_store-custom-sortby" %}
+                    {{ sortBy(category,page.template_vars.product_category_style) }}
+                </div>
+                </div>
+            {% endif %}
+            {% if filters.is_enabled && filters.has_filters %}
+                <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile" {% if !page.is_sorting_enabled %} data-no-sort {% endif %}>
+                <div class='theme-filters-header'>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M14.3565 21.2333C14.2432 21.2333 14.1299 21.2075 14.0253 21.155L10.3216 19.3033C10.0707 19.1779 9.91197 18.9212 9.91197 18.6408V12.8567L2.67992 4.30461C2.49367 4.08461 2.45242 3.77628 2.57367 3.51461C2.69492 3.25295 2.95742 3.08545 3.24575 3.08545H21.764C22.0523 3.08545 22.3144 3.25295 22.4361 3.51461C22.5573 3.77628 22.5161 4.08461 22.3298 4.30461L15.0978 12.8567V20.4929C15.0978 20.7495 14.9649 20.9879 14.7465 21.1229C14.6278 21.1962 14.4924 21.2337 14.357 21.2337L14.3565 21.2333ZM11.3936 18.1829L13.6157 19.2941V12.5854C13.6157 12.4104 13.6778 12.2408 13.7907 12.1071L20.1673 4.56711H4.842L11.2186 12.1071C11.3316 12.2408 11.3936 12.4104 11.3936 12.5854V18.1833V18.1829Z" fill="black"/>
+                    </svg>
+                    <div>{{i18n.get("product_filters.refine_by.label")}}</div>
+                </div>
+                </div>
+            {% endif %}
+          </div>
+          {% comment %} CATEGORY SORTBY END {% endcomment %}
+        </div>
+    </div>
+    </div>
+  </div>
+{% endif %}
+{% comment %} CATEGORY IMAGE AND DESCRIPTION END {% endcomment %}
+
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+
+<div class="theme-collection-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+    <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      {% if category.products | size == 0 %}
+        <div role="alert" class='theme-no-products-error-container'>
+          <span class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</span>
+        </div>
+      {% endif %}
+
+    {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+    {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+      <div class='theme-filters-container'>
+        <div data-zs-filter-container class="theme-produt-filter-row">
+        {% include "store-product-filters" %}
+        </div>
+      </div>
+    {% endif %}
+    {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+    <div class="zprow theme-produt-category-list-row">
+      <div class="theme-filter-sortby-container">
+        {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+          {% include "_store-product-selected-filter" %}
+        {% endif %}
+      </div>
+      <div class="zpcol-md-12 zpcol-sm-12">
+        <div class="zprow theme-product-ratio {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '02' %}theme-product-box-filter-spacing-02{% endif %}" data-sort-by-products-target>
+          {% for product in category.products %}
+            {% include "store-product-list-view" %}
+          {% endfor %}
+          {% include "_store-pagination" %}
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE END {% endcomment %}

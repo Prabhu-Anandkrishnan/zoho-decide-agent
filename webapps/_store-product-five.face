@@ -1,0 +1,277 @@
+<select aria-hidden="true" style="display: none;position:absolute;width:0px;height:0px" data-zs-variants>
+  {% for variant in product.variants %}
+    {% assign variant_options = variant.options %}
+    {% assign variant_option_identifiers = variant_options | map(attr="id") %}
+    {% assign variant_images = variant.images %}
+    {% assign variant_image_identifiers = variant_images | map(attr="id") %}
+    <option src='{{cdn_prefix_url}}{{variant_images[0].url}}/400x400{{cdn_suffix_url}}' id='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-img-url='{{cdn_prefix_url}}{{variant_images[0].url}}{{cdn_suffix_url}}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'><option>
+  {% endfor %}
+</select>
+
+
+<div class="theme-section" data-zs-product-id = "{{ product.product_id }}" data-zs-product-details-primary-section>
+  <div class="zpcontainer ">
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+        {% include '_store-product-image-three' %}
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-container">
+        <div class="theme-tag-contianer">
+          {% if template_vars.is_product_tags_enabled && product.tags | size != 0 %}
+            <div class="theme-tag-sku">
+              <nav aria-label="{{i18n.get("product.label.tags")}}">
+                <ul class="theme-tag-list-container">
+                  {% for tag in product.tags %}
+                  <li>
+                    <a class="theme-product-tag-url" data-zs-product-tag href="{{ tag.url }}">
+                      <span class="theme-product-tag-name">{{ tag.name }}</span>
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </nav>
+            </div>
+          {% endif %}
+        </div>
+        <div class="theme-product-name-social-container">
+          <h1 data-zs-product-name>{{ product.name }}</h1>
+          {% if product.is_social_share_enabled %}
+          <div class='theme-social-share'>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                  <path d="M12 11.5959C11.4933 11.5959 11.04 11.7959 10.6933 12.1092L5.94 9.34256C5.97333 9.18923 6 9.0359 6 8.8759C6 8.7159 5.97333 8.56256 5.94 8.40923L10.64 5.66923C11 6.00256 11.4733 6.20923 12 6.20923C13.1067 6.20923 14 5.3159 14 4.20923C14 3.10256 13.1067 2.20923 12 2.20923C10.8933 2.20923 10 3.10256 10 4.20923C10 4.36923 10.0267 4.52256 10.06 4.6759L5.36 7.4159C5 7.08256 4.52667 6.8759 4 6.8759C2.89333 6.8759 2 7.76923 2 8.8759C2 9.98256 2.89333 10.8759 4 10.8759C4.52667 10.8759 5 10.6692 5.36 10.3359L10.1067 13.1092C10.0733 13.2492 10.0533 13.3959 10.0533 13.5426C10.0533 14.6159 10.9267 15.4892 12 15.4892C13.0733 15.4892 13.9467 14.6159 13.9467 13.5426C13.9467 12.4692 13.0733 11.5959 12 11.5959Z" fill="#111111"/>
+              </svg>
+              <div class="theme-product-social-share" data-zs-product-socialshare data-zs-app="social_share" data-style="{{product.social_share_options.style}}" data-align="{{product.social_share_options.align}}" data-count="{{product.social_share_options.show_count}}"></div>
+          </div>
+          {% endif %}
+        </div>
+        {% if product.short_description %}
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+        {% endif %}
+        {% if product.is_product_review_enabled %}
+          <div class="theme-rating-review-container">
+            <div class="theme-rating-review" data-comments-summary = "rating-only"></div>
+          </div>
+        {% endif %}
+        <div class="theme-product-stock-availability-details">
+          {% if product.has_variants %}
+            {% for variant in product.variants %}
+              <span class="theme-prod-stock-details" data-variant-id-stock="{{ variant.variant_id }}" data-stock-avail="{{variant.is_out_of_stock}}" style="display:none;">
+                {{i18n.get("product.message.out_of_stock")}}
+              </span>
+            {% endfor %}
+          {% else %}
+            {% if product.is_out_of_stock == true  %}
+              <span  data-zs-outofstock class="theme-prod-stock-details {% if product.is_out_of_stock == true %}theme-out-of-stock {% else %} theme-stock-background-color{% endif %}">
+                  {{i18n.get("product.message.out_of_stock")}}
+              </span>
+            {% endif %}
+          {% endif %}
+          {% if !product.is_returnable %}
+            <div class="theme-prod-non-returnable" aria-label="{{i18n.get("product.label.non_returnable")}}" data-zs-product-non-returnable>
+              {{i18n.get("product.label.non_returnable")}}
+            </div>
+          {% endif %}
+        </div>
+        {% include '_store-product-pricing-four' %}
+        <div class="theme-product-coupons" style="width: 100%;">
+          {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+            <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+          {% endif %}
+        </div>
+        {% if product.has_variants %}
+        <div class="theme-product-varients-area">
+          {% include "_store-product-variants-five" %}
+        </div>
+        {% endif %}
+        {% if product.is_product_custom_fields_enabled %}
+          <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+            <input type="checkbox" id="custom-fields" class="theme-prod-details-toggle">
+            <div class="theme-product-details">
+              <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="custom-fields">
+                <span>{{i18n.get("product.label.custom_fields_heading")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                  <path d="M6.9375 3.68823L13.1251 9.87586L6.9375 16.0632" stroke="black" stroke-width="1.54688" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </label>
+              <label class="theme-prod-content-overlay" onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="custom-fields" aria-label="{{i18n.get("product.label.close")}} {{i18n.get("product.label.custom_fields_heading")}}"></label>
+            <aside class='theme-prod-content-details'>
+                <div class="theme-slider-variant-header">
+                  <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="custom-fields">
+                    <span class="theme-variant-label-text">{{i18n.get("product.label.custom_fields_heading")}}</span>
+                    <svg aria-hidden="true"xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                      <path d="M16.4198 29.5573C23.7836 29.5573 29.7531 23.5878 29.7531 16.224C29.7531 8.86016 23.7836 2.89062 16.4198 2.89062C9.05596 2.89062 3.08643 8.86016 3.08643 16.224C3.08643 23.5878 9.05596 29.5573 16.4198 29.5573Z" stroke="black" stroke-width="2"/>
+                      <path d="M19.7531 12.8906L13.0864 19.5573M13.0864 12.8906L19.7531 19.5573" stroke="black" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </label>
+                </div>
+                <div class="theme-slider-variant-body">
+                  {% include "_store-product-custom-field-three" %}
+                </div>
+              </aside>
+            </div>
+          </div>
+        {% endif %}
+        {% include "_store-product-quantity-add-cart-two" %}
+        {% if page.is_delivery_location_enabled %}
+          <div class="theme-product-details-delivery-location-row">
+            <p class="theme-product-details-delivery-location-input-label">{{i18n.get("delivery_location_availability.label.delivery")}}</p>
+            <input class="theme-product-details-delivery-location-postalcode" type="text" maxlength="6" id="delivery_location_postalcode" data-zs-delivery-location-postalcode="" placeholder="{{i18n.get("delivery_location_availability.label.postal_code.enter")}}">
+            <p data-zs-delivery-availability-product-details-error-message class="theme-delivery-location-error" style="display:none;">{{i18n.get("delivery_location_availability.label.error.invalid.postal_code")}}</p>
+            <div class="theme-product-delivery-location-deliverable-details">
+              {% for variant in product.variants %}
+              <span class="theme-product-details-delivery-location-message" data-zs-delivery-availability-variant-id="{{ variant.variant_id }}" data-zs-delivery-availability data-zs-delivery-stock-availability-status style="display:none;">
+              </span>
+              {% endfor %}
+              <a id="delivery-availability-apply-postalcode" data-zs-product-details-delivery-availablity href="javascript:;">{{i18n.get("delivery_location_availability.label.delivery.location.select")}}</a>
+            </div>
+          </div>
+        {% endif %}
+        {% if page.template_vars.product_content_style == '05' %}
+        <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <input type="checkbox" id="product-details" class="theme-prod-details-toggle">
+            <div class="theme-product-details" >
+              <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="product-details">
+                <span>{{i18n.get("product.label.details")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                  <path d="M6.9375 3.68823L13.1251 9.87586L6.9375 16.0632" stroke="black" stroke-width="1.54688" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </label>
+              <label class="theme-prod-content-overlay" role="button" tabindex="0" onkeydown="handleKeyPressForClick(event, this)" aria-label="{{i18n.get("product.label.close")}} {{i18n.get("product.label.details")}}" for="product-details"></label>
+              <aside class='theme-prod-content-details'>
+                <div class="theme-slider-variant-header">
+                  <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="product-details">
+                    <span class="theme-variant-label-text">{{i18n.get("product.label.details")}}</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                      <path d="M16.4198 29.5573C23.7836 29.5573 29.7531 23.5878 29.7531 16.224C29.7531 8.86016 23.7836 2.89062 16.4198 2.89062C9.05596 2.89062 3.08643 8.86016 3.08643 16.224C3.08643 23.5878 9.05596 29.5573 16.4198 29.5573Z" stroke="black" stroke-width="2"/>
+                      <path d="M19.7531 12.8906L13.0864 19.5573M13.0864 12.8906L19.7531 19.5573" stroke="black" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </label>
+                </div>
+                <div class="theme-slider-variant-body">
+                  {{ product.description }}
+                </div>
+              </aside>
+            </div>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <input type="checkbox" id="specification" class="theme-prod-details-toggle">
+            <div class="theme-product-details" >
+              <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="specification">
+                <span>{{i18n.get("product.label.specifications")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
+                  <path d="M6.9375 3.68823L13.1251 9.87586L6.9375 16.0632" stroke="black" stroke-width="1.54688" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </label>
+              <label class="theme-prod-content-overlay" onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="specification" aria-label="{{i18n.get("product.label.close")}} {{i18n.get("product.label.specifications")}}"></label>
+              <aside class='theme-prod-content-details'>
+                <div class="theme-slider-variant-header">
+                  <label class='theme-prod-content-summary' onkeydown="handleKeyPressForClick(event, this)" role="button" tabindex="0" for="specification">
+                    <span class="theme-variant-label-text">{{i18n.get("product.label.specifications")}}</span>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none">
+                      <path d="M16.4198 29.5573C23.7836 29.5573 29.7531 23.5878 29.7531 16.224C29.7531 8.86016 23.7836 2.89062 16.4198 2.89062C9.05596 2.89062 3.08643 8.86016 3.08643 16.224C3.08643 23.5878 9.05596 29.5573 16.4198 29.5573Z" stroke="black" stroke-width="2"/>
+                      <path d="M19.7531 12.8906L13.0864 19.5573M13.0864 12.8906L19.7531 19.5573" stroke="black" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </label>
+                </div>
+                <div class="theme-slider-variant-body">
+                  {% for specification_group in product.specification_group %}
+                  <ul class='theme-spec-group'>
+                    {% for attributes in specification_group.attributes %}
+                      <li class='theme-spec'>
+                        <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                        <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  {% endfor %}
+                </div>
+              </aside>
+            </div>
+          {%endif%}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var shareLink = document.querySelector(".theme-social-share");
+      function sharePageLink() {
+        var currentPageUrl = window.location.href;
+        if (navigator.share) {
+          navigator.share({
+            url: currentPageUrl
+          }).then(() => {
+          }).catch((error) => {
+          });
+        }
+      }
+      if(shareLink){
+        shareLink.addEventListener("touchstart", sharePageLink);
+      }
+    });
+  </script>
+</div>
+
+<script>
+  const observerConfig = { childList: true, subtree: false };
+	let observer_created = false;
+  function createObserver(commentBoxSection) {
+    if (commentBoxSection) {
+      const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+          if (mutation.type === 'childList' && mutation.target.textContent) {
+            upgradeCommentBoxToV2();
+          }
+        }
+      });
+      observer.observe(commentBoxSection, observerConfig);
+    }
+  }
+    
+  function upgradeCommentBoxToV2() {
+    let commentBoxSection = document.querySelector('[data-zs-product-commentbox]');
+    let formContainer = commentBoxSection.querySelector('.zpform-container');
+    if (formContainer) {
+      if (!commentBoxSection.classList.contains('theme-custom-ratings-section')) {
+        let editFormContainer = formContainer.querySelector('[data-cbform-elmtype="cb_form_field"]');
+        let ratingResults = formContainer.querySelector('.zpcomment-rating-result');
+        let ratingInfoBox = formContainer.querySelector('.zpcomment-rating-infobox')
+
+        let ratingsSection = document.createElement('div');
+        ratingsSection.classList.add('theme-custom-ratings-section');
+        formContainer.appendChild(ratingsSection)
+
+        ratingsSection.appendChild(ratingResults);
+        ratingsSection.appendChild(ratingInfoBox);
+        ratingsSection.appendChild(editFormContainer);
+
+        let revWithPics = document.querySelector('.zpcomment-heading-prevnext-container');
+        let picsCtr = document.querySelector('.zpform-cbimage-list-container') ? document.querySelector('.zpform-cbimage-list-container').parentElement : null;
+        let viewImgs = document.querySelector('[data-cbform-elmtype="view_all_images"]');
+
+        if (picsCtr) {
+          let listContainer = document.querySelector('.zpcomment-list-container');
+          listContainer.appendChild(revWithPics);
+          listContainer.appendChild(picsCtr);
+          listContainer.appendChild(viewImgs);
+        }
+
+        commentBoxSection.closest('[data-zs-product-details-commentbox-section]').style.display = 'block';
+        commentBoxSection.classList.add('theme-comment-box-v2');
+        if(!observer_created){
+          createObserver(commentBoxSection);
+          observer_created = true;
+        }
+      }
+    } 
+    else {
+      setTimeout(upgradeCommentBoxToV2, 500);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', upgradeCommentBoxToV2);
+</script>

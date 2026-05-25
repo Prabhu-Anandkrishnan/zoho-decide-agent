@@ -1,0 +1,133 @@
+<div class="theme-quick-view-container">
+	<div class="theme-overlay" role="button" tabindex="0" aria-label="{{i18n.get("product.label.close")}}" onclick="closeProductQuickLook(this)">
+	</div>
+	<div class="theme-product-quick-view-inner" data-zs-product-id="{{ product.product_id }}" data-zs-product-details-primary-section>
+    <button onclick="closeProductQuickLook(this)" aria-label="{{i18n.get("product.label.close")}}" class="theme-quickview-close">
+			<svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" viewBox="0 0 37 37" fill="none">
+				<path d="M10.1 29L8 26.9L16.4 18.5L8 10.1L10.1 8L18.5 16.4L26.9 8L29 10.1L20.6 18.5L29 26.9L26.9 29L18.5 20.6L10.1 29Z" fill="white"/>
+			</svg>
+		</button>
+    <div class="theme-product-detail-container" data-zs-product-primary-details>
+      <div class="theme-product-detail-column theme-product-detail-image-container">
+        {% include '_store-product-image-three' %}
+      </div>
+      <div class="theme-product-detail-column theme-product-detail-container">
+        <div class="theme-product-name">
+          <h1 data-zs-product-name>{{ product.name }}</h1>
+          {% if product.is_product_review_enabled %}
+            <div class="theme-rating-review-container">
+              <div class="theme-rating-review" data-comments-summary = "rating-only"></div>
+            </div>
+        {% endif %}
+        </div>
+        {% if product.short_description %}
+          <div class="theme-product-short-description" data-zs-product-short-description>
+            {{ product.short_description }}
+          </div>
+        {% endif %}
+        {% include '_store-product-pricing-four' %}
+        <div class="theme-product-coupons" style="width: 100%;">
+          {% if page.is_coupon_enabled && product.is_out_of_stock == false %}
+            <div class="theme-prod-coupons-outtercontainer" data-zs-app="product_coupons" data-zs-coupons-list></div>
+          {% endif %}
+        </div>
+        {% if product.has_variants %}
+        <div class="theme-product-varients-area">
+          {% include "_store-product-variants-one" %}
+        </div>
+        {% endif %}
+        {% include "_store-product-custom-field-two" %}
+        {% include "_store-product-quantity-add-cart-one" %}
+        {% if page.template_vars.product_content_style == '02' %}
+        <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <details name='product-details' open>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.details")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg aria-hidden="true" class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <details name='specification' open>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.specifications")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 19.5904L10 18.2495L17.5 10.7495L25 18.2495L23.6591 19.5904L17.5 13.4313L11.3409 19.5904Z" fill="black"/>
+                </svg>
+                <svg aria-hidden="true" class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="35" height="30" viewBox="0 0 35 30" fill="none">
+                  <path d="M11.3409 10.9879L10 12.3289L17.5 19.8289L25 12.3289L23.6591 10.9879L17.5 17.147L11.3409 10.9879Z" fill="black"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>
+                {% for specification_group in product.specification_group %}
+                <ul class='theme-spec-group'>
+                  {% for attributes in specification_group.attributes %}
+                    <li class='theme-spec'>
+                      <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                      <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endfor %}
+              </div>
+            </details>
+          {%endif%}
+        </div>
+        {% elif page.template_vars.product_content_style == '07' %}
+        <div class="theme-product-specification-section" data-zs-product-details-tab-section>
+          {% if product.description %}
+            <details name='product-details'>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.details")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M12 4L12 20" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>{{ product.description }}</div>
+            </details>
+          {% endif %}
+
+          {% if page.is_specification_enabled && product.specification_group | size != 0 %}
+            <details name='specification'>
+              <summary class='theme-prod-content-summary'>
+                <span>{{i18n.get("product.label.specifications")}}</span>
+                <svg aria-hidden="true" class="theme-accordion-open" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M12 4L12 20" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <svg aria-hidden="true" class="theme-accordion-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 12L4 12" stroke="#150004" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </summary>
+              <div class='theme-prod-content-details'>
+                {% for specification_group in product.specification_group %}
+                <ul class='theme-spec-group'>
+                  {% for attributes in specification_group.attributes %}
+                    <li class='theme-spec'>
+                      <div class="theme-prod-specification-field">{{attributes.name}}</div>
+                      <div class="theme-prod-specification-value">{{attributes.value}}</div>
+                    </li>
+                  {% endfor %}
+                </ul>
+                {% endfor %}
+              </div>
+            </details>
+          {%endif%}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+	</div>
+</div>

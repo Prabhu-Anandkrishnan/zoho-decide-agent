@@ -1,0 +1,91 @@
+{% comment %} CATEGORY  DESCRIPTION STARTS {% endcomment %}
+<div class="theme-category-section">
+<div class="theme-section" data-category-style-07>
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    <div class="theme-category-name">
+      <h1 class="theme-category-heading" data-zs-catgeory-name>{{ category.name }}</h1>
+    </div>
+    {% if category.description %}
+      <div class="theme-category-description" data-zs-category-description>
+        <p>{{ category.description }}</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% comment %} CATEGORY  DESCRIPTION END {% endcomment %}
+
+{% comment %} CATEGORY SORTBY {% endcomment %}
+
+<div class="theme-sub-category-sort-by-filter">
+  {% if category.sub_categories | size > 1 %}
+
+    <div class="theme-sub-category-section" data-sub-category-style-07>
+      <div class="theme-sub-category-list">
+        {% for sub in category.sub_categories %}
+          <a href="{{sub.url}}" class="theme-sub-category" data-sub-category-id="{{sub.category_id}}">{{sub.name}}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+  {% endif %}
+
+  <div class="theme-sort-by-filter">
+
+    {% if page.is_sorting_enabled && category.products | size > 1 %}
+      <div class="theme-category-sortby-section">
+        <div class=" {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+            <div class="theme-collection-sort" >
+              {% include "_store-custom-sortby" %}
+              {{ sortBy(category,page.template_vars.product_category_style) }}
+            </div>
+        </div>
+      </div>
+    {% endif %}
+
+     {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+        <div class = "theme-filter-container">  
+          <span role="button" tabindex="0" class="theme-filter-label" data-toggle-filters onclick='toggleFilters()'>{{i18n.get("product_filters.refine_by.label")}}</span>
+          <svg aria-hidden="true"  class="theme-filter-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="14" viewBox="0 0 10 14" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.37652 7.34431L1.27375 1.86744L2.73705 0.504085L9.20318 7.44427L2.263 13.9104L0.89965 12.4471L6.37652 7.34431Z" fill="black"/></svg>
+          <div class="theme-filter-overlay">
+            <div data-zs-filter-container class="theme-produt-filter-row">
+              {% include 'store-product-filters' %} 
+            </div>
+          </div>
+        </div>
+    {% endif %}
+
+  </div>
+
+</div>
+
+
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+
+<div class="theme-product-category-section theme-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    <div class="theme-store-category-container" data-zs-category-products>
+      {% if category.products | size == 0 %}
+        <h2 role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</h2>
+      {% endif %}
+
+      <div class=" theme-produt-category-list-row">
+        <div class="theme-filter-selected-container">
+          {% include "_store-product-selected-filter" %}
+        </div>
+        <div class=" zpcol-sm-12">
+          <div class=" theme-product-ratio" data-sort-by-products-target>
+            {% for product in category.products %}
+              {% include "store-product-list-view" %}
+            {% endfor %}
+            {% include "_store-pagination" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% comment %} PRODUCTS LIST CATEGORY PAGE END {% endcomment %}

@@ -1,0 +1,88 @@
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+<div class="theme-collection-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+    <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+        <div class="theme-store-collection-container {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %} theme-store-collection-container-filter {% endif %}">
+        
+            {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+            {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+                <div data-theme-product-filter-overlay class="theme-product-filter-mobile-overlay" role="button" tabindex="0" aria-label="Close filter" >
+                    <svg aria-hidden="true" viewBox="0 0 512 513.5" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M115.5 92.5l140.5 140.5 140.5-140.5 23 23-140.5 140.5 140.5 140.5-23 23-140.5-140.5-140.5 140.5-23-23 140.5-140.5-140.5-140.5z" />
+                    </svg>
+                </div>
+                <div data-zs-filter-container class="theme-produt-filter-row">
+                    {% include "store-product-filters" %}
+                 </div>
+            {% endif %}
+            {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+            <div class="zprow theme-produt-category-list-row">
+                <div class="zprow" dats-zs-category-name-sort-by-details>
+                    <div class="zpcol-md-12" >
+                        <div class="theme-category-name-description">
+                            <h1 class="theme-category-name {% if category.description %}theme-category-name-with-desc{% endif %}">{{ category.name }}</h1>
+                            {% if category.description %}
+                            {{ category.description }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="theme-filter-sortby-container">
+                        {% comment %} CATEGORY SORTBY {% endcomment %}
+                        {% if page.is_sorting_enabled && category.products | size > 1 %}
+                            <div class="theme-product-filter-icon-mobile-container">
+                                <div data-theme-product-filter-mobile-icon class="theme-product-filter-icon-mobile">
+                                    <svg viewBox="0 0 16 14" xmlns="http://www.w3.org/2000/svg"><g id="Artboard-Copy-10" stroke="none" stroke-width="1" fill-rule="evenodd"><path id="Path" d="M15.333 0H0l6.133 7.253v5.014L9.2 13.8V7.253z"/></g></svg>
+                                </div>
+                                <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+                                    <div class="theme-collection-sort">
+                                        <div aria-hidden="true" class="theme-collection-sort-inner" style="display : none">
+                                            <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}} : </span>
+                                            <select aria-label="{{i18n.get("product.sort_by.label")}}" data-sort-by-products>
+                                              {% for sort_by_option in category.sort_by_options %}
+                                                <option value="{{ sort_by_option.value }}" {% if sort_by_option.is_selected %} selected {% endif %}>{{ sort_by_option.name }}</option>
+                                              {% endfor %}
+                                            </select>
+                                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="10" height="10" viewBox="0 0 512 512" style="width: 10px;height: 10px;enable-background:new 0 0 512 512;" xml:space="preserve" class="theme-filter-expand-icon theme-filter-expclose-default-hide "><polygon points="256,413.4 0.6,158 40.2,118.4 256,334.2 471.8,118.4 511.4,158 "></polygon></svg>
+                                        </div>
+                                        <div role="button" aria-expanded="false" aria-controls="customSortListbox" aria-haspopup="listbox" tabindex="0" class="theme-collection-sort-inner theme-custom-sort"  onkeydown="handleKeyPressForClick(event, this)" onclick="toggleCustomSort(this)" >
+                                            <span class="theme-sortby-label">{{i18n.get("product.sort_by.label")}} : </span>
+                                            <div class='theme-custom-select-value' data-custom-select-value>
+                                                {% for sort_by_option in category.sort_by_options %}
+                                                    {% if sort_by_option.is_selected %}{{ sort_by_option.name }}{% endif %}
+                                                {% endfor %}
+                                            </div>
+                                            <div class='theme-custom-select-option-container' id="customSortListbox" data-custom-select-option-container>
+                                                {% for sort_by_option in category.sort_by_options %}
+                                                    <div role='option' tabindex='0' class='theme-custom-select-option' data-value-{{ sort_by_option.value }}  onclick='customSortBySelect("{{ sort_by_option.value }}","{{ sort_by_option.name }}", this)'>{{ sort_by_option.name }}</div>
+                                                {% endfor %}
+                                            </div>
+                                            <svg class='theme-sort-open-close' xmlns="http://www.w3.org/2000/svg" width="16" height="9" viewBox="0 0 16 9" fill="none">
+                                                <path d="M1.36874 0.159092L0.0278317 1.5L7.52783 9L15.0278 1.5L13.6869 0.159091L7.52783 6.31818L1.36874 0.159092Z" fill="black"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% comment %} CATEGORY SORTBY END {% endcomment %}
+                    </div>
+                        {% include "_store-product-selected-filter" %}
+                </div>
+                <div class="zpcol-md-12 zpcol-sm-12 {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '04' %} theme-store-collection-colum-style-04 {% endif %}">
+                    <div class="zprow theme-product-collection-container theme-product-ratio {% if page.template_vars.product_list_style == '04' %}theme-blur-style-04{% endif %} {% if page.template_vars.product_list_style == '05' || page.template_vars.product_list_style == '07'  %}theme-collection-row-no-margin{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && (page.template_vars.product_list_style == '09' || page.template_vars.product_list_style == '08') %}theme-product-filter-addcart-spacing-08-09{% endif %} {% if filters.is_enabled && filters.has_filters && category.products | size > 1 && page.template_vars.product_list_style == '02' %}theme-product-box-filter-spacing-02{% endif %}" data-sort-by-products-target>
+                        {% for product in category.products %}
+                        {% assign category_products = category.products%}
+                        {% include "store-product-list-view" %}
+                        {% endfor %}
+                        {% include "_store-pagination" %}
+                    </div>
+                </div>
+            </div>
+            {% if category.products | size == 0 %}
+            <h2 role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</h2>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE END {% endcomment %}

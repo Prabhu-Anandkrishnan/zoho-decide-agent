@@ -1,0 +1,128 @@
+{% if product.images | size < 2 %}
+  <div class="theme-product-detail-image" data-zs-product-img-container>
+    <div class="theme-product-detail-image-inner theme-single-image" data-lightbox-container="prod_images_grid_{{product.product_id}}">
+      {% if product.images[0].is_placeholder_image %}
+        <picture>
+          <img alt="{{ product.images[0].alternate_text }}" src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}"
+          data-detail-image="theme-detail-image-{{product.product_id}}" 
+          data-lightbox-detailImage data-lightbox-index='0' loading="lazy"
+          data-fallback="{{ product.images[0].url }}" width="600" height="600"
+          onerror="handleFallBackForImage(this)">
+        </picture>
+
+      {% else %}
+        <picture>
+          <img alt="{{ product.images[0].alternate_text }}" width="600" height="600" src="{{cdn_prefix_url}}{{ product.images[0].url }}/800x800{{cdn_suffix_url}}"
+          data-detail-image="theme-detail-image-{{product.product_id}}" data-lightbox-detailImage data-lightbox-index='0'
+          rel="preload" fetchpriority="high"
+          data-fallback="{{ product.images[0].url }}/800x800"
+          onerror="handleFallBackForImage(this)">
+        </picture>
+      {% endif %}
+    </div>
+  </div>
+
+{% else %}
+  {% assign images_len = product.images | size %}
+  <div class="theme-product-detail-image" data-zs-product-img-container>
+    <div class="theme-product-detail-image-inner" data-lightbox-container="prod_images_grid_{{product.product_id}}">
+      {% for i in range(0,images_len) %} 
+        {% if product.images[i].is_placeholder_image %}
+          <picture class='image-container' data-lightbox-container="prod_images_grid_{{product.product_id}}" data-img-id-{{ product.images[i].id }}>
+            <img alt="{{ product.images[i].alternate_text }}" width="600" height="600" src="{{cdn_prefix_url}}{{ product.images[i].url }}{{cdn_suffix_url}}"
+            data-detail-image="theme-detail-image-{{product.product_id}}" data-lightbox-detailImage
+            data-lightbox-index='{{i}}' loading="lazy"
+            data-fallback="{{ product.images[i].url }}"
+            onerror="handleFallBackForImage(this)">
+          </picture>
+        {% else %}
+          <picture class='image-container'  data-img-id-{{ product.images[i].id }} data-image-id={{ product.images[i].id }}>
+            <img alt="{{ product.images[i].alternate_text }}" width="600" height="600" src="{{cdn_prefix_url}}{{ product.images[i].url }}/800x800{{cdn_suffix_url}}"
+            {%if i <= 2 %}rel="preload" fetchpriority="high"{% else %} loading="lazy" {% endif %}
+            data-detail-image="theme-detail-image-{{product.product_id}}" rel="preload" data-lightbox-detailImage data-lightbox-index='{{i}}'
+            data-fallback="{{ product.images[i].url }}/800x800"
+            onerror="handleFallBackForImage(this)">
+          </picture>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class='theme-image-indicator-container'>
+      {% for i in range(0,images_len) %} 
+        <span class='theme-image-indicator {% if i==0 %}active{% endif %}' data-img-id={{ product.images[i].id }} data-image-index = {{i}}></span>
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+{% if product.has_variants %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let isquickViewOpen = document.querySelector('.theme-quick-view-container');
+    if (!isquickViewOpen) {
+      var imagesContainer = document.querySelector('.theme-product-detail-image-inner');
+      var indicatorDotsContainer = document.querySelector('.theme-image-indicator-container');
+      if (indicatorDotsContainer) {
+        var indicatorDots = Array.from(indicatorDotsContainer.children);
+        function updateIndicatorDot() {
+          var currentIndex = Math.round(imagesContainer.scrollLeft / imagesContainer.offsetWidth);
+          indicatorDots.forEach(function (dot, index) {
+            dot.classList.toggle('active', index === currentIndex);
+          });
+        }
+        imagesContainer.addEventListener('scroll', updateIndicatorDot);
+        indicatorDotsContainer.addEventListener('click', function (event) {
+          if (event.target.classList.contains('theme-image-indicator')) {
+            var index = indicatorDots.indexOf(event.target);
+            imagesContainer.scrollTo({left: index * imagesContainer.offsetWidth,behavior: 'smooth'});
+          }
+        });
+      }
+    }
+  });
+
+  document.addEventListener('zp-event-image-ordered', function (e) {
+    let isquickViewOpen = document.querySelector('.theme-quick-view-container');
+    if (!isquickViewOpen) {
+      var imageIds = e.detail.image_ids;
+      prodId = e.detail.productId;
+      var imageIdLength;
+      let imgContainer = document.querySelector(`[data-zs-product-id="${prodId}"] .theme-product-detail-image-inner`);
+      if (imgContainer) {
+        imageIdLength = imageIds.indexOf('-1') >= 0 ? imageIds.length - 1 : imageIds.length;
+        let imgs = imgContainer.querySelectorAll('.image-container');
+        imgs.forEach((img) => {
+          let imgId = img.getAttribute('data-image-id');
+          if (!imageIds.includes(imgId) && imageIdLength > 0){
+            img.style.display = 'none';
+          }
+          else {
+            img.style.display = 'block';
+          }
+        });
+        if (imageIdLength == 1) {
+          imgContainer.classList.add('theme-single-image');
+        }
+        else if (imageIdLength != 1 && imgContainer.children.length > 1) {
+          imgContainer.classList.remove('theme-single-image');
+        }
+      }
+      let imgIndicator = document.querySelector(`[data-zs-product-id="${prodId}"] [data-zs-product-img-container]`);
+      let imgIndicators = imgIndicator ? imgIndicator.querySelectorAll('.theme-image-indicator') : null;
+      if (imgIndicators) {
+        if (imgIndicators.length > 0 && imageIdLength > 0) {
+          for (var i = 0; i < imageIdLength; i++) {
+            imgIndicators[i].style.display = 'block';
+          }
+          for (var i = imageIdLength;i < imgIndicators.length; i++) {
+            imgIndicators[i].style.display = 'none';
+          }
+        }
+        else {
+          imgIndicators.forEach((indicator) => {
+            indicator.style.display = 'block';
+          });
+        }
+      }
+    }
+  });
+</script>
+{% endif %}

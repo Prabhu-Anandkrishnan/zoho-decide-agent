@@ -1,0 +1,11 @@
+{
+  "name": "help-me-decide-dev",
+  "private": true,
+  "scripts": {
+    "dev": "python3 dev_server.py",
+    "dev:vite": "vite"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}

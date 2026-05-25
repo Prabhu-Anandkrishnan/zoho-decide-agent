@@ -1,0 +1,60 @@
+<select style="display: none" data-zs-variants>
+	{% for variant in product.variants %}
+		{% assign variant_options = variant.options %}
+		{% assign variant_option_identifiers = variant_options | map(attr="id") %}
+		{% assign variant_images = variant.images %}
+		{% assign variant_image_identifiers = variant_images | map(attr="id") %}
+		<option value='{{ variant.variant_id }}' data-zs-attributes='{{ variant_option_identifiers | json }}' data-zs-images='{{ variant_image_identifiers | json }}' data-zs-hide-add-to-cart='{{variant.hide_add_to_cart}}' data-zs-show-add-to-quote='{{variant.show_add_to_quote}}' data-zs-stock-available='{{variant.stock_available}}' data-zs-out-of-stock='{{variant.is_out_of_stock}}'></option>
+	{% endfor %}
+</select>
+
+{% for attribute in product.attributes %}
+<div class="theme-product-varients-row" data-zs-product-variant-container>
+		<div class="theme-product-variant" data-zs-product-variant-container="{{attribute.name}}" {% if attribute.type == 'Color' %}data-zs-product-color-variants{% endif %}>
+			<div class="theme-product-variant-label" data-zs-product-variant-label>
+				{{ attribute.name }}
+			</div>
+
+			{% if attribute.type == 'Color' %}
+				<fieldset role="radiogroup" aria-label="Choose {{ attribute.name }}" class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+					<legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+							{% for coloroption in attribute.options %}
+							<span class="theme-product-color">
+								<label data-theme-color-label
+									aria-checked="false" 
+									aria-label="{{ coloroption.value }}" 
+									for="option-id-{{ coloroption.id }}" 
+									role="radio" tabindex="0"
+									style="background:{{coloroption.color_code}}" onclick="selectcolor(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+									<input type="radio" name="{{ attribute.id }}" data-zs-attribute-option id="option-id-{{ coloroption.id }}" value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+								</label>
+							</span>
+							{% endfor %}
+						<div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+
+				</fieldset>
+			{% else %}
+				<div class="theme-variant-select-container-main">
+					<fieldset aria-label="Choose {{ attribute.name }}" class="theme-variant-select-container" role="radiogroup" aria-label="{{ attribute.name }}" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+						<legend class="screen-reader-only">Choose {{ attribute.name }}</legend>
+							{% for variantOption in attribute.options %}
+							<span class="theme-product-variant">
+								<label data-theme-variant-label
+									aria-checked="false" 
+									role="radio" tabindex="0"
+									aria-label="{{ coloroption.value }}" 
+									for="option-id-{{ variantOption.id }}" onclick="selectVariant(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+									{{variantOption.value}}
+									<input type="radio" name="{{ attribute.id }}" data-zs-attribute-option id="option-id-{{ variantOption.id }}" value="{{ variantOption.id }}" data-text="{{ variantOption.value }}">
+								</label>
+							</span>
+							{% endfor %}
+					</fieldset>
+
+					<div role="alert" data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+
+				</div>
+			{% endif %}
+		</div>
+</div>
+{% endfor %}

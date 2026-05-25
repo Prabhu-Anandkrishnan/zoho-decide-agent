@@ -1,0 +1,57 @@
+<div class="theme-floating-add-to-cart" data-floating-cta>
+    <div class="theme-cart-product-image">
+      {% if product.images[0].is_placeholder_image %}
+        <picture>
+          <img alt="{{ product.images[0].alternate_text }}"
+            src="{{cdn_prefix_url}}{{ product.images[0].url }}{{cdn_suffix_url}}" data-detail-image="theme-detail-image-{{product.product_id}}"
+            data-fallback="{{ product.images[0].url }}" onerror='handleFallBackForImage(this)'
+            data-lightbox-detailImage>
+        </picture>
+        {% else %}
+        <picture>
+          <img alt="{{ product.images[0].alternate_text }}"
+            src="{{cdn_prefix_url}}{{ product.images[0].url }}/800x800{{cdn_suffix_url}}" data-detail-image="theme-detail-image-{{product.product_id}}"
+            data-fallback="{{ product.images[0].url }}/800x800" onerror='handleFallBackForImage(this)'
+            data-lightbox-detailImage>
+        </picture>
+      {% endif %}
+    </div>
+    <div class='theme-cart-product-details'>
+      <div class="theme-product-name">
+        <h1 data-zs-product-name>{{ product.name }}</h1>
+      </div>
+      {% include '_store-product-pricing-four' %}
+    </div>
+    {% if product.has_variants%}
+    {% assign variantCount = 0 %}
+      {% for attribute in product.attributes %}
+        {% if attribute.type == 'Color' && variantCount < 1 %}
+          <div class="theme-product-varients-area">
+              <div class="theme-product-varients-row" data-product-variant-container>
+                <div class="theme-product-variant" data-zs-product-variant-container="{{attribute.name}}" {% if attribute.type == 'Color' %}data-zs-product-color-variants{% endif %}>
+                  <div class="theme-product-variant-label theme-row-labels" data-zs-product-variant-label>
+                    <span class="theme-variant-label-name">{{ attribute.name }}</span>
+                    <span class="theme-variant-label-colon">:</span>
+                  </div>
+                  <div class="theme-product-color-variations" data-zs-attribute-select data-zs-attribute-name="{{ attribute.name }}">
+                    {% for coloroption in attribute.options %}
+                      <span class="theme-product-color">
+                        <label aria-label="{{ coloroption.value }}" data-theme-color-label style="background:{{coloroption.color_code}}" tabindex="0" onclick="selectcolor(this,'{{ attribute.name }}')" onkeydown="handleKeyPressForClick(event, this)">
+                          <input type="radio" name="{{ attribute.id }}" data-zs-attribute-option value="{{ coloroption.id }}" data-text="{{ coloroption.value }}">
+                        </label>
+                      </span>
+                    {% endfor %}
+                    <div data-error-select-flag="{{product.product_id}}" data-error-select="{{attribute.name}}{{product.product_id}}" data-variant-error="theme-data-error-{{attribute.name}}" class="theme-variant-error" style="display:none;">{{i18n.get("product.message.attribute_select",attribute.name)}}</div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          {% assign variantCount = 1 %}
+        {% endif %}
+      {% endfor %}
+
+    {% endif %}
+    <div class='theme-cart-options'>
+      {% include "_store-product-quantity-add-cart-three" %}
+    </div>
+  </div>

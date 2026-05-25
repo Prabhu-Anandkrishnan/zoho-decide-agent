@@ -1,0 +1,78 @@
+{% comment %} CATEGORY  DESCRIPTION STARTS {% endcomment %}
+
+<div class="theme-section theme-category-section">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    <div class="theme-category-name">
+      <h1 class="theme-category-heading">{{ category.name }}</h1>
+    </div>
+    {% if category.description %}
+      <div class="zprow theme-category-description" data-zs-category-description>
+        <div class="zpcol-md-12">{{ category.description }}</div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% comment %} CATEGORY  DESCRIPTION END {% endcomment %}
+
+{% comment %} CATEGORY SORTBY {% endcomment %}
+
+{% if page.is_sorting_enabled && category.products | size > 1 && (!filters.is_enabled || !filters.has_filters) %}
+  <div class="theme-category-sortby-section">
+    <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+      <div class="zprow">
+        <div class="zpcol-md-12 zpcol-sm-12 theme-collection-sort" >
+          {% include "_store-custom-sortby" %}
+          {{ sortBy(category,page.template_vars.product_category_style) }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% comment %} CATEGORY SORTBY END {% endcomment %}
+
+{% comment %} PRODUCTS LIST IN CATEGORY PAGE {% endcomment %}
+
+<div class="theme-product-category-section {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-productfilter-enable{% endif %}">
+  <div class="zpcontainer {% if page.template_vars.header_style == "06" && page.is_sidebar_enabled && filters.is_enabled && filters.has_filters && category.products | size > 1 %}theme-filter-enable-container{% endif %}">
+    <div class="theme-store-category-container" data-zs-category-products>
+      {% if category.products | size == 0 %}
+        <h2 role="alert" class="theme-no-products-error">{{i18n.get("category.noproducts.message")}}</h2>
+      {% endif %}
+      {% comment %} PRODUCT FILTER STARTS {% endcomment %}
+      {% if filters.is_enabled && filters.has_filters && category.products | size > 1 %}
+        <div class = "theme-filter-container">  
+          <div data-zs-filter-container class="theme-produt-filter-row">
+            {% include 'store-product-filters' %} 
+          </div>
+          {% if page.is_sorting_enabled %}
+            <div class="theme-collection-sortby-section" data-theme-sortby-with-filter>
+              <div class="theme-collection-sort">
+                {% include "_store-custom-sortby" %}
+                {{ sortBy(category,page.template_vars.product_category_style) }}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+      {% comment %} PRODUCT FILTER ENDS {% endcomment %}
+
+      <div class="zprow theme-produt-category-list-row">
+        <div class="theme-filter-sortby-container">
+          {% include "_store-product-selected-filter" %}
+        </div>
+        <div class="zpcol-md-12 zpcol-sm-12">
+          <div class="zprow theme-product-ratio" data-sort-by-products-target>
+            {% for product in category.products %}
+              {% include "store-product-list-view" %}
+            {% endfor %}
+            {% include "_store-pagination" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %} PRODUCTS LIST CATEGORY PAGE END {% endcomment %}

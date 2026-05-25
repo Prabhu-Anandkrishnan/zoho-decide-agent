@@ -1,0 +1,1599 @@
+<!doctype html>
+{% include "_navigation" %}
+<html {{page.html_tag_attributes}}>
+<head>
+<title>{{page.title}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+{{page.meta_tags}}
+
+{{page.stylesheets}}
+
+{{page.scripts}}
+
+{{page.header_code}}
+
+<!-- On load Functions -->
+
+<script>
+  {% if page.template_vars.is_page_loader_enabled %}
+    document.addEventListener("DOMContentLoaded", function () {
+      const loader = document.getElementById("page-loader");
+
+      const showContent = () => {
+        loader.classList.add("fade-out");
+        setTimeout(() => {
+          loader.style.display = "none";
+        }, 250);
+      };
+
+      // Observe LCP
+      let lcpDone = false;
+      const po = new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        if (lastEntry) {
+          lcpDone = true;
+          po.disconnect();
+          requestAnimationFrame(() => requestAnimationFrame(showContent)); // 2 RAFs ensure render
+        }
+      });
+
+      try {
+        po.observe({ type: 'largest-contentful-paint', buffered: true });
+      } catch (e) {
+        // Fallback for unsupported browsers
+        showContent();
+      }
+
+      // Fallback: if LCP doesn't happen in 3s, proceed anyway
+      setTimeout(() => {
+        if (!lcpDone) {
+          po.disconnect();
+          showContent();
+        }
+      }, 3000);
+    });
+  {% endif %}
+  {% if page.template_vars.portal_style == '03' || page.template_vars.portal_style == '04' %}
+    function portalPopup() {
+      let portalbuttons = document.querySelectorAll('[data-portal-loggedout] .theme-portal-content');
+      
+      portalbuttons.forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          let link = button.querySelector('a').getAttribute('href');
+          createPortalPopUp(link);
+        });
+      });
+      
+      if(!window.isLoggedInUser){
+        let redirectSigninButtons = document.querySelectorAll('[data-open-portal-popup]');
+        redirectSigninButtons.forEach(btn => {
+          btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            
+            let link = "/signin";
+            createPortalPopUp(link);
+          });
+        })
+      }
+    }
+
+    function createPortalPopUp(link) {
+      let container = document.querySelector('.theme-portal-popup');
+      let overlay = document.querySelector('.theme-close-portal-overlay');
+      if(!container && !overlay){
+        overlay = document.createElement('div');
+        overlay.className = 'theme-close-portal-overlay';
+        container = document.createElement('div');
+        container.className = 'theme-portal-popup';
+        container.setAttribute('aria-modal', 'true');
+        container.setAttribute('role', 'dialog');
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(container);
+        document.body.style.overflow = 'hidden';
+        
+        overlay.addEventListener('click', closePortal);
+        document.addEventListener('keydown', escHandler);
+      }
+      else {
+        container.innerHTML = "";
+      }
+
+      var closeButton = document.createElement('button');
+      closeButton.className = 'theme-close-portal-button';
+      closeButton.type = 'button';
+      closeButton.setAttribute('aria-label', 'Close');
+      closeButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M24 8L8 24M8 8L24 24" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+      closeButton.addEventListener('click', closePortal);
+      
+      container.appendChild(closeButton);
+
+      // Content served by IAM is directly fetched and appended within the popup to avoid nested iframes
+      if (link === '/signin' || link === '/forgotpassword') {
+        fetch(link)
+        .then(function(res) {
+          return res.text();
+        })
+        .then(function(html) {
+          var parser = new DOMParser();
+          var doc = parser.parseFromString(html, 'text/html');
+          
+          var signInContent = doc.querySelector('.theme-portal-form-container');
+          if (signInContent) {
+            let redirectLinks = signInContent.querySelectorAll('a');
+            redirectLinks.forEach(link => {
+              link.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                createPortalPopUp(link.getAttribute('href'));
+              });
+            })
+            container.appendChild(signInContent);
+          }
+        })
+        .catch(function(err) {
+          console.error(`Failed to load ${link} content:`, err);
+          closePortal();
+        });
+      } 
+      // Content apart from IAM content is loaded as an iframe 
+      else {
+        var iframe = document.createElement('iframe');
+        iframe.src = link;
+        iframe.title = '{{i18n.get("portal.signup")}}';
+        iframe.style.width = '100%';
+        iframe.style.height = '100vh';
+        iframe.style.border = 'none';
+        container.appendChild(iframe);
+
+        iframe.onload = function () {
+          try {
+            var doc = iframe.contentDocument || iframe.contentWindow.document;
+            var style = doc.createElement('style');
+            style.innerHTML = `
+              #notificationBar, .theme-footer-area, #product_quick_look, [data-headercontainer], #page-loader, .main-content-nav-btn {
+                display: none !important;
+              }
+              .theme-portal-form-container {
+                margin-block-start: 0 !important;
+              }
+            `;
+            doc.head.appendChild(style);
+
+            var loc = iframe.contentWindow.location;
+            if (loc.origin === '{{page.primary_domain}}' && loc.pathname === '/') {
+              iframe.style.display = 'none';
+              window.location.href = '/';
+            }
+          } catch (e) {
+            console.warn(`Could not access ${link} content:`, e);
+          }
+        };
+      }
+
+      function closePortal() {
+        container.remove();
+        overlay.remove();
+        document.body.style.overflow = 'auto';
+        document.removeEventListener('keydown', escHandler);
+      }
+
+      function escHandler(e) {
+        if (e.key === 'Escape') closePortal();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', portalPopup);
+  {% endif %}
+  function isVisible(el) {
+    const style = getComputedStyle(el);
+    return (
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      el.offsetParent !== null
+    );
+  }
+
+  function skipToMain() {
+    let mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.scrollIntoView();
+      const focusableElements = mainContent.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
+      const focusableElement = Array.from(focusableElements).find(isVisible);
+      if (focusableElement) {
+        focusableElement.focus();
+      }
+    }
+  }
+
+  function onListImageLoaded(elem){
+    let productCard = elem.closest('[data-zs-product-id]'); // No i18n
+    let imageLoader = productCard ? productCard.querySelector('[data-theme-product-image-skeleton-loader]') : null;
+    if(imageLoader){
+      imageLoader.style.opacity = 0;
+      startFadeInAnimation(elem);
+    }
+  }
+  function startFadeInAnimation(imgElement) {
+    imgElement.classList.add('theme-shimmer-animation');
+  }
+
+function handleFallBackForImage(elem) {
+	elem.onerror = null;
+
+	const fallbackSrc = elem.getAttribute('data-fallback');
+  const fallBackResolution = elem.getAttribute('data-fallback-resolution');
+	const pictureElem = elem.closest('picture');
+
+	const originalImgSrc = elem.src;
+
+	elem.src = fallbackSrc;
+  if(fallBackResolution){
+	  elem.setAttribute('data-image-resolution', fallBackResolution);
+  }
+  // If srcset available change the url to fallback
+	if (pictureElem) {
+		const sources = pictureElem.querySelectorAll('source');
+		sources.forEach(source => {
+			const srcset = source.getAttribute('srcset');
+			if (!srcset) return;
+
+			const newSrcSet = srcset
+				.split(',')
+				.map(item => {
+					const [path, size] = item.trim().split(' ');
+					return `${fallbackSrc} ${size}`;
+				})
+				.join(', ');
+
+			source.setAttribute('srcset', newSrcSet);
+		});
+	}
+}
+function validateBackgroundImage(elem) {
+	const basePath = elem.getAttribute('data-bg');
+	const fallback = elem.getAttribute('data-bg-fallback');
+	if (!basePath) return;
+
+  // Creating a new image with the same url to check if it is a valid url
+	const img = new Image();
+  img.src = basePath;
+	img.onload = () => {
+		// image is valid, do nothing
+	};
+	img.onerror = () => {
+    // image is not valid, change the background url to fallback
+		elem.style.backgroundImage = `url('${fallback}')`;
+	};
+
+}
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelectorAll('[data-fallback-init]').forEach(elem => {
+		validateBackgroundImage(elem);
+	});
+});
+</script>
+
+{% if page.template_vars.is_search_suggestion_enabled %}
+  <script>
+    function toggleSearchSuggestions(elem){
+      let wrapper = elem.closest('[data-search="zptheme-search-container"]');
+      let inputField = wrapper ? wrapper.querySelector('[data-zs-search-input]') : null;
+      let suggestionWrappers = document.querySelectorAll('.theme-search-suggestion-overlay');
+      if (inputField && suggestionWrappers) {
+        let body = document.querySelector('body');
+        body.classList.remove('theme-body-hide-overflow');
+        suggestionWrappers.forEach(wrapper => {
+          wrapper.classList.remove('theme-show-overlay');
+        })
+      }
+    }
+    function closeSearchOverlayOnClick(){
+        let searchOverlays = document.querySelectorAll('.theme-search-suggestion-overlay'); 
+        searchOverlays.forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    toggleSearchSuggestions(e.target);
+                }
+            })
+        })
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      const inputs = document.querySelectorAll('#search-with-suggestion, #search-with-suggestion-mobile');      
+      let debounceTimer;
+      inputs.forEach(input => {
+        input.addEventListener('input', function () {
+          clearTimeout(debounceTimer);
+          let query = input.value.trim();
+
+          let searchOverlays = document.querySelectorAll('.theme-search-suggestion-overlay');
+          searchOverlays.forEach(searchOverlay => {
+            const suggestionsContainer = searchOverlay.querySelector('#search-suggestions');
+            let searchContainer = searchOverlay.querySelector('.theme-search-suggestion-container');
+            let searchStyle = searchOverlay.getAttribute('data-search-style');
+            let body = document.querySelector('body');
+            if(searchStyle === "01") {
+              if(query.length > 0) {
+                body.classList.add('theme-body-hide-overflow');
+                searchOverlay.classList.add('theme-show-overlay');
+                searchContainer.classList.add('theme-show-live-search');
+                suggestionsContainer.style.display = 'block';
+              }
+              else {
+                body.classList.remove('theme-body-hide-overflow');
+                searchOverlay.classList.remove('theme-show-overlay');
+                searchContainer.classList.remove('theme-show-live-search');
+                suggestionsContainer.style.display = 'none';
+              }
+            }
+
+            if (query.length < 2) {
+              suggestionsContainer.style.display = 'none';
+              return;
+            }
+
+            debounceTimer = setTimeout(() => {
+              fetchSuggestions(query, suggestionsContainer);
+            }, 300);
+          })
+        });
+      })
+
+      function fetchSuggestions(query, suggestionsContainer) {
+        fetch(`/zos-api/products?search_text=${encodeURIComponent(query)}`)
+          .then(response => response.json())
+          .then(data => {
+            showSuggestions(data, suggestionsContainer);
+            var displaySuggestionsSuccess = new CustomEvent("zp-event-search-content-success");
+            document.dispatchEvent(displaySuggestionsSuccess);
+        })
+          .catch(error => {
+          console.error('Error fetching suggestions:', error);
+          var displaySuggestionsFailure = new CustomEvent("zp-event-search-content-failure");
+          document.dispatchEvent(displaySuggestionsFailure);
+        });
+      }
+
+      function showSuggestions(result, suggestionsContainer) {
+        if (result.code != 0 || result.products.length < 1 ) {
+          suggestionsContainer.innerHTML = `<div class="zpcol-md-12 theme-no-products-error">
+            There are no products matching this search term.
+            </div>`;
+        }
+        else {
+          let productsHeader = document.createElement('h2');
+          productsHeader.innerText = "Products";
+          productsHeader.classList.add('theme-search-heading');
+          let productsContainer = document.createElement('div');
+          productsContainer.classList.add('theme-suggested-products');
+          productsContainer.innerHTML = result.products.map(item => `
+              <div class="theme-search-product-card" data-zs-product-id="${item.product_id}" data-stock-available="${item.overall_stock}" onclick="location.href='/products/${item.product_id}'">
+                <div class="theme-product-image">
+                  ${item.document_id ? `<img src="{% if page.cdn_prefix_url %}{{page.cdn_prefix_url}}{% endif %}/product-images/${item.document_id}/200x200{% if page.cdn_prefix_url %}?storefront_domain={{page.domain_name}}{% endif %}">` : `<img src="/zs-common/images/no-preview-image.jpg">`}
+                </div>
+                <div class="theme-product-description">
+                      <div class="theme-product-name">${item.name}</div>
+                      ${ !item.variants[0].channel_preferences.hide_price ? 
+                      `<div class="theme-product-pricing" data-zs-pricings>
+                        <span class='theme-min-rate' data-zs-selling-price="${item.variants[0].rate}" data-zs-currency-code="${item.currency_code}">${item.variants[0].rate_formatted}</span>
+                        <span class='theme-max-rate' data-zs-label-price="${item.variants[0].label_rate}" data-zs-currency-code="${item.currency_code}" style="${parseFloat(item.variants[0].label_rate) > parseFloat(item.variants[0].rate) ? '' : 'display:none;'}">${item.variants[0].label_rate_formatted}</span>
+                      </div>` : ``}
+                </div>
+              </div>
+            `).join('');
+          suggestionsContainer.innerHTML = "";
+          suggestionsContainer.appendChild(productsHeader);
+          suggestionsContainer.appendChild(productsContainer);
+          if (multi_currency.convertContainerOnDemand) {
+            let currencyContainer = document.querySelector('[data-zs-currency-list]');
+            if (currencyContainer) {
+              multi_currency.convertContainerOnDemand('search-suggestions');
+            }
+          }
+        }
+        suggestionsContainer.style.display = 'block';
+      }
+
+      closeSearchOverlayOnClick();
+    });
+  </script>
+{% endif %}
+
+{% if page.template_vars.product_list_style == '02' %}
+    <script>
+        function ratingsHandler(){
+            setTimeout(()=>{
+                let boxes = document.querySelectorAll('.theme-product-box-content');
+                if(boxes){
+                    boxes.forEach((box) => {
+                        if(box.querySelector('.zpcomments-reviews-ratings').children.length>0) {
+                            let ratings = Number(box.querySelector('.zpcomment-rating-vote-value').innerText);
+                            box.querySelector('.theme-rating').style.display='flex';
+                        }
+                    })
+                }
+            },1000)
+        }
+        
+        document.addEventListener('DOMContentLoaded',ratingsHandler);
+        document.addEventListener('zs-event-get-products-list-success',ratingsHandler);
+    </script>
+{% endif %}
+
+{% if page.template_vars.store_template_no == "15" %}
+  <script>
+    function positionSlidingCart() {
+      var header = document.querySelector('.theme-header');
+      var mobileheader = document.querySelector('.theme-mobile-header-top');
+      var popupSeven = document.querySelectorAll('.theme-sliding-cart-container');
+        
+      function handleCartPosition(popup, headerTopVal, mobileTopVal, defaultTopVal) {
+        var isHeaderVisible = header && header.getBoundingClientRect().bottom > 0;
+        var isMobileheaderVisible = mobileheader && mobileheader.getBoundingClientRect().bottom > 0;
+        if (isHeaderVisible) {
+          popup.style.top = header.getBoundingClientRect().bottom + headerTopVal + 'px';
+          popup.classList.remove('fixed'); // No I18N
+        } else if (isMobileheaderVisible) {
+          popup.style.top = mobileheader.getBoundingClientRect().bottom + mobileTopVal + 'px';
+          popup.classList.remove('fixed'); // No I18N
+        } else {
+          popup.style.top = defaultTopVal + '%';
+          popup.classList.add('fixed'); // No I18N
+        }
+      }
+
+      function handleCartScroll() {
+        if(popupSeven){
+          popupSeven.forEach(function (popup) {
+            handleCartPosition(popup, 0, 0, 0);
+          });
+        }
+      }
+      handleCartScroll();
+      window.addEventListener('scroll', handleCartScroll);
+    }
+    document.addEventListener('zp-event-minicart-open-success', positionSlidingCart);
+  </script>
+  {% assign PAGE_TYPE = {"CHECKOUT":112,"CART":111} %} 
+  {% if page.type != PAGE_TYPE.CHECKOUT || page.type != PAGE_TYPE.CART %}
+   {% include '_store-live-qty-script' %}
+  {% endif %}
+{% endif %}
+
+</head>
+<body data-zs-home="{{!page.is_home_page}}" data-zs-subsite="{{page.is_sub_site}}" data-zs-display-mode="default">
+    {{page.after_body_scripts}}
+    {% assign template_vars = page.template_vars %}
+    {% assign PAGE_TYPE = {"CHECKOUT":112,"CART":111} %}
+    {% if page.type == PAGE_TYPE.CHECKOUT || page.type == PAGE_TYPE.CART %}
+        {% assign hide_carticon_in_cart_checkout = true %}
+        {% assign hide_search_in_cart_checkout = true %}
+    {% else %}
+        {% if !page.is_store_enabled %}
+            {% assign hide_carticon_in_cart_checkout = true %}
+        {% else %}
+            {% assign hide_carticon_in_cart_checkout = false %}
+        {% endif %}
+        {% if !page.is_search_enabled %}
+            {% assign hide_search_in_cart_checkout = true %}
+        {% else %}
+            {% assign hide_carticon_in_cart_checkout = false %}
+        {% endif %}
+    {% endif %}
+    {% if page.language_list && (page.language_list | size > 1) %}
+        {% assign LANGUAGE_LIST_ENABLED = true %}
+    {% endif %}
+    {% assign mobile_header = {"two":{"is_disabled":true},"three":{"is_top_disabled":true,"is_bottom_disabled":true,"is_delivery_location_only_enabled":false}} %}
+    {% if page.is_logo_enabled || page.is_title_enabled || page.is_caption_enabled || !hide_search_in_cart_checkout || page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}
+        {% assign mobile_header.three.is_top_disabled = false %}
+    {% endif %}
+    {% if page.is_home_page %}
+        {% if (!page.is_logo_enabled || page.is_logo_enabled && !page.template_vars.is_mobile_logo_enabled) && (!page.is_title_enabled || page.is_title_enabled && !page.template_vars.is_mobile_site_title_enabled) && (!page.is_caption_enabled || page.is_caption_enabled && !page.template_vars.is_mobile_site_caption_enabled) && !page.is_search_enabled %}
+            {% if !page.is_delivery_location_enabled %}
+                {% assign mobile_header.three.is_top_disabled = true %}
+            {% else %}
+                {% assign mobile_header.three.is_delivery_location_only_enabled = true %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% assign mobile_header.three.is_top_disabled = false %}
+        {% assign mobile_header.three.is_delivery_location_only_enabled = false %}
+    {% endif %}
+    {% if page.is_menu_enabled || page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.is_contact_information_enabled || page.is_multi_currency_enabled || LANGUAGE_LIST_ENABLED || !hide_carticon_in_cart_checkout || page.is_portal_enabled %}
+        {% assign mobile_header.three.is_bottom_disabled = false %}
+    {% endif %}
+    {% if page.is_logo_enabled || page.is_title_enabled || page.is_caption_enabled || !hide_search_in_cart_checkout || page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT || !hide_carticon_in_cart_checkout || page.is_portal_enabled %}
+        {% assign mobile_header.two.is_disabled = false %}
+    {% endif %}
+    {% if page.is_portal_enabled %}
+        {% if page.template_vars.portal_position == "01" %}
+            {% assign portal_position = "01" %}
+        {% elif page.template_vars.portal_position == "02" %}
+            {% if page.type != PAGE_TYPE.CHECKOUT && page.type != PAGE_TYPE.CART %}
+                {% assign portal_position = "02" %}
+            {% else %}
+                {% assign portal_position = false %}
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% assign portal_position = false %}
+    {% endif %}
+
+    {% assign cdn_prefix_url = "" %}
+    {% assign cdn_suffix_url = "" %}
+    {% if page.cdn_prefix_url %}
+      {% assign cdn_prefix_url = page.cdn_prefix_url %}
+      {% assign cdn_suffix_url = "?storefront_domain=" + page.domain_name %}
+    {% endif %}
+
+    <button onclick="skipToMain()" type="button" class="main-content-nav-btn zpbutton-type-primary zpbutton-style-roundcorner">{{i18n.get('accessibility.skipcontent.main')}}</button>
+
+    {% comment %} THEME HEADER AREA START {% endcomment %}
+        {% block header_area %}
+
+        {% endblock %}
+    {% comment %} THEME HEADER AREA END {% endcomment %}
+
+    {% comment %} THEME PAGE LOADER START {% endcomment %}
+      {% if page.template_vars.is_page_loader_enabled %}
+        <div id="page-loader">
+          <div class="loader"></div>
+        </div>
+      {% endif %}
+    {% comment %} THEME PAGE LOADER END {% endcomment %}
+    
+    {% if page.template_vars.mobile_header_style == "02" || page.template_vars.mobile_header_style == "03" || page.template_vars.mobile_header_style == "04" || page.template_vars.mobile_header_style == "05"%}	
+    <div data-zs-mobile-content-wrap class="theme-mobile-content-wrap {% if hide_search_in_cart_checkout %}theme-search-disabled{% endif %} {% if mobile_header.three.is_top_disabled && page.is_home_page %}theme-mobile-header-top-disabled{% endif %} {% if mobile_header.three.is_delivery_location_only_enabled && page.is_home_page %}theme-mobile-header-delivery-location-only-enabled{% endif %} {% if mobile_header.two.is_disabled %}theme-mobile-header-two-disabled{% endif %} {% if page.is_delivery_location_enabled && page.type != PAGE_TYPE.CHECKOUT %}theme-mobile-header-delivery-location-enabled{% endif %}">
+    {% endif %}
+
+    {% comment %} THEME CONTENT AREA START {% endcomment %}
+
+        {% block content_area %}
+
+        {% endblock %}
+
+    {% comment %} THEME CONTENT AREA END {% endcomment %}
+
+    {% comment %} THEME FOOTER START {% endcomment %}
+
+    {% if page.is_footer_enabled %}
+
+    <div class="theme-footer-area {% if page.template_vars.footer_background == "03" %}zpdark-section zpdark-section-bg {% elif page.template_vars.footer_background == "02" %} zplight-section zplight-section-bg {% elif page.template_vars.footer_background == "01" %} zpdefault-section zpdefault-section-bg{% endif %}{% if page.template_vars.header_style == "06" && page.is_portal_enabled || page.template_vars.header_style == "06" && page.is_contact_information_enabled || page.template_vars.header_style == "06" && page.is_menu_enabled || page.template_vars.header_style == "06" && page.is_social_icon_enabled && !page.template_vars.is_social_icon_floater_enabled || page.template_vars.header_style == "06" && page.is_search_enabled || page.template_vars.header_style == "06" && page.is_store_enabled || page.template_vars.header_style == "06" && page.is_logo_enabled || page.template_vars.header_style == "06" && page.is_title_enabled || page.template_vars.header_style == "06" && page.is_caption_enabled %} zpfooter-for-header-06 {% endif %} {% if page.template_vars.is_site_full_stretch %} theme-pages-full-stretch {% endif %}">
+        {{page.footer_content}}
+    </div>
+
+    {% endif %}
+
+    {% comment %} THEME FOOTER END {% endcomment %}
+
+
+    {% if page.is_store_enabled %}
+
+    <div id="product_quick_look">
+    </div>
+    {% if page.is_delivery_location_enabled %}
+        <div id="delivery_availability_popup">
+        </div>
+    {% endif %}
+
+
+    {% comment %} STORE MESSAGES {% endcomment %}
+
+    <div data-cart-buyagain-success="theme-cart-buyagain-success" class="buyagain-cart-message buyagain-cart-success-message">
+        {{i18n.get("product.message.buyagain.success")}}
+    </div>
+    <div data-cart-buyagain-failure="theme-cart-buyagain-failure" class="buyagain-cart-message buyagain-cart-failure-message">
+        {{i18n.get("product.message.buyagain.error")}}
+    </div>
+
+    {% if page.template_vars.store_message_style == "01" %}
+      <div data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message" data-theme-message-one>
+        <div class="theme-cart-success-inner-container">
+          <button type="button" class="theme-cart-message-close" onclick="closeSuccessMessage();" aria-label="{{i18n.get("product.label.close")}}">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect width="32" height="32" rx="16" fill="black"/>
+              <path d="M10.4 23L9 21.6L14.6 16L9 10.4L10.4 9L16 14.6L21.6 9L23 10.4L17.4 16L23 21.6L21.6 23L16 17.4L10.4 23Z" fill="white"/>
+            </svg>				
+          </button>
+          <div class="theme-cart-item">
+            <div class="theme-cart-message-item theme-cart-message-prod-img">
+              <div class="theme-cart-message-prod-img-inner">
+                <picture>
+                  <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+                </picture>
+                </div>
+            </div>
+            <div class="theme-cart-success-item-details">
+              <div class="theme-cart-message-item theme-cart-message-prod-name" data-cart-add-success-prod-name="theme-cart-add-success-prod-name"></div>
+            </div>
+          </div>			
+          <div class="theme-cart-message-item theme-cart-message-buttons">
+            <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart{% endif %} >{{i18n.get("product.label.view_cart")}}</a>
+            {% if page.is_quotes_enabled_in_storefront %}
+              <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-quote {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-quote{% endif %} style="display: none;">{{i18n.get("product.label.view_quote")}}</a>
+            {% endif %}
+          </div>
+          <div class="theme-cart-message-item theme-cart-message-text">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+              <path d="M8.25153 0.925049L10.2214 2.36205L12.66 2.35755L13.4089 4.67805L15.3844 6.10755L14.6265 8.42505L15.3844 10.7425L13.4089 12.172L12.66 14.4925L10.2214 14.488L8.25153 15.925L6.28165 14.488L3.84303 14.4925L3.09415 12.172L1.11865 10.7425L1.87653 8.42505L1.11865 6.10755L3.09415 4.67805L3.84303 2.35755L6.28165 2.36205L8.25153 0.925049Z" stroke="#008805" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5.62646 8.42505L7.50146 10.3L11.2515 6.55005" stroke="#008805" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="theme-added-to-cart-msg">{{i18n.get("product.message.added_to_cart")}}</span>
+            <span class="theme-added-to-quote-msg" style="display: none;">{{i18n.get("product.message.added_to_quote")}}</span>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% if page.template_vars.store_message_style == "03" %}
+      <div data-zs-view-mini-cart></div>
+    {% endif %}
+    {% if page.template_vars.store_message_style == "01" || page.template_vars.store_message_style == "03" %}
+      <div role="alert" data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message">
+        <div class="theme-cart-success-inner-container">
+          <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+            <button type="button" onclick="closemessage()" aria-label="{{i18n.get("product.label.close")}}">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+                <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+                <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+                <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+            
+            <div class="theme-failure-reason">
+              <span data-theme-failure-reason="theme-failure-reason"></span>   <span> - </span>{{i18n.get("product.label.added_to_cart_failure")}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message">
+        <div class="theme-cart-success-inner-container">
+          <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+              <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{i18n.get("product.message.success.update_to_cart")}}
+          </div>
+        </div>
+      </div>
+
+      <div data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message">
+        <div class="theme-cart-success-inner-container">
+          <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+              <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <span data-theme-update-failure-reason="theme-update-failure-reason"></span>  <span> - </span> {{i18n.get("product.message.error.update_to_cart")}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message">
+        <div class="theme-cart-success-inner-container">
+          <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+              <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{i18n.get("product.message.success.delete_from_cart")}}
+          </div>
+        </div>
+      </div>
+      <div data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message">
+        <div class="theme-cart-success-inner-container">
+          <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+              <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <span data-theme-delete-failure-reason="theme-delete-failure-reason"></span> <span> - </span> {{i18n.get("product.message.error.delete_from_cart")}}
+            </div>
+          </div>
+        </div>
+      </div>
+     <div data-wishlist-alert-update="theme-wishlist-alert-update" class="theme-wishlist-alert-update theme-wishlist-success-message">
+          <div class="theme-cart-success-inner-container">
+              <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+                  <span style="display: flex;" data-zs-success-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                          <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+                          <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                  </span>
+                  <span style="display: flex;" data-zs-failure-icon>                    
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+                          <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+                          <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+                          <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                  </span>
+
+                  <span data-zs-message-text></span>
+               </div>
+            </div>
+      </div>
+
+      <div data-save-for-later-alert-update="theme-save-for-later-alert-update" class="theme-save-for-later-success-message">
+          <div class="theme-cart-success-inner-container">
+              <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+                  <span style="display: flex;" data-zs-success-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+                          <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+                          <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                  </span>
+                  <span style="display: flex;" data-zs-failure-icon>                    
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+                          <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+                          <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+                          <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                  </span>
+
+                  <span data-zs-message-text></span>
+               </div>
+            </div>
+      </div>
+    {% endif %}
+
+        {% if page.template_vars.store_message_style == "02" %}
+
+            <div data-toast-type='success' data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message" data-theme-message-two>
+                <div class="theme-cart-success-inner-container">
+                    <div class="theme-cart-item">
+                        <div class="theme-cart-message-item theme-cart-message-prod-img">
+                            <div class="theme-cart-message-prod-img-inner">
+                                <picture>
+                                    <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+                                </picture>
+                            </div>
+                        </div>
+                        <div class="theme-cart-success-item-details">
+                            <div class="theme-cart-message-item theme-cart-message-prod-name"
+                                 data-cart-add-success-prod-name="theme-cart-add-success-prod-name">
+                            </div>
+                            <div class="theme-carat-message-item theme-cart-message-prices">
+                                <div class="theme-cart-message-item theme-cart-message-prod-label-price" data-cart-add-success-label-prod-price="theme-cart-add-success-label-prod-price">
+                                </div>
+                              <div class="theme-cart-message-item theme-cart-message-prod-selling-price" data-cart-add-success-selling-prod-price="theme-cart-add-success-selling-prod-price">
+                                </div>
+                            </div>
+                            <div class="theme-cart-message-item theme-cart-message-buttons">
+                                <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart{% endif %}>{{i18n.get("product.label.view_cart")}}</a>
+                                {% if page.is_quotes_enabled_in_storefront %}
+                                  <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" data-zs-view-quote style="display: none;">{{i18n.get("product.label.view_quote")}}</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="theme-cart-message-item theme-cart-message-text">
+                        <svg aria-hidden="true" class='theme-desktop-success-icon' xmlns="http://www.w3.org/2000/svg" width="15" height="16" viewBox="0 0 15 16" fill="none">
+                            <path d="M7.46663 1.00928L9.31959 2.29483L11.6135 2.2908L12.3179 4.36674L14.1762 5.64558L13.4633 7.71883L14.1762 9.79208L12.3179 11.0709L11.6135 13.1469L9.31959 13.1428L7.46663 14.4284L5.61366 13.1428L3.31977 13.1469L2.61534 11.0709L0.75708 9.79208L1.46998 7.71883L0.75708 5.64558L2.61534 4.36674L3.31977 2.2908L5.61366 2.29483L7.46663 1.00928Z" stroke="#00880B" stroke-width="1.34191" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4.99683 7.71889L6.76055 9.39628L10.288 6.0415" stroke="#00880B" stroke-width="1.34191" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class='theme-message-icon'>
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                            </svg>
+                        </span>
+                        <span class="theme-added-to-cart-msg">{{i18n.get("product.message.added_to_cart")}}</span>
+                        <span class="theme-added-to-quote-msg" style="display: none;">{{i18n.get("product.message.added_to_quote")}}</span>
+                        <button type="button" class='theme-close-message' onclick="closeToastMessage(this)" aria-label="{{i18n.get("product.label.close")}}">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div role="alert" data-toast-type='failure' data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                	<span class='theme-message-icon'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-text' data-theme-failure-reason="theme-failure-reason"><span> - </span>  {{i18n.get("product.label.added_to_cart_failure")}}</span>
+                    <button type="button"  aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)" class='theme-close-message'>
+                        <svg aria-hidden="true"  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-toast-type='success' data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-icon'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-text'>
+                        {{i18n.get("product.message.success.update_to_cart")}}
+                    </span>
+                    <button type="button" aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)" class='theme-close-message'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-toast-type='failure' data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-icon'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-text' data-theme-update-failure-reason="theme-update-failure-reason">
+                         <span>-</span> {{i18n.get("product.message.error.update_to_cart")}}
+                    </span>
+                    <button type="button" aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)"  class='theme-close-message'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-toast-type='success' data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-icon'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M5.00008 15.8333C5.00008 16.2754 5.17568 16.6993 5.48824 17.0118C5.8008 17.3244 6.22472 17.5 6.66675 17.5H13.3334C13.7754 17.5 14.1994 17.3244 14.5119 17.0118C14.8245 16.6993 15.0001 16.2754 15.0001 15.8333V5.83333H5.00008V15.8333ZM6.66675 7.5H13.3334V15.8333H6.66675V7.5ZM12.9167 3.33333L12.0834 2.5H7.91675L7.08341 3.33333H4.16675V5H15.8334V3.33333H12.9167Z" fill="#FEF1F1"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-text'>
+                        {{i18n.get("product.message.success.delete_from_cart")}}
+                    </span>
+                    <button type="button" aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)" class='theme-close-message'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-toast-type='failure' data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-icon'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-text' data-theme-delete-failure-reason="theme-delete-failure-reason">
+                        <span>-</span> {{i18n.get("product.message.error.update_to_cart")}}
+                    </span>
+                    <button type="button" aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)" class='theme-close-message'>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-wishlist-alert-update="theme-wishlist-alert-update" class="theme-wishlist-alert-update theme-wishlist-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                    <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span data-zs-message-text></span>
+                    <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-save-for-later-alert-update="theme-save-for-later-alert-update" class="theme-save-for-later-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                    <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span data-zs-message-text></span>
+                    <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+          {% endif %}
+
+        {% if page.template_vars.store_message_style == "04" %}
+
+          <div data-toast-type='success' data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message" data-theme-message-four>
+            <div class="theme-label-qty">
+              <div class="theme-shopping-label">Shopping Bag</div>
+              <div class="theme-cart-qty" data-cart-add-success-prod-qty="theme-cart-add-success-prod-qty"></div>
+            </div>
+            <div class="theme-cart-image-details">
+              <div class="theme-cart-prod-img">
+                <picture>
+                  <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+                </picture>
+              </div>
+              <div class="theme-cart-success-item-details">
+                <div class="theme-cart-prod-name-price">
+                  <div class="theme-cart-message-item theme-cart-message-prod-name" data-cart-add-success-prod-name="theme-cart-add-success-prod-name"></div>
+                  <div class="theme-cart-message-item theme-cart-message-prices">
+                    <div class="theme-cart-message-item theme-cart-message-prod-selling-price" data-cart-add-success-selling-prod-price="theme-cart-add-success-selling-prod-price"></div>
+                  </div>
+                </div>
+
+                <div class="theme-cart-message-item theme-cart-message-buttons">
+                  <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart{% endif %}>{{i18n.get("product.label.view_cart")}}</a>
+                  {% if page.is_quotes_enabled_in_storefront %}
+                    <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" data-zs-view-quote style="display: none;">{{i18n.get("product.label.view_quote")}}</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+           </div>
+
+            <div role="alert" data-toast-type='failure' data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-text' data-theme-failure-reason="theme-failure-reason">  <span>-</span> {{i18n.get("product.label.added_to_cart_failure")}}</span>
+                </div>
+            </div>
+
+            <div data-toast-type='success' data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message" data-theme-message-two>
+              <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-text'>
+                        {{i18n.get("product.message.success.update_to_cart")}}
+                    </span>
+              </div>
+            </div>
+
+            <div data-toast-type='failure' data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-text' data-theme-update-failure-reason="theme-update-failure-reason">
+                         <span>-</span> {{i18n.get("product.message.error.update_to_cart")}}
+                    </span>
+                </div>
+            </div>
+
+            <div data-toast-type='success' data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-text'>
+                        {{i18n.get("product.message.success.delete_from_cart")}}
+                    </span>
+                </div>
+            </div>
+
+            <div data-toast-type='failure' data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-text' data-theme-delete-failure-reason="theme-delete-failure-reason">
+                        <span>-</span> {{i18n.get("product.message.error.update_to_cart")}}
+                    </span>
+                </div>
+            </div>
+
+            <div data-wishlist-alert-update="theme-wishlist-alert-update" class="theme-wishlist-alert-update theme-wishlist-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                    <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span data-zs-message-text></span>
+                    <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                      </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div data-save-for-later-alert-update="theme-save-for-later-alert-update" class="theme-save-for-later-success-message" data-theme-message-two>
+                <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                    <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M17.5 5.8332L7.49996 15.8332L2.91663 11.2499L4.09163 10.0749L7.49996 13.4749L16.325 4.6582L17.5 5.8332Z" fill="#F2FFF2"/>
+                        </svg>
+                    </span>
+                    <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17" fill="none">
+                            <path d="M17.5001 13.6946L10.6681 1.82974C10.4973 1.53906 10.2536 1.29803 9.96105 1.13057C9.66848 0.9631 9.33722 0.875 9.00011 0.875C8.66299 0.875 8.33174 0.9631 8.03916 1.13057C7.74659 1.29803 7.50286 1.53906 7.33214 1.82974L0.500106 13.6946C0.335837 13.9757 0.249268 14.2955 0.249268 14.6211C0.249268 14.9468 0.335837 15.2665 0.500106 15.5477C0.668645 15.8401 0.911957 16.0825 1.20508 16.2498C1.49819 16.4172 1.83056 16.5036 2.16807 16.5001H15.8321C16.1694 16.5033 16.5014 16.4168 16.7942 16.2494C17.0871 16.0821 17.3301 15.8399 17.4985 15.5477C17.663 15.2667 17.7499 14.947 17.7502 14.6214C17.7504 14.2957 17.6641 13.9759 17.5001 13.6946ZM16.4165 14.9219C16.357 15.0235 16.2714 15.1075 16.1688 15.1651C16.0661 15.2228 15.9499 15.2521 15.8321 15.2501H2.16807C2.05032 15.2521 1.93415 15.2228 1.83146 15.1651C1.72877 15.1075 1.64326 15.0235 1.5837 14.9219C1.52975 14.8306 1.50129 14.7264 1.50129 14.6204C1.50129 14.5143 1.52975 14.4101 1.5837 14.3188L8.41573 2.45396C8.47649 2.35284 8.56239 2.26917 8.66506 2.21108C8.76774 2.153 8.8837 2.12247 9.00167 2.12247C9.11964 2.12247 9.2356 2.153 9.33827 2.21108C9.44095 2.26917 9.52684 2.35284 9.58761 2.45396L16.4196 14.3188C16.4731 14.4104 16.501 14.5147 16.5005 14.6208C16.4999 14.7269 16.4709 14.8309 16.4165 14.9219ZM8.37511 10.2501V7.12505C8.37511 6.95929 8.44095 6.80032 8.55816 6.68311C8.67537 6.5659 8.83434 6.50005 9.00011 6.50005C9.16587 6.50005 9.32484 6.5659 9.44205 6.68311C9.55926 6.80032 9.62511 6.95929 9.62511 7.12505V10.2501C9.62511 10.4158 9.55926 10.5748 9.44205 10.692C9.32484 10.8092 9.16587 10.8751 9.00011 10.8751C8.83434 10.8751 8.67537 10.8092 8.55816 10.692C8.44095 10.5748 8.37511 10.4158 8.37511 10.2501ZM9.93761 13.0626C9.93761 13.248 9.88262 13.4292 9.77961 13.5834C9.67659 13.7376 9.53018 13.8577 9.35887 13.9287C9.18756 13.9996 8.99907 14.0182 8.81721 13.982C8.63535 13.9459 8.4683 13.8566 8.33719 13.7255C8.20608 13.5944 8.11679 13.4273 8.08062 13.2454C8.04445 13.0636 8.06301 12.8751 8.13397 12.7038C8.20493 12.5325 8.32509 12.3861 8.47926 12.283C8.63343 12.18 8.81469 12.1251 9.00011 12.1251C9.24875 12.1251 9.4872 12.2238 9.66302 12.3996C9.83883 12.5755 9.93761 12.8139 9.93761 13.0626Z" fill="white"/>
+                        </svg>
+                    </span>
+                    <span data-zs-message-text></span>
+                    <button type="button" aria-label="{{i18n.get("product.label.close")}}" class='theme-close-message' onclick="closeToastMessage(this)">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15.2499 4.75852C15.1728 4.68127 15.0813 4.61998 14.9805 4.57816C14.8797 4.53634 14.7716 4.51482 14.6624 4.51482C14.5533 4.51482 14.4452 4.53634 14.3444 4.57816C14.2436 4.61998 14.152 4.68127 14.0749 4.75852L9.99994 8.82519L5.92494 4.75019C5.84779 4.67303 5.7562 4.61183 5.6554 4.57008C5.55459 4.52833 5.44655 4.50684 5.33744 4.50684C5.22833 4.50684 5.12029 4.52833 5.01949 4.57008C4.91869 4.61183 4.82709 4.67303 4.74994 4.75019C4.67279 4.82734 4.61159 4.91893 4.56984 5.01973C4.52808 5.12054 4.50659 5.22858 4.50659 5.33769C4.50659 5.4468 4.52808 5.55484 4.56984 5.65564C4.61159 5.75644 4.67279 5.84803 4.74994 5.92519L8.82494 10.0002L4.74994 14.0752C4.67279 14.1523 4.61159 14.2439 4.56984 14.3447C4.52808 14.4455 4.50659 14.5536 4.50659 14.6627C4.50659 14.7718 4.52808 14.8798 4.56984 14.9806C4.61159 15.0814 4.67279 15.173 4.74994 15.2502C4.82709 15.3273 4.91869 15.3885 5.01949 15.4303C5.12029 15.472 5.22833 15.4935 5.33744 15.4935C5.44655 15.4935 5.55459 15.472 5.6554 15.4303C5.7562 15.3885 5.84779 15.3273 5.92494 15.2502L9.99994 11.1752L14.0749 15.2502C14.1521 15.3273 14.2437 15.3885 14.3445 15.4303C14.4453 15.472 14.5533 15.4935 14.6624 15.4935C14.7716 15.4935 14.8796 15.472 14.9804 15.4303C15.0812 15.3885 15.1728 15.3273 15.2499 15.2502C15.3271 15.173 15.3883 15.0814 15.43 14.9806C15.4718 14.8798 15.4933 14.7718 15.4933 14.6627C15.4933 14.5536 15.4718 14.4455 15.43 14.3447C15.3883 14.2439 15.3271 14.1523 15.2499 14.0752L11.1749 10.0002L15.2499 5.92519C15.5666 5.60852 15.5666 5.07519 15.2499 4.75852Z" fill="black"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+
+            {% endif %}
+
+            {% if page.template_vars.store_message_style == "05" %}
+
+                <div data-toast-type='success' data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message" data-theme-message-five>
+                    <div class="shopping-label-icon">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+                            <circle cx="13" cy="13" r="13" fill="#068438"/>
+                            <path d="M12 14.65V7H14.278V14.65H12ZM12 19.189V16.622H14.278V19.189H12Z" fill="white"/>
+                        </svg>
+                        <div class="theme-shopping-label theme-added-to-cart-msg">{{i18n.get("product.message.added_to_cart")}}</div>
+                        <span class="theme-added-to-quote-msg" style="display: none;">{{i18n.get("product.message.added_to_quote")}}</span>
+                        <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closeToastMessage(this)">
+                        <svg aria-hidden="true" class="theme-close-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 22 24" fill="none">
+                            <line y1="-0.5" x2="15.5701" y2="-0.5" transform="matrix(-0.68703 0.726629 -0.68703 -0.726629 15.5782 5.6626)" stroke="black"/>
+                            <path d="M5.37622 6.18652L16.0734 17.5002" stroke="black"/>
+                        </svg>
+                        </button>
+                    </div>
+
+                    <div class="theme-cart-image-details">
+                    <div class="theme-cart-prod-img">
+                        <picture>
+                        <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+                        </picture>
+                    </div>
+                    <div class="theme-cart-success-item-details">
+                        <div class="theme-cart-prod-name-desc-price">
+                        <div class="theme-cart-message-item theme-cart-message-prod-name" data-cart-add-success-prod-name="theme-cart-add-success-prod-name"></div>
+                        <div class="theme-cart-message-item theme-cart-message-prod-selling-price" data-cart-add-success-selling-prod-price="theme-cart-add-success-selling-prod-price"></div>
+                        </div>
+                    
+                        
+                    </div>
+                    </div>
+                    <div class="theme-cart-message-item theme-cart-message-buttons">
+                        <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart{% endif %}>{{i18n.get("product.label.view_cart")}}</a>
+                        {% if page.is_quotes_enabled_in_storefront %}
+                          <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" data-zs-view-quote style="display: none;">{{i18n.get("product.label.view_quote")}}</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div role="alert" data-toast-type='failure' data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message" data-theme-message-five>
+                    <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-text' data-theme-failure-reason="theme-failure-reason">  <span>-</span>  {{i18n.get("product.label.added_to_cart_failure")}}</span>
+                    <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closemessage()">
+                    <svg aria-hidden="true" class="theme-close-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="24" viewBox="0 0 22 24" fill="none">
+                      <line y1="-0.5" x2="15.5701" y2="-0.5" transform="matrix(-0.68703 0.726629 -0.68703 -0.726629 15.5782 5.6626)" stroke="black"/>
+                      <path d="M5.37622 6.18652L16.0734 17.5002" stroke="black"/>
+                    </svg>
+                    </button>
+                    </div>
+                </div>
+
+                <div data-toast-type='success' data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message" data-theme-message-five>
+                    <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-text'>{{i18n.get("product.message.success.update_to_cart")}}</span>
+                    </div>
+                </div>
+
+                <div data-toast-type='failure' data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message" data-theme-message-five>
+                    <div class="theme-desktop-cart-inner-container theme-failure-message">
+                    <span class='theme-message-text' data-theme-update-failure-reason="theme-update-failure-reason"><span>-</span> {{i18n.get("product.message.error.update_to_cart")}}</span>
+                    </div>
+                    </div>
+
+                <div data-toast-type='success' data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message" data-theme-message-five>
+                    <div class="theme-desktop-cart-inner-container theme-success-message">
+                    <span class='theme-message-text'>{{i18n.get("product.message.success.delete_from_cart")}}</span>
+                    </div>
+                </div>
+
+                <div data-toast-type='failure' data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message" data-theme-message-five>
+                <div class="theme-desktop-cart-inner-container theme-failure-message">
+                <span class='theme-message-text' data-theme-delete-failure-reason="theme-delete-failure-reason">
+                <span>-</span> {{i18n.get("product.message.error.update_to_cart")}}
+                </span>
+                </div>
+                </div>
+
+                <div data-wishlist-alert-update="theme-wishlist-alert-update" class="theme-wishlist-alert-update theme-wishlist-success-message" data-theme-message-two>
+                    <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                        <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="10" fill="#068438"/>
+                        <path d="M9.23096 11.2691V5.38452H10.9833V11.2691H9.23096ZM9.23096 14.7607V12.7861H10.9833V14.7607H9.23096Z" fill="white"/>
+                    </svg>
+                        </span>
+                        <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="23" viewBox="0 0 26 23" fill="none">
+                        <path d="M9.51787 6.16091C11.0491 3.45188 14.9512 3.45188 16.4824 6.16091L22.6268 17.0318C24.1339 19.6983 22.2075 23 19.1445 23H6.85572C3.79276 23 1.86631 19.6983 3.37347 17.0318L9.51787 6.16091Z" fill="#A22323"/>
+                        <path d="M12 15.6485V10H14V15.6485H12ZM12 19V17.1046H14V19H12Z" fill="white"/>
+                    </svg>
+                        </span>
+                        <span data-zs-message-text></span>
+                        
+                    </div>
+                </div>
+
+                <div data-save-for-later-alert-update="theme-save-for-later-alert-update" class="theme-save-for-later-success-message" data-theme-message-two>
+                    <div class="theme-desktop-cart-inner-container" data-zs-alert-inner-container>
+                        <span class='theme-message-icon' data-zs-success-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="10" fill="#068438"/>
+                        <path d="M9.23096 11.2691V5.38452H10.9833V11.2691H9.23096ZM9.23096 14.7607V12.7861H10.9833V14.7607H9.23096Z" fill="white"/>
+                    </svg>
+                        </span>
+                        <span class='theme-message-icon' data-zs-failure-icon>
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="23" viewBox="0 0 26 23" fill="none">
+                        <path d="M9.51787 6.16091C11.0491 3.45188 14.9512 3.45188 16.4824 6.16091L22.6268 17.0318C24.1339 19.6983 22.2075 23 19.1445 23H6.85572C3.79276 23 1.86631 19.6983 3.37347 17.0318L9.51787 6.16091Z" fill="#A22323"/>
+                        <path d="M12 15.6485V10H14V15.6485H12ZM12 19V17.1046H14V19H12Z" fill="white"/>
+                    </svg>
+                        </span>
+                        <span data-zs-message-text></span>
+                        
+                    </div>
+                </div>
+
+            
+
+            {% endif %}
+            {% if page.template_vars.store_message_style == "06" %}
+              <div data-toast-type='success' data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message"
+                data-theme-message-six>
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text">
+                    <span class="theme-added-to-cart-msg">{{i18n.get("product.message.added_to_cart")}}</span>
+                    <span class="theme-added-to-quote-msg" style="display: none;">{{i18n.get("product.message.added_to_quote")}}</span>
+                  </div>
+                  <div class="theme-cart-item">
+                    <div class="theme-cart-message-item theme-cart-message-prod-img">
+                      <div class="theme-cart-message-prod-img-inner">
+                        <picture>
+                          <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+                        </picture>
+                      </div>
+                    </div>
+                    <div class="theme-cart-success-item-details">
+                      <div class="theme-cart-message-item theme-cart-message-prod-name"
+                        data-cart-add-success-prod-name="theme-cart-add-success-prod-name">
+                      </div>
+                      <div class="theme-cart-message-item theme-cart-message-prices">
+                        <div class="theme-cart-message-item theme-cart-message-prod-selling-price"
+                          data-cart-add-success-selling-prod-price="theme-cart-add-success-selling-prod-price"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div role="alert" data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+                    <button type="button" class='theme-close-message' aria-label="{{i18n.get("product.label.close")}}" onclick="closemessage(this)">
+                      <svg aria-hidden="true" class="theme-close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="12" fill="#9E0000" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M6.19526 6.19526C6.45561 5.93491 6.87772 5.93491 7.13807 6.19526L17.8047 16.8619C18.0651 17.1223 18.0651 17.5444 17.8047 17.8047C17.5444 18.0651 17.1223 18.0651 16.8619 17.8047L6.19526 7.13807C5.93491 6.87772 5.93491 6.45561 6.19526 6.19526Z"
+                          fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M17.8047 6.19526C17.5444 5.93491 17.1223 5.93491 16.8619 6.19526L6.19526 16.8619C5.93491 17.1223 5.93491 17.5444 6.19526 17.8047C6.45561 18.0651 6.87772 18.0651 7.13807 17.8047L17.8047 7.13807C18.0651 6.87772 18.0651 6.45561 17.8047 6.19526Z"
+                          fill="white" />
+                      </svg>
+                    </button>
+                    <div class="theme-failure-reason">
+                      <span data-theme-failure-reason="theme-failure-reason"></span> <span>-</span>
+                      {{i18n.get("product.label.added_to_cart_failure")}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="12" fill="#008100" />
+                      <g transform="translate(4.5, 6.5)">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M0.706956 4.00008C1.09748 3.60955 1.73064 3.60955 2.12117 4.00008L6.12117 8.00008C6.51169 8.3906 6.51169 9.02376 6.12117 9.41429C5.73064 9.80481 5.09748 9.80481 4.70696 9.41429L0.706956 5.41429C0.316431 5.02376 0.316431 4.3906 0.706956 4.00008Z"
+                          fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M5.00008 9.12141C4.60955 8.73089 4.60955 8.09772 5.00008 7.7072L12.0001 0.7072C12.3906 0.316675 13.0238 0.316676 13.4143 0.7072C13.8048 1.09772 13.8048 1.73089 13.4143 2.12141L6.41429 9.12141C6.02376 9.51194 5.3906 9.51194 5.00008 9.12141Z"
+                          fill="white" />
+                      </g>
+                    </svg>
+                    {{i18n.get("product.message.success.update_to_cart")}}
+                  </div>
+                </div>
+              </div>
+
+              <div data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="12" fill="#9E0000" />
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M6.19526 6.19526C6.45561 5.93491 6.87772 5.93491 7.13807 6.19526L17.8047 16.8619C18.0651 17.1223 18.0651 17.5444 17.8047 17.8047C17.5444 18.0651 17.1223 18.0651 16.8619 17.8047L6.19526 7.13807C5.93491 6.87772 5.93491 6.45561 6.19526 6.19526Z"
+                        fill="white" />
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M17.8047 6.19526C17.5444 5.93491 17.1223 5.93491 16.8619 6.19526L6.19526 16.8619C5.93491 17.1223 5.93491 17.5444 6.19526 17.8047C6.45561 18.0651 6.87772 18.0651 7.13807 17.8047L17.8047 7.13807C18.0651 6.87772 18.0651 6.45561 17.8047 6.19526Z"
+                        fill="white" />
+                    </svg>
+                    <div>
+                      <span data-theme-update-failure-reason="theme-update-failure-reason"></span> -
+                      {{i18n.get("product.message.error.update_to_cart")}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="12" fill="#008100" />
+                      <g transform="translate(4.5, 6.5)">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M0.706956 4.00008C1.09748 3.60955 1.73064 3.60955 2.12117 4.00008L6.12117 8.00008C6.51169 8.3906 6.51169 9.02376 6.12117 9.41429C5.73064 9.80481 5.09748 9.80481 4.70696 9.41429L0.706956 5.41429C0.316431 5.02376 0.316431 4.3906 0.706956 4.00008Z"
+                          fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M5.00008 9.12141C4.60955 8.73089 4.60955 8.09772 5.00008 7.7072L12.0001 0.7072C12.3906 0.316675 13.0238 0.316676 13.4143 0.7072C13.8048 1.09772 13.8048 1.73089 13.4143 2.12141L6.41429 9.12141C6.02376 9.51194 5.3906 9.51194 5.00008 9.12141Z"
+                          fill="white" />
+                      </g>
+                    </svg>
+                    {{i18n.get("product.message.success.delete_from_cart")}}
+                  </div>
+                </div>
+              </div>
+
+              <div data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="12" fill="#9E0000" />
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M6.19526 6.19526C6.45561 5.93491 6.87772 5.93491 7.13807 6.19526L17.8047 16.8619C18.0651 17.1223 18.0651 17.5444 17.8047 17.8047C17.5444 18.0651 17.1223 18.0651 16.8619 17.8047L6.19526 7.13807C5.93491 6.87772 5.93491 6.45561 6.19526 6.19526Z"
+                        fill="white" />
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M17.8047 6.19526C17.5444 5.93491 17.1223 5.93491 16.8619 6.19526L6.19526 16.8619C5.93491 17.1223 5.93491 17.5444 6.19526 17.8047C6.45561 18.0651 6.87772 18.0651 7.13807 17.8047L17.8047 7.13807C18.0651 6.87772 18.0651 6.45561 17.8047 6.19526Z"
+                        fill="white" />
+                    </svg>
+                    <div>
+                      <span data-theme-delete-failure-reason="theme-delete-failure-reason"></span><span>-</span>
+                      {{i18n.get("product.message.error.delete_from_cart")}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div data-wishlist-alert-update="theme-wishlist-alert-update"
+                class="theme-wishlist-alert-update theme-wishlist-success-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+                    <span style="display: flex;" data-zs-success-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="12" fill="#008100" />
+                        <g transform="translate(4.5, 6.5)">
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M0.706956 4.00008C1.09748 3.60955 1.73064 3.60955 2.12117 4.00008L6.12117 8.00008C6.51169 8.3906 6.51169 9.02376 6.12117 9.41429C5.73064 9.80481 5.09748 9.80481 4.70696 9.41429L0.706956 5.41429C0.316431 5.02376 0.316431 4.3906 0.706956 4.00008Z"
+                            fill="white" />
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M5.00008 9.12141C4.60955 8.73089 4.60955 8.09772 5.00008 7.7072L12.0001 0.7072C12.3906 0.316675 13.0238 0.316676 13.4143 0.7072C13.8048 1.09772 13.8048 1.73089 13.4143 2.12141L6.41429 9.12141C6.02376 9.51194 5.3906 9.51194 5.00008 9.12141Z"
+                            fill="white" />
+                        </g>
+                      </svg>
+                    </span>
+                    <button type="button" onclick="closemessage()" aria-label="close" style="display: flex;" data-zs-failure-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <circle cx="12" cy="12" r="12" fill="#9E0000" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M6.19526 6.19526C6.45561 5.93491 6.87772 5.93491 7.13807 6.19526L17.8047 16.8619C18.0651 17.1223 18.0651 17.5444 17.8047 17.8047C17.5444 18.0651 17.1223 18.0651 16.8619 17.8047L6.19526 7.13807C5.93491 6.87772 5.93491 6.45561 6.19526 6.19526Z"
+                          fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M17.8047 6.19526C17.5444 5.93491 17.1223 5.93491 16.8619 6.19526L6.19526 16.8619C5.93491 17.1223 5.93491 17.5444 6.19526 17.8047C6.45561 18.0651 6.87772 18.0651 7.13807 17.8047L17.8047 7.13807C18.0651 6.87772 18.0651 6.45561 17.8047 6.19526Z"
+                          fill="white" />
+                      </svg>
+                    </button>
+
+                    <span data-zs-message-text></span>
+                  </div>
+                </div>
+              </div>
+
+              <div data-save-for-later-alert-update="theme-save-for-later-alert-update"
+                class="theme-save-for-later-success-message">
+                <div class="theme-cart-success-inner-container">
+                  <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+                    <span style="display: flex;" data-zs-success-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="12" fill="#008100" />
+                        <g transform="translate(4.5, 6.5)">
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M0.706956 4.00008C1.09748 3.60955 1.73064 3.60955 2.12117 4.00008L6.12117 8.00008C6.51169 8.3906 6.51169 9.02376 6.12117 9.41429C5.73064 9.80481 5.09748 9.80481 4.70696 9.41429L0.706956 5.41429C0.316431 5.02376 0.316431 4.3906 0.706956 4.00008Z"
+                            fill="white" />
+                          <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M5.00008 9.12141C4.60955 8.73089 4.60955 8.09772 5.00008 7.7072L12.0001 0.7072C12.3906 0.316675 13.0238 0.316676 13.4143 0.7072C13.8048 1.09772 13.8048 1.73089 13.4143 2.12141L6.41429 9.12141C6.02376 9.51194 5.3906 9.51194 5.00008 9.12141Z"
+                            fill="white" />
+                        </g>
+                      </svg>
+                    </span>
+                    <button type="button" aria-label="close" onclick="closemessage()" style="display: flex;" data-zs-failure-icon>
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none">
+                        <circle cx="12" cy="12" r="12" fill="#9E0000" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M6.19526 6.19526C6.45561 5.93491 6.87772 5.93491 7.13807 6.19526L17.8047 16.8619C18.0651 17.1223 18.0651 17.5444 17.8047 17.8047C17.5444 18.0651 17.1223 18.0651 16.8619 17.8047L6.19526 7.13807C5.93491 6.87772 5.93491 6.45561 6.19526 6.19526Z"
+                          fill="white" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                          d="M17.8047 6.19526C17.5444 5.93491 17.1223 5.93491 16.8619 6.19526L6.19526 16.8619C5.93491 17.1223 5.93491 17.5444 6.19526 17.8047C6.45561 18.0651 6.87772 18.0651 7.13807 17.8047L17.8047 7.13807C18.0651 6.87772 18.0651 6.45561 17.8047 6.19526Z"
+                          fill="white" />
+                      </svg>
+                    </button>
+
+                    <span data-zs-message-text></span>
+                  </div>
+                </div>
+              </div>
+
+
+      {% endif %}
+
+      {% if page.template_vars.store_message_style == "02" || page.template_vars.store_message_style == "06" %}
+        <script>
+          document.addEventListener('zp-event-add-to-cart-success', () => {
+            var quickLookContainer = document.getElementById("product_quick_look");
+            if (quickLookContainer) {
+              closeProductQuickLook();
+            }
+            setTimeout(() => {
+              var cartAddSuccess = document.querySelectorAll('[data-cart-add-success="theme-cart-add-success"]')[0];
+              if (cartAddSuccess) {
+                addClass(cartAddSuccess, 'theme-cart-success-remove');
+                removeClass(cartAddSuccess, 'theme-cart-success');
+              }
+            }, 3000);
+          })
+        </script>
+      {% endif %}
+
+
+            
+  {% if page.template_vars.store_message_style == "07" %}
+    <div data-cart-add-success="theme-cart-add-success" class="theme-cart-add-success-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text">
+          <span class="theme-success-icon">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9" fill="none">
+              <g clip-path="url(#clip0_3103_9847)">
+                <path d="M10.4143 1.48438L4.78208 7.11659L2.07422 4.40855" stroke="white" stroke-width="1.365" stroke-miterlimit="10"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_3103_9847">
+                  <rect width="10.5" height="8.59091" fill="white" transform="translate(0.771484 0.1875)"/>
+                </clipPath>
+              </defs>
+            </svg>
+          </span>
+          <span class="theme-success-message theme-added-to-cart-msg">
+            {{i18n.get("product.message.added_to_cart")}}
+          </span>
+          <span class="theme-added-to-quote-msg" style="display: none;">{{i18n.get("product.message.added_to_quote")}}</span>
+
+          <button aria-label="{{i18n.get("product.label.close")}}" class="theme-cart-message-close" onclick="closeSuccessMessage();">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="20" fill="#F6F5F6"/>
+              <path d="M14.6562 25.4762L24.9762 15.1562M14.6562 15.1562L24.9762 25.4762" stroke="#303529" stroke-width="1.7906" stroke-linecap="square" stroke-linejoin="round"/>
+            </svg>			
+          </button>
+        </div>
+        
+        <div class="theme-cart-item">
+          <div class="theme-cart-message-item theme-cart-message-prod-img">
+            <div class="theme-cart-message-prod-img-inner">
+              <picture>
+                <img alt="" src="" width="200" height="200" data-cart-add-success-prod-img="theme-cart-add-success-prod-img" />
+              </picture>
+              </div>
+          </div>
+          <div class="theme-cart-success-item-details">
+            <div class="theme-cart-message-item theme-cart-message-prod-brand" data-cart-add-success-prod-brand="theme-cart-add-success-prod-brand"></div>
+            <div class="theme-cart-message-item theme-cart-message-prod-name" data-cart-add-success-prod-name="theme-cart-add-success-prod-name"></div>
+            <div class="theme-carat-message-item theme-cart-message-prices">
+              <div class="theme-cart-message-item theme-cart-message-prod-selling-price" data-cart-add-success-selling-prod-price="theme-cart-add-success-selling-prod-price">
+              </div>
+              <div class="theme-cart-message-item theme-cart-message-prod-label-price" data-cart-add-success-label-prod-price="theme-cart-add-success-label-prod-price">
+              </div>
+            </div>
+          </div>
+        </div>			
+        <div class="theme-cart-message-item theme-cart-message-buttons">
+          <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-cart {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-cart{% endif %} >{{i18n.get("product.label.view_cart")}}</a>
+          {% if page.is_quotes_enabled_in_storefront %}
+            <a href="javascript:;" class="zpbutton zpbutton-type-primary zpbutton-style-roundcorner zpbutton-size-lg" {% if page.template_vars.store_cart_type == "01" %}data-zs-view-quote {% elif page.template_vars.store_cart_type == "02" %} data-zs-view-mini-quote{% endif %} style="display: none;">{{i18n.get("product.label.view_quote")}}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div role="alert" data-cart-add-failure="theme-cart-add-failure" class="theme-cart-add-failure-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+          <button type="button" aria-label="{{i18n.get("product.label.close")}}" onclick="closemessage()">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+              <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="theme-failure-reason">
+            <span data-theme-failure-reason="theme-failure-reason"></span>  <span>-</span>  {{i18n.get("product.label.added_to_cart_failure")}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-cart-update-success="theme-cart-update-success" class="theme-cart-update-success-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+          {{i18n.get("product.message.success.update_to_cart")}}
+        </div>
+      </div>
+    </div>
+
+    <div data-cart-update-failure="theme-cart-update-failure" class="theme-cart-update-failure-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+          <div>
+            <span data-theme-update-failure-reason="theme-update-failure-reason"></span> - {{i18n.get("product.message.error.update_to_cart")}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-cart-delete-success="theme-cart-delete-success" class="theme-cart-delete-success-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-success">
+          {{i18n.get("product.message.success.delete_from_cart")}}
+        </div>
+      </div>
+    </div>
+    <div data-cart-delete-failure="theme-cart-delete-failure" class="theme-cart-delete-failure-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text theme-cart-message-failure">
+          <div>
+            <span data-theme-delete-failure-reason="theme-delete-failure-reason"></span> - {{i18n.get("product.message.error.delete_from_cart")}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-wishlist-alert-update="theme-wishlist-alert-update" class="theme-wishlist-alert-update theme-wishlist-success-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+          <span style="display: flex;" data-zs-success-icon>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+              <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span style="display: flex;" data-zs-failure-icon>                    
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+              <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+
+          <span data-zs-message-text></span>
+        </div>
+      </div>
+    </div>
+
+    <div data-save-for-later-alert-update="theme-save-for-later-alert-update" class="theme-save-for-later-success-message" data-theme-message-seven>
+      <div class="theme-cart-success-inner-container">
+        <div class="theme-cart-message-item theme-cart-message-text" data-zs-alert-inner-container>
+          <span style="display: flex;" data-zs-success-icon>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none">
+              <rect x="1" y="1" width="28" height="28" rx="14" stroke="#008849" stroke-width="2"/>
+              <path d="M9.375 15L12.75 18.75L20.625 11.25" stroke="#008849" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span style="display: flex;" data-zs-failure-icon>                    
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26" fill="none">
+              <rect x="1" y="1" width="24" height="24" rx="12" stroke="#E0242B" stroke-width="2"/>
+              <path d="M8.66602 8.66699L17.3327 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+              <path d="M17.332 8.66699L8.66536 17.3337" stroke="#E0242B" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+
+          <span data-zs-message-text></span>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if page.template_vars.store_message_style == "02" || page.template_vars.store_message_style == "06" || page.template_vars.store_message_style == "07" %}
+    <script>
+      document.addEventListener('zp-event-add-to-cart-success', () => {
+        var quickLookContainer = document.getElementById("product_quick_look");
+        if (quickLookContainer) {
+          closeProductQuickLook();
+        }
+        setTimeout(() => {
+          var cartAddSuccess = document.querySelectorAll('[data-cart-add-success="theme-cart-add-success"]')[0];
+          if (cartAddSuccess) {
+            addClass(cartAddSuccess, 'theme-cart-success-remove');
+            removeClass(cartAddSuccess, 'theme-cart-success');
+          }
+        }, 3000);
+      })
+    </script>
+  {% endif %}
+
+        {% if page.is_delivery_location_enabled %}
+            <div class="theme-delivery-location-loader-overlay" data-theme-delivery-location-loader style="display:none;">
+                <div class="theme-loader-circle"></div>
+                <span>{{i18n.get("product.message.please_wait")}}</span>
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+    {% comment %} STORE MESSAGES END {% endcomment %}
+
+    {{page.footer_code}}
+
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "where": {
+              "and": [
+                { "href_matches": "/*" },
+                { "not": { "href_matches": "/checkout" } },
+                { "not": { "href_matches": "/cart" } },
+                { "not": { "href_matches": "/account" } },
+                { "not": { "selector_matches": ".no-prerender" } },
+                { "not": { "selector_matches": "[rel~=nofollow]" } }
+              ]
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
+
+    {% include '_megamenu' %}
+{% if page.template_vars.mobile_header_style == "02" || page.template_vars.mobile_header_style == "03" || page.template_vars.mobile_header_style == "04" || page.template_vars.mobile_header_style == "05"%}	
+</div>
+{% endif %}
+{% if page.template_vars.mobile_header_style == "03" %}
+    {% include '_mobileapp-header-bottom' %}
+{% endif %}
+</body>
+</html>
