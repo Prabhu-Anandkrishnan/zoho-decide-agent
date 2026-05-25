@@ -22,4 +22,11 @@ def compare_products(
     client: MCPClient = Depends(get_mcp_client),
     llm: ClaudeClient = Depends(get_llm_client),
 ) -> CompareResponse:
-    return compare(payload.product_ids, client, llm, user_input=payload.user_input)
+    return compare(
+        payload.product_ids,
+        client,
+        llm,
+        user_input=payload.user_input,
+        focus_product_id=payload.focus_product_id,
+        chat_history=payload.chat_history,
+    )

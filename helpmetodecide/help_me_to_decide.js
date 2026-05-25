@@ -60,7 +60,11 @@
     addedToCartId:      null,
     promptShown:        false,
     modalOpen:          false,
-    usedChips:          {}
+    usedChips:          {},
+    // The product currently being discussed — usually the most recent AI
+    // recommendation. Sent to /compare so the LLM can resolve "it"/"that one"
+    // pronouns and answer detail questions about the right product.
+    focusProductId:     null
   };
 
   var portalEl        = null;
@@ -312,6 +316,17 @@
   function fetchCompare(productIds, userInput) {
     var body = { product_ids: productIds };
     if (userInput && userInput.trim()) { body.user_input = userInput.trim(); }
+    // Conversational context — backend uses these to resolve pronouns and
+    // distinguish "details about the current product" from "show me a
+    // different product". Only sent on follow-up turns.
+    if (userInput) {
+      if (state.focusProductId) { body.focus_product_id = state.focusProductId; }
+      if (state.chatMessages && state.chatMessages.length) {
+        body.chat_history = state.chatMessages.slice(-6).map(function (m) {
+          return { role: m.role === "user" ? "user" : "ai", text: m.text || "" };
+        });
+      }
+    }
     return request("POST", API.compare, body).then(normalizeCompareResponse);
   }
 
@@ -1008,6 +1023,7 @@
     state.chatError     = null;
     state.addedToCartId = null;
     state.usedChips     = {};
+    state.focusProductId = null;  // will be set after first /compare returns
     openModal();
   }
 
@@ -1041,8 +1057,9 @@
 
     fetchCompare(ids)
       .then(function (raw) {
-        state.comparison = raw;
-        state.comparing  = false;
+        state.comparison     = raw;
+        state.focusProductId = raw.recommendedProductId || ids[0];
+        state.comparing      = false;
         renderModalBody();
       })
       .catch(function () {
@@ -1088,6 +1105,10 @@
         for (var i = 0; i < ps.length; i++) {
           if (ps[i].product_id === recId) { recName = ps[i].name; break; }
         }
+
+        // Focus shifts to the newly recommended product so the NEXT chat turn
+        // resolves pronouns ("it", "this one") to this product.
+        state.focusProductId = recId || state.focusProductId;
 
         var suggestion = raw.suggestionText ||
           ("My suggestion is " + recName + ". Are you OK with this choice?");

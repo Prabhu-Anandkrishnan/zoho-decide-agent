@@ -21,6 +21,7 @@ from fastapi import HTTPException
 from app.llm.prompts import CLASSIFY_PROMPT, SYSTEM_PROMPT
 from app.mcp.client import MCPClient
 from app.models import (
+    ChatTurn,
     CompareResponse,
     ComparisonPoint,
     SafeProduct,
@@ -53,14 +54,44 @@ def _safe_products(product_ids: list[str], client: MCPClient) -> tuple[SafeProdu
     return to_safe_product(raws[0][1]), to_safe_product(raws[1][1])
 
 
+def _format_history(history: list[ChatTurn] | None, limit: int = 6) -> str:
+    """Render the last few chat turns as a plain text block for prompts."""
+    if not history:
+        return "(no prior messages)"
+    recent = history[-limit:]
+    lines = []
+    for turn in recent:
+        role = "User" if turn.role == "user" else "AI"
+        text = (turn.text or "").strip().replace("\n", " ")
+        if text:
+            lines.append(f"  {role}: {text}")
+    return "\n".join(lines) if lines else "(no prior messages)"
+
+
+def _focus_name(focus_id: str | None, safe_a: SafeProduct, safe_b: SafeProduct) -> str:
+    """Resolve the focus product_id to a name, defaulting to product_a."""
+    if focus_id == safe_a.product_id: return safe_a.name
+    if focus_id == safe_b.product_id: return safe_b.name
+    # Default focus = the product the AI most recently emphasised — start with a
+    return safe_a.name
+
+
 def _build_user_payload(
     safe_a: SafeProduct,
     safe_b: SafeProduct,
     user_input: str | None = None,
+    focus_product_id: str | None = None,
+    chat_history: list[ChatTurn] | None = None,
 ) -> str:
     payload: dict = {"product_a": safe_a.model_dump(), "product_b": safe_b.model_dump()}
     if user_input and user_input.strip():
         payload["user_preference"] = user_input.strip()
+    if focus_product_id:
+        payload["focus_product_id"] = focus_product_id
+    if chat_history:
+        payload["chat_history"] = [
+            {"role": t.role, "text": t.text} for t in chat_history[-6:]
+        ]
     return json.dumps(payload, indent=2)
 
 
@@ -135,9 +166,14 @@ def _run_comparison(
     client: MCPClient,
     llm: LLM,
     user_input: str | None = None,
+    focus_product_id: str | None = None,
+    chat_history: list[ChatTurn] | None = None,
 ) -> CompareResponse:
     safe_a, safe_b = _safe_products(product_ids, client)
-    user_payload   = _build_user_payload(safe_a, safe_b, user_input)
+    user_payload   = _build_user_payload(
+        safe_a, safe_b, user_input,
+        focus_product_id=focus_product_id, chat_history=chat_history,
+    )
 
     try:
         raw    = llm.complete_json(system=SYSTEM_PROMPT, user_payload=user_payload)
@@ -157,9 +193,22 @@ def _run_comparison(
 # Intent classification + alternative-product selection
 # ---------------------------------------------------------------------------
 
-def _classify_intent(user_input: str, llm: LLM) -> str:
-    """Returns 'alternative' or 'detail'."""
-    prompt = CLASSIFY_PROMPT.format(message=user_input.strip()[:400])
+def _classify_intent(
+    user_input: str,
+    llm: LLM,
+    product_a_name: str,
+    product_b_name: str,
+    focus_name: str,
+    chat_history: list[ChatTurn] | None,
+) -> str:
+    """Returns 'alternative' or 'detail'. Uses focus + history for accuracy."""
+    prompt = CLASSIFY_PROMPT.format(
+        message=user_input.strip()[:400],
+        product_a_name=product_a_name,
+        product_b_name=product_b_name,
+        focus_name=focus_name or product_a_name,
+        history=_format_history(chat_history),
+    )
     try:
         raw = llm.complete_json(
             system="You classify shopper intent. Reply with a single word only.",
@@ -225,22 +274,35 @@ def compare(
     client: MCPClient,
     llm: LLM,
     user_input: str | None = None,
+    focus_product_id: str | None = None,
+    chat_history: list[ChatTurn] | None = None,
 ) -> CompareResponse:
 
     # ── No follow-up: plain comparison ──────────────────────────────────
     if not user_input or not user_input.strip():
         return _run_comparison(product_ids, client, llm)
 
-    # ── Classify the follow-up intent ───────────────────────────────────
-    intent = _classify_intent(user_input, llm)
-    log.info("Follow-up intent classified as '%s' for input: %r", intent, user_input[:80])
+    # ── Classify the follow-up intent (with focus + history context) ────
+    safe_a, safe_b = _safe_products(product_ids, client)
+    focus_name = _focus_name(focus_product_id, safe_a, safe_b)
+
+    intent = _classify_intent(
+        user_input, llm,
+        product_a_name=safe_a.name,
+        product_b_name=safe_b.name,
+        focus_name=focus_name,
+        chat_history=chat_history,
+    )
+    log.info(
+        "Intent='%s' | focus=%r | msg=%r",
+        intent, focus_name, user_input[:80],
+    )
 
     # ── ALTERNATIVE: find a replacement product, re-run comparison ──────
     if intent == "alternative":
         catalog = client.get_catalog()
 
-        # Determine which of the two original products to keep (the stronger one).
-        safe_a, safe_b = _safe_products(product_ids, client)
+        # Keep the stronger of the original two products.
         keep_id = (
             safe_a.product_id
             if _POP_RANK[safe_a.popularity] >= _POP_RANK[safe_b.popularity]
@@ -250,11 +312,14 @@ def compare(
         alt_id = _find_alternative(user_input, product_ids, catalog, llm)
 
         if alt_id and alt_id != keep_id:
-            new_ids   = [keep_id, alt_id]
-            result    = _run_comparison(new_ids, client, llm, user_input)
+            new_ids = [keep_id, alt_id]
+            # Focus shifts to the alternative; history is preserved.
+            result = _run_comparison(
+                new_ids, client, llm, user_input,
+                focus_product_id=alt_id, chat_history=chat_history,
+            )
             result.intent = "alternative"
 
-            # Surface the new product names so the frontend can update the table.
             by_id = {p["item_id"]: p["item_name"] for p in catalog}
             result.alternativeProducts = [
                 SelectedProduct(id=keep_id, name=by_id.get(keep_id, keep_id)),
@@ -262,10 +327,12 @@ def compare(
             ]
             return result
 
-        # No usable alternative found — fall through to detail
         log.info("No suitable alternative found; treating as detail")
 
-    # ── DETAIL: re-run comparison with user preference as focus ─────────
-    result = _run_comparison(product_ids, client, llm, user_input)
+    # ── DETAIL: re-run comparison with user preference + focus + history ─
+    result = _run_comparison(
+        product_ids, client, llm, user_input,
+        focus_product_id=focus_product_id, chat_history=chat_history,
+    )
     result.intent = "detail"
     return result

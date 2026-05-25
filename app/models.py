@@ -26,11 +26,30 @@ class CanShowComparisonResponse(BaseModel):
 
 # ---------- /compare ----------
 
+class ChatTurn(BaseModel):
+    """One turn of the refinement conversation, used to give the LLM context."""
+    role: Literal["user", "ai"]
+    text: str
+
+
 class CompareRequest(BaseModel):
     product_ids: list[str] = Field(..., min_length=2, max_length=2)
     user_input: str | None = Field(
         default=None,
         description="Optional follow-up preference typed by the shopper in the chat box.",
+    )
+    # ── Conversational context (sent on follow-up turns only) ─────────────
+    focus_product_id: str | None = Field(
+        default=None,
+        description=(
+            "The product currently being discussed in the chat. Usually the most "
+            "recent AI recommendation. Lets the LLM resolve pronouns like 'it' / "
+            "'that one' to the right product."
+        ),
+    )
+    chat_history: list[ChatTurn] = Field(
+        default_factory=list,
+        description="Last few user/AI turns this session, oldest first.",
     )
 
     @field_validator("product_ids")
