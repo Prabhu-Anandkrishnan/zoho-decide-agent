@@ -188,8 +188,16 @@ trade-off; 70-84 when it's the better pick but close; 55-69 when truly close \
 or there's a meaningful trade-off either way. Avoid 100.>
 }
 
-Produce 4–6 comparisonPoints covering: price, headline specs, \
-durability/material, availability (qualitative).
+Produce 4–6 comparisonPoints. PRIORITISE concrete data from the `attributes` \
+dict on each SafeProduct — that's where the merchant publishes specs like \
+Processor, RAM, Storage, Display, Battery, Weight, Dimensions, etc. Each \
+spec that differs meaningfully between the two products should become a \
+comparisonPoint. Always include at least: price, the strongest differentiating \
+specs (processor / CPU / chipset, weight if known), and availability. Use \
+the EXACT spec values from `attributes` (e.g. "AMD Ryzen 9 Hx", "1.24 kg") — \
+don't paraphrase or invent figures. Set winner to the product_id whose value \
+is objectively better for typical buyers; use null when it's a tie or a \
+subjective preference.
 
 ═══ PRIVACY EXAMPLES ═══
 GOOD reasoning:

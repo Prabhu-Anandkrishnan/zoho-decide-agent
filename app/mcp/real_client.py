@@ -20,6 +20,7 @@ import asyncio
 import json
 import logging
 import threading
+import time
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -88,17 +89,18 @@ def _extract_text(result: Any) -> Any:
     return {}
 
 
-def _map_product(product: dict, variant: dict, sales_by_variant: dict,
+def _map_product(product: dict, variant: dict, sales_index: dict,
                  return_count: int, coupons: list[dict]) -> dict:
     """
     Merge data from Zoho Commerce MCP tools into the fused shape that
     to_safe_product() and the selector service expect.
 
-    product         — from list_all_products or get_a_product (product level)
-    variant         — first/primary variant (has rate, stock_on_hand, etc.)
-    sales_by_variant — {variant_id: qty_sold} from sales report
-    return_count    — number of returns for this product
-    coupons         — list of all active coupons (we pick first applicable)
+    product       — from list_all_products or get_a_product (product level)
+    variant       — first/primary variant (has rate, stock_on_hand, etc.)
+    sales_index   — bulk sales map; lookup tries product_id THEN variant_id
+                    (sales orders key by product_id, sales report keys may vary)
+    return_count  — number of returns for this product
+    coupons       — list of all active coupons (we pick first applicable)
     """
     # --- identity ---
     item_id = str(product.get("product_id") or product.get("item_id") or "")
@@ -137,21 +139,61 @@ def _map_product(product: dict, variant: dict, sales_by_variant: dict,
     description = re.sub(r"<[^>]+>", "", str(description)).strip()
 
     # --- attributes (specs) ---
-    # Zoho Commerce uses attribute_name1/2/3 for variant attributes
+    # Zoho Commerce surfaces product specs in three places:
+    #   1. product.specifications — the main spec sheet, list of
+    #      {specification_group_name, name, specification_value}
+    #   2. variant.package_details — dimensions/weight
+    #   3. variant.custom_fields — anything else the merchant added
+    # We merge all three into a single flat dict keyed by spec name.
     attrs: dict = {}
+
+    # 1) Spec sheet (richest source)
+    for spec in (product.get("specifications") or []):
+        if not isinstance(spec, dict):
+            continue
+        name  = (spec.get("name") or "").strip()
+        value = spec.get("specification_value")
+        group = (spec.get("specification_group_name") or "").strip()
+        if not name or value in (None, ""):
+            continue
+        # Disambiguate spec names that repeat across groups (e.g. "Brand" under
+        # both "Processor" and "Display").
+        key = name if not group else (
+            name if name.lower().startswith(group.lower()) else f"{group} {name}".strip()
+        )
+        attrs[key] = value
+
+    # 2) Package details (universal spec: weight + dimensions)
+    pkg = variant.get("package_details") or {}
+    if isinstance(pkg, dict):
+        w  = pkg.get("weight")
+        wu = pkg.get("weight_unit") or ""
+        if w not in (None, "", 0):
+            attrs.setdefault("Weight", f"{w} {wu}".strip())
+        L, W, H = pkg.get("length"), pkg.get("width"), pkg.get("height")
+        du = pkg.get("dimension_unit") or ""
+        if L and W and H:
+            attrs.setdefault("Dimensions", f"{L} × {W} × {H} {du}".strip())
+
+    # 3) Variant-level attribute1/2/3 (only used when populated)
     for i in (1, 2, 3):
         attr_name = product.get(f"attribute_name{i}") or variant.get(f"attribute_name{i}")
         attr_val  = (variant.get(f"attribute_option_name{i}") or
-                     variant.get(f"attribute_option_data{i}") or
-                     product.get(f"attribute_option_name{i}"))
+                     variant.get(f"attribute_option_data{i}"))
         if attr_name and attr_val:
-            attrs[str(attr_name)] = attr_val
-    # Also grab custom_fields from variant if available
+            attrs.setdefault(str(attr_name), attr_val)
+
+    # 4) Custom fields (merchant-defined extras)
     for cf in (variant.get("custom_fields") or []):
         label = cf.get("label") or cf.get("placeholder")
         val   = cf.get("value")
-        if label and val is not None:
-            attrs[str(label)] = val
+        if label and val not in (None, ""):
+            attrs.setdefault(str(label), val)
+
+    # 5) Brand — a useful public attribute that doesn't live in the spec sheet
+    brand = product.get("brand") or variant.get("brand")
+    if brand:
+        attrs.setdefault("Brand", brand)
 
     # --- inventory ---
     stock = _coerce_int(
@@ -161,8 +203,10 @@ def _map_product(product: dict, variant: dict, sales_by_variant: dict,
     )
 
     # --- sales (from bulk sales report, keyed by variant_id) ---
-    units_sold = _coerce_int(sales_by_variant.get(variant_id) or
-                             sales_by_variant.get(item_id))
+    # The sales report keys by variant_id; the orders-aggregation fallback
+    # keys by product_id. The fetcher indexes BOTH so either lookup works.
+    units_sold = _coerce_int(sales_index.get(variant_id) or
+                             sales_index.get(item_id))
 
     # --- returns ---
     return_rate = 0.0
@@ -219,11 +263,19 @@ class RealMCPClient:
     Mirrors MockMCPClient's interface so client.py factory can swap them.
     """
 
+    # Per-process caches — bulk reports don't change often, so we avoid
+    # re-fetching them for every product on every /compare call.
+    _CACHE_TTL_SECONDS = 300
+
     def __init__(self, base_url: str, token: str = "", org_id: str = "") -> None:
         self._url    = base_url.rstrip("/")
         self._token  = token
         self._org_id = org_id
         self._sdk_available = self._check_sdk()
+        # Bulk-data caches: (value, expires_at_epoch).
+        self._sales_cache: tuple[dict[str, int], float] | None = None
+        self._returns_cache: tuple[dict[str, int], float] | None = None
+        self._coupons_cache: tuple[list[dict], float] | None = None
         log.info(
             "RealMCPClient init: url=%s org_id=%s sdk=%s",
             self._url, self._org_id, self._sdk_available
@@ -366,42 +418,141 @@ class RealMCPClient:
             log.warning("list_all_products failed", exc_info=True)
         return []
 
+    def _cache_get(self, slot: str):
+        cached = getattr(self, f"_{slot}_cache", None)
+        if cached and cached[1] > time.time():
+            return cached[0]
+        return None
+
+    def _cache_set(self, slot: str, value) -> None:
+        setattr(self, f"_{slot}_cache", (value, time.time() + self._CACHE_TTL_SECONDS))
+
     def _fetch_sales_index(self) -> dict[str, int]:
         """
-        Fetch sales-by-products report for the last 30 days.
-        Returns {variant_id_or_product_id: units_sold}.
+        Map of product_id → units sold in the last 30 days.
+
+        Strategy:
+          1. Try get_sales_by_products_report (one call). Works when the org
+             has the report flow enabled and grouped by product.
+          2. Fallback: enumerate sales orders via list_sales_orders and pull
+             line items via get_sales_order, aggregating by product_id. Works
+             reliably whenever the org has any order history.
+
+        Result is cached per RealMCPClient instance for CACHE_TTL_SECONDS.
         """
+        cached = self._cache_get("sales")
+        if cached is not None:
+            return cached
+
         today = datetime.now().strftime("%Y-%m-%d")
         ago30 = (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d")
+
+        # --- Path 1: bulk report (Zoho Commerce sales-by-products) ---
+        # Param shape matches the working storefront REST call:
+        #   filter_by=Date.CustomDate  (NOT TransactionDate.CustomDate)
+        #   group_by=products          (plain string, not a JSON array)
+        #   sales_channel=zstore       (required to scope to the storefront)
+        #   response_option=1          (detailed rows)
+        #
+        # The response has a FLAT `results` array — each entry is one product
+        # with id=variant_id, count=units_sold, amount=revenue. (No nested
+        # product_sales wrapper despite what the tool schema suggests.)
         try:
             resp = self._call("get_sales_by_products_report", params={
-                "from_date": ago30,
-                "to_date":   today,
-                "filter_by": "TransactionDate.CustomDate",
+                "filter_by":       "Date.CustomDate",
+                "from_date":       ago30,
+                "to_date":         today,
+                "group_by":        "products",
+                "sales_channel":   "zstore",
+                "response_option": 1,
+                "per_page":        500,
             })
             index: dict[str, int] = {}
-            for group in (resp.get("results") or []):
-                for item in (group.get("product_sales") or group.get("items") or []):
-                    pid   = str(item.get("product_id") or item.get("group_id") or "")
-                    qty   = _coerce_int(item.get("quantity_sold") or item.get("count") or item.get("quantity"))
-                    if pid:
-                        index[pid] = index.get(pid, 0) + qty
-            return index
+            for item in (resp.get("results") or []):
+                if not isinstance(item, dict):
+                    continue
+                # id is the variant_id; product_id is sometimes also present
+                key_v = str(item.get("id") or "")
+                key_p = str(item.get("product_id") or "")
+                qty   = _coerce_int(item.get("count") or item.get("quantity_sold") or item.get("quantity"))
+                if not qty:
+                    continue
+                # Index by BOTH keys so lookups by either product_id or
+                # variant_id resolve to the same number.
+                if key_v: index[key_v] = index.get(key_v, 0) + qty
+                if key_p: index[key_p] = index.get(key_p, 0) + qty
+            if index:
+                log.info("Sales index from report: %d entries (variant+product keyed)", len(index))
+                self._cache_set("sales", index)
+                return index
         except Exception:
             log.debug("get_sales_by_products_report unavailable", exc_info=True)
-        return {}
+
+        # --- Path 2: aggregate sales orders (fallback if report fails) ---
+        index = self._aggregate_sales_from_orders(since=ago30)
+        log.info("Sales index from orders fallback: %d products", len(index))
+        self._cache_set("sales", index)
+        return index
+
+    def _aggregate_sales_from_orders(self, since: str, max_orders: int = 100) -> dict[str, int]:
+        """
+        Enumerate sales orders and aggregate per-product quantities.
+
+        Caps the order detail fetches at max_orders to keep latency bounded
+        on stores with very long order history. For a hackathon demo with
+        a small test catalog this fetches all of them.
+        """
+        try:
+            resp = self._call("list_sales_orders", params={"per_page": max_orders})
+            orders = (resp or {}).get("salesorders") or []
+        except Exception:
+            log.debug("list_sales_orders unavailable", exc_info=True)
+            return {}
+
+        # Filter to last 30 days when the order date is parseable
+        try:
+            cutoff = datetime.strptime(since, "%Y-%m-%d")
+        except ValueError:
+            cutoff = None
+
+        eligible_ids: list[str] = []
+        for o in orders:
+            sid = o.get("salesorder_id")
+            if not sid:
+                continue
+            if cutoff is not None:
+                d = o.get("date") or ""
+                try:
+                    if datetime.strptime(d[:10], "%Y-%m-%d") < cutoff:
+                        continue
+                except ValueError:
+                    pass
+            eligible_ids.append(str(sid))
+
+        index: dict[str, int] = {}
+        for sid in eligible_ids[:max_orders]:
+            try:
+                od = self._call("get_sales_order", path_params={"salesorder_id": sid})
+                so = (od or {}).get("salesorder") or od or {}
+                for line in (so.get("line_items") or []):
+                    pid = str(line.get("product_id") or "")
+                    qty = _coerce_int(line.get("quantity"))
+                    if pid and qty:
+                        index[pid] = index.get(pid, 0) + qty
+            except Exception:
+                log.debug("get_sales_order failed for %s", sid, exc_info=True)
+        return index
 
     def _fetch_return_index(self) -> dict[str, int]:
-        """
-        Fetch all sales returns.
-        Returns {product_id: return_count}.
-        """
+        """Map product_id → return count. Cached."""
+        cached = self._cache_get("returns")
+        if cached is not None:
+            return cached
+        index: dict[str, int] = {}
         try:
             resp = self._call("list_all_sales_returns")
             returns = resp.get("salesreturns", []) if isinstance(resp, dict) else []
-            index: dict[str, int] = {}
             for r in returns:
-                # Each return may have line items
                 for line in (r.get("line_items") or [r]):
                     pid = str(
                         line.get("product_id") or
@@ -410,20 +561,25 @@ class RealMCPClient:
                     )
                     if pid:
                         index[pid] = index.get(pid, 0) + 1
-            return index
         except Exception:
             log.debug("list_all_sales_returns unavailable", exc_info=True)
-        return {}
+        self._cache_set("returns", index)
+        return index
 
     def _fetch_coupons(self) -> list[dict]:
-        """Fetch all active coupons."""
+        """List of active coupons. Cached."""
+        cached = self._cache_get("coupons")
+        if cached is not None:
+            return cached
+        coupons: list[dict] = []
         try:
             resp = self._call("list_coupons")
             if isinstance(resp, dict):
-                return resp.get("coupons", [])
+                coupons = resp.get("coupons", []) or []
         except Exception:
             log.debug("list_coupons unavailable", exc_info=True)
-        return []
+        self._cache_set("coupons", coupons)
+        return coupons
 
     def get_catalog(self) -> list[dict]:
         """Slim records for all products — used by the alternative-product finder."""
